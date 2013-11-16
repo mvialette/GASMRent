@@ -14,9 +14,14 @@
 
 <script type="text/javascript">
 	window.onload = function() {
+		// We ask the synchronize of users informations
 		synchronizeUsers();
+		
+		// We ask the synchronize of diving events
 		synchronizeDivingEvents();	
-		synchronizeJackets();
+		
+		// We ask the synchronize of equipment informations
+		synchronizeEquipments();
 	}
 </script>
 
@@ -33,7 +38,7 @@
 			<div class="col-12 pageSection">
 
 				<div class="row largeRow">
-					<div class="col-12 text-center largeButton" id="acteur"></div>
+					<div class="col-12 text-center largeButton" id="users"></div>
 				</div>
 				
 				<div class="row largeRow">
@@ -41,7 +46,7 @@
 				</div>
 				
 				<div class="row largeRow">
-					<div class="col-12 text-center largeButton" id="jackets"></div>
+					<div class="col-12 text-center largeButton" id="equipments"></div>
 				</div>
 
 				<div class="row largeRow">

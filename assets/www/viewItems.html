@@ -12,37 +12,11 @@
 		<script type="text/javascript" charset="utf-8"
 			src="./js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 		
 		<script type="text/javascript">
 			window.onload = function() {
-				/* var itemId = window.location.toString().substr(
-						window.location.toString().indexOf('=') + 1); */
-		
-				var urlComplete = "https://mindful-girder-344.appspot.com/api/jacket/";
-		
-				jQuery
-						.ajax({
-							type : "GET",
-							url : urlComplete,
-							contentType : "application/json; charset=utf-8",
-							dataType : "json",
-							success : function(data, status, jqXHR) {
-		
-								var items = [];
-								
-								$.each(data, function(i, item) {
-									items.push("<li>Détail de l'item : id="
-											+ item.reference + ", type=" + item.type+"</li>");
-								}); 
-								
-								document.getElementById("liste").innerHTML = items;
-							},
-		
-							error : function(jqXHR, status) {
-								// error handler
-								alert("ko");
-							}
-						});
+				getInfosOfEquipments();
 			}
 		
 			/* function getInfos() {
