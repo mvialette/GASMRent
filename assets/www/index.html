@@ -7,13 +7,13 @@
 
 <!-- Javascripts -->
 <script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/barcodescanner.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 
 <!-- CSS -->
 <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -21,6 +21,47 @@
 
 <!-- JS Function that can be called -->
 <script type="text/javascript">
+	//load I18N bundles
+	jQuery(document).ready(function() {
+      	initLanguages();
+    });
+	
+	function loadBundles(lang) {
+		
+		
+		// alert(lang);
+		
+          jQuery.i18n.properties({
+        	 name:'gasmrent',
+        	 path:'i18n/',
+        	 mode:'both',
+        	 language:lang,
+        	 callback: function() {
+        		 
+        		 jQuery.i18n.prop("applicationTitle");
+        		 document.getElementById("applicationTitle").innerHTML=applicationTitle;
+        		 
+        		 jQuery.i18n.prop("applicationDescription");
+        		 document.getElementById("applicationDescription").innerHTML=applicationDescription;
+        		 
+        		 jQuery.i18n.prop("startRent");
+        		 document.getElementById("startRent").innerHTML=startRent;
+        		 
+        		 jQuery.i18n.prop("viewItems");
+        		 document.getElementById("viewItems").innerHTML=viewItems;
+        		 
+        		 jQuery.i18n.prop("scanQRCode");
+        		 document.getElementById("scanQRCode").innerHTML=scanQRCode;
+        		 
+        		 jQuery.i18n.prop("synchronize");
+        		 document.getElementById("synchronize").innerHTML=synchronize;
+        		 
+        		 jQuery.i18n.prop("about");
+        		 document.getElementById("about").innerHTML=about;
+       		 }
+         });
+    }
+    
 	function scanQRCode() {
 		window.plugins.barcodeScanner.scan(function(result) {
 
@@ -55,36 +96,40 @@
 			<div class="col-12 pageSection">
 
 				<div class="row largeRow">
-					<div class="col-12 text-center largeButton" id="description">
-						Bienvenue sur la page d'accueil de l'application mobile G.A.S.M.
-						(M.J.C. Villeurbanne) permettant de gérer la location du matériel.
+					<div class="col-12 text-center" id="applicationDescription">
 					</div>
 				</div>
 
 				<div class="row largeRow">
-					<div class="col-12" id="scanQRCode">
-						<a class="largeButton" href="#" onClick="scanQRCode()">
-							Scanner</a>
-					</div>
-				</div>
-				<div class="row largeRow">
-					<div class="col-12" id="viewItems">
-						<a class="largeButton" href="./viewItems.html"> Voir le
-							matériel </a>
+					<div class="col-12">
+						<a class="largeButton" href="./chooseEventAndUser.html" id="startRent"></a>
 					</div>
 				</div>
 				
 				<div class="row largeRow">
-					<div class="col-12" id="about">
-						<a class="largeButton" href="./synchronize.html">Synchroniser</a>
+					<div class="col-12" >
+						<a class="largeButton" href="#" onClick="scanQRCode()" id="scanQRCode"></a>
+					</div>
+				</div>
+				
+				<div class="row largeRow">
+					<div class="col-12" >
+						<a class="largeButton" href="./viewItems.html" id="viewItems"></a>
+					</div>
+				</div>
+				
+				<div class="row largeRow">
+					<div class="col-12">
+						<a class="largeButton" href="./synchronize.html" id="synchronize"></a>
 					</div>
 				</div>
 
 				<div class="row largeRow">
-					<div class="col-12" id="about">
-						<a class="largeButton" href="./about.html"> A propos </a>
+					<div class="col-12">
+						<a class="largeButton" href="./about.html" id="about"></a>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 	</div>
