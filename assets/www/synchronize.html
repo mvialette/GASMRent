@@ -1,61 +1,94 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-<title>G.A.S.M. Rent</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Javascripts -->
-<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
-
-<script type="text/javascript">
-	window.onload = function() {
-		// We ask the synchronize of users informations
-		synchronizeUsers();
+	<head>
+		<title>G.A.S.M. Rent</title>
 		
-		// We ask the synchronize of diving events
-		synchronizeDivingEvents();	
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
-		// We ask the synchronize of equipment informations
-		synchronizeEquipments();
-	}
-</script>
-
-<!-- CSS -->
-<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="./css/gasm.css" rel="stylesheet" media="screen">
-
-</head>
-<body>
-	<div class="container">
-		<div class="col-12 pageTitle" id="applicationTitle">GASM Rent -
-			Synchronize</div>
-		<div class="row text-center viewContent">
-			<div class="col-12 pageSection">
-
-				<div class="row largeRow">
-					<div class="col-12 text-center largeButton" id="users"></div>
-				</div>
+		<!-- Javascripts -->
+		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+		
+		<script type="text/javascript">
+			window.onload = function() {
+				//load I18N bundles
+				jQuery(document).ready(function() {
+			      	initLanguages();
+			    });
 				
-				<div class="row largeRow">
-					<div class="col-12 text-center largeButton" id="divingEvent"></div>
-				</div>
+				// We ask the synchronize of users informations
+				synchronizeUsers();
 				
-				<div class="row largeRow">
-					<div class="col-12 text-center largeButton" id="equipments"></div>
-				</div>
-
-				<div class="row largeRow">
-					<div class="col-12 text-center" id="back">
-						<a class="largeButton" href="./index.html">Retour</a>
+				// We ask the synchronize of diving events
+				synchronizeDivingEvents();	
+				
+				// We ask the synchronize of equipment informations
+				synchronizeEquipments();
+			}
+			
+			function loadBundles(lang) {
+		          jQuery.i18n.properties({
+		        	 name:'gasmrent',
+		        	 path:'i18n/',
+		        	 mode:'both',
+		        	 language:lang,
+		        	 callback: function() {
+		        		 
+		        		 jQuery.i18n.prop("synchronizePageTitle");
+		        		 document.getElementById("synchronizePageTitle").innerHTML=synchronizePageTitle;
+		        		 
+		        		 jQuery.i18n.prop('userOnline');
+		        		 jQuery.i18n.prop('userOffline');
+		        		 
+		        		 jQuery.i18n.prop('divingEventOnline');
+		        		 jQuery.i18n.prop('divingEventOffline');
+		        		 
+		        		 jQuery.i18n.prop('equipmentOnline');
+		        		 jQuery.i18n.prop('equipmentOffline');
+		        		 
+		        		 jQuery.i18n.prop("back");
+		        		 document.getElementById("back").innerHTML=back;
+		       		 }
+		         });
+		    }
+		</script>
+				
+		<!-- CSS -->
+		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/gasm.css" rel="stylesheet" media="screen">
+	
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-12 pageTitle" id="synchronizePageTitle"></div>
+			</div>
+			<div class="row text-center viewContent">
+				<div class="col-12 pageSection">
+	
+					<div class="row largeRow">
+						<div class="col-12 text-center largeButton" id="users"></div>
 					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center largeButton" id="divingEvent"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center largeButton" id="equipments"></div>
+					</div>
+	
+					<div class="row largeRow">
+							<div class="col-12 text-center" >
+								<a class="largeButton" href="./index.html" id="back"></a>
+							</div>
+						</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</body>
+	</body>
 </html>
