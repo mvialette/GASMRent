@@ -113,15 +113,26 @@ function getInfosOfEquipments() {
 	// alert(localStorageUsers);
 	var compteur = 0;
 
-	var items = [];
+	var items = "";
 
 	$.each(localStorageEquipments, function(i, oneElement) {
 
 		// alert(oneUser);
 		var jsonOneElement = JSON.parse(oneElement);
+		
+		var typeLocalized;
+		
+		//alert(tank);
+		//alert(jsonOneElement);
+		if(jsonOneElement.type == 'Tank'){
+			typeLocalized = tank;
+		}else if(jsonOneElement.type == 'Regulator'){
+			typeLocalized = regulator;
+		} else if(jsonOneElement.type == 'Jacket'){
+			typeLocalized = jacket;
+		} 
 
-		items.push("<li>id=" + jsonOneElement.reference + ", type="
-				+ jsonOneElement.type + "</li>");
+		items = items + "<li>" + typeLocalized + " n° <b>" + jsonOneElement.reference + "</b></li>";
 
 		// var jsonOneElement = JSON.parse(oneElement);
 		// alert("reference="+jsonOneElement.reference);
@@ -288,3 +299,4 @@ function initLanguages() {
 	userLang = userLang.substring(0, 2);
 	loadBundles(userLang);
 }
+

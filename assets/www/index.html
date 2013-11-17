@@ -7,11 +7,15 @@
 
 <!-- Javascripts -->
 <script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/barcodescanner.js"></script>
 <script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 
 <!-- CSS -->
@@ -22,66 +26,43 @@
 <script type="text/javascript">
 	//load I18N bundles
 	jQuery(document).ready(function() {
-      	initLanguages();
-    });
-	
+		initLanguages();
+	});
+
 	function loadBundles(lang) {
-		
-		
+
 		// alert(lang);
-		
-          jQuery.i18n.properties({
-        	 name:'gasmrent',
-        	 path:'i18n/',
-        	 mode:'both',
-        	 language:lang,
-        	 callback: function() {
-        		 
-        		 jQuery.i18n.prop("applicationTitle");
-        		 document.getElementById("applicationTitle").innerHTML=applicationTitle;
-        		 
-        		 jQuery.i18n.prop("applicationDescription");
-        		 document.getElementById("applicationDescription").innerHTML=applicationDescription;
-        		 
-        		 jQuery.i18n.prop("startRent");
-        		 document.getElementById("startRent").innerHTML=startRent;
-        		 
-        		 jQuery.i18n.prop("viewItems");
-        		 document.getElementById("viewItems").innerHTML=viewItems;
-        		 
-        		 jQuery.i18n.prop("scanQRCode");
-        		 document.getElementById("scanQRCode").innerHTML=scanQRCode;
-        		 
-        		 jQuery.i18n.prop("synchronize");
-        		 document.getElementById("synchronize").innerHTML=synchronize;
-        		 
-        		 jQuery.i18n.prop("about");
-        		 document.getElementById("about").innerHTML=about;
-       		 }
-         });
-    }
-    
-	function scanQRCode() {
-		window.plugins.barcodeScanner.scan(function(result) {
 
-			/* alert("(result.cancelled == false), value=" + (result.cancelled == false));
-			alert("(result.format == QR_CODE), value=" + (result.format == "QR_CODE"));
-			alert("(both), value=" + ((result.cancelled == false) && (result.format == "QR_CODE")));
-			 */
-			if (result.cancelled == false && result.format == "QR_CODE") {
-				var leTextDuQRCode = result.text;
-				/* alert("We got a qrcode = " + leTextDuQRCode); */
-				window.location = "scan.html?text=" + leTextDuQRCode;
-			} else {
-				//alert("Le scan n'a pas abouti");
-			}
-			/* alert("We got a barcode\n" + "Result: " + result.text + "\n"
-					+ "Format: " + result.format + "\n" + "Cancelled: "
-					+ result.cancelled); */
-		}, function(error) {
-			//alert("Scanning failed: " + error);
-		});
+		jQuery.i18n
+				.properties({
+					name : 'gasmrent',
+					path : 'i18n/',
+					mode : 'both',
+					language : lang,
+					callback : function() {
 
+						jQuery.i18n.prop("applicationTitle");
+						document.getElementById("applicationTitle").innerHTML = applicationTitle;
+
+						jQuery.i18n.prop("applicationDescription");
+						document.getElementById("applicationDescription").innerHTML = applicationDescription;
+
+						jQuery.i18n.prop("startRent");
+						document.getElementById("startRent").innerHTML = startRent;
+
+						/* jQuery.i18n.prop("scanQRCode");
+						document.getElementById("scanQRCode").innerHTML=scanQRCode; */
+
+						jQuery.i18n.prop("viewItems");
+						document.getElementById("viewItems").innerHTML = viewItems;
+
+						jQuery.i18n.prop("synchronize");
+						document.getElementById("synchronize").innerHTML = synchronize;
+
+						jQuery.i18n.prop("about");
+						document.getElementById("about").innerHTML = about;
+					}
+				});
 	}
 </script>
 
@@ -100,22 +81,17 @@
 
 				<div class="row largeRow">
 					<div class="col-12">
-						<a class="largeButton" href="./chooseEventAndUser.html" id="startRent"></a>
+						<a class="largeButton" href="./chooseEventAndUser.html"
+							id="startRent"></a>
 					</div>
-				</div>
-				
+				</div>				
+
 				<div class="row largeRow">
-					<div class="col-12" >
-						<a class="largeButton" href="#" onClick="scanQRCode()" id="scanQRCode"></a>
+					<div class="col-12">
+						<a class="largeButton" href="./viewEquipments.html" id="viewItems"></a>
 					</div>
 				</div>
-				
-				<div class="row largeRow">
-					<div class="col-12" >
-						<a class="largeButton" href="./viewItems.html" id="viewItems"></a>
-					</div>
-				</div>
-				
+
 				<div class="row largeRow">
 					<div class="col-12">
 						<a class="largeButton" href="./synchronize.html" id="synchronize"></a>
@@ -127,7 +103,7 @@
 						<a class="largeButton" href="./about.html" id="about"></a>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>

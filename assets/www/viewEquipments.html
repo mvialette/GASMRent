@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>G.A.S.M. Rent</title>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Javascripts -->
+		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+		
+		<script type="text/javascript">
+			window.onload = function() {
+				//load I18N bundles
+				jQuery(document).ready(function() {
+			      	initLanguages();
+			    });
+				
+				getInfosOfEquipments();
+			}
+			
+			function loadBundles(lang) {
+		          jQuery.i18n.properties({
+		        	 name:'gasmrent',
+		        	 path:'i18n/',
+		        	 mode:'both',
+		        	 language:lang,
+		        	 callback: function() {
+		        		 
+		        		 jQuery.i18n.prop("viewEquipmentsPageTitle");
+		        		 document.getElementById("viewEquipmentsPageTitle").innerHTML=viewEquipmentsPageTitle;
+		        		 
+		        		 jQuery.i18n.prop("viewEquipmentsDescription");
+		        		 document.getElementById("description").innerHTML=viewEquipmentsDescription;
+		        		 
+		        		 jQuery.i18n.prop('tank');
+		        		 jQuery.i18n.prop('regulator');
+		        		 jQuery.i18n.prop('jacket');
+		        		 
+		        		 jQuery.i18n.prop("back");
+		        		 document.getElementById("back").innerHTML=back;
+		       		 }
+		         });
+		    }
+		</script>
+		
+		<!-- CSS -->
+		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/gasm.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-12 pageTitle" id="viewEquipmentsPageTitle"></div>
+			</div>
+			<div class="row">
+				<div class="col-12 pageSection">
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="description"></div>
+					</div>
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="liste"></div>
+					</div>
+	
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html" id="back"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
