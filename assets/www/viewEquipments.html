@@ -20,14 +20,7 @@
 			      	initLanguages();
 			    });
 				
-				// We ask the synchronize of users informations
-				synchronizeUsers();
-				
-				// We ask the synchronize of diving events
-				synchronizeDivingEvents();	
-				
-				// We ask the synchronize of equipment informations
-				synchronizeEquipments();
+				getInfosOfEquipments();
 			}
 			
 			function loadBundles(lang) {
@@ -38,17 +31,15 @@
 		        	 language:lang,
 		        	 callback: function() {
 		        		 
-		        		 jQuery.i18n.prop("synchronizePageTitle");
-		        		 document.getElementById("synchronizePageTitle").innerHTML=synchronizePageTitle;
+		        		 jQuery.i18n.prop("viewEquipmentsPageTitle");
+		        		 document.getElementById("viewEquipmentsPageTitle").innerHTML=viewEquipmentsPageTitle;
 		        		 
-		        		 jQuery.i18n.prop('userOnline');
-		        		 jQuery.i18n.prop('userOffline');
+		        		 jQuery.i18n.prop("viewEquipmentsDescription");
+		        		 document.getElementById("description").innerHTML=viewEquipmentsDescription;
 		        		 
-		        		 jQuery.i18n.prop('divingEventOnline');
-		        		 jQuery.i18n.prop('divingEventOffline');
-		        		 
-		        		 jQuery.i18n.prop('equipmentOnline');
-		        		 jQuery.i18n.prop('equipmentOffline');
+		        		 jQuery.i18n.prop('tank');
+		        		 jQuery.i18n.prop('regulator');
+		        		 jQuery.i18n.prop('jacket');
 		        		 
 		        		 jQuery.i18n.prop("back");
 		        		 document.getElementById("back").innerHTML=back;
@@ -56,37 +47,30 @@
 		         });
 		    }
 		</script>
-				
+		
 		<!-- CSS -->
 		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
 		<link href="./css/gasm.css" rel="stylesheet" media="screen">
-	
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
-				<div class="col-12 pageTitle" id="synchronizePageTitle"></div>
+				<div class="col-12 pageTitle" id="viewEquipmentsPageTitle"></div>
 			</div>
-			<div class="row text-center viewContent">
+			<div class="row">
 				<div class="col-12 pageSection">
-	
 					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="users"></div>
+						<div class="col-12 text-center" id="description"></div>
 					</div>
-					
 					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="divingEvent"></div>
-					</div>
-					
-					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="equipments"></div>
+						<div class="col-12 text-center" id="liste"></div>
 					</div>
 	
 					<div class="row largeRow">
-							<div class="col-12 text-center" >
-								<a class="largeButton" href="./index.html" id="back"></a>
-							</div>
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html" id="back"></a>
 						</div>
+					</div>
 				</div>
 			</div>
 		</div>
