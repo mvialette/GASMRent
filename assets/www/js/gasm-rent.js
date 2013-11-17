@@ -300,3 +300,51 @@ function initLanguages() {
 	loadBundles(userLang);
 }
 
+function getInfosOfDivingEvents() {
+
+	var localStorageDivingEvents = JSON.parse(window.localStorage
+			.getItem("divingEvents"));
+
+	// alert(localStorageUsers);
+	var items = "<select id=\"selectDivingEvents\">";
+
+	$.each(localStorageDivingEvents, function(i, oneElement) {
+
+		// alert(oneUser);
+		var jsonOneElement = JSON.parse(oneElement);
+		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.lieu + " le " + parseDate(jsonOneElement.date) +  "</option>";
+	});
+	
+	items = items + "</select>";
+	
+	document.getElementById("divingEvents").innerHTML = items;
+}
+
+function getInfosOfUsers() {
+
+	var localStorageUsers = JSON.parse(window.localStorage
+			.getItem("users"));
+
+	// alert(localStorageUsers);
+	var items = "<select id=\"selectUsers\">";
+
+	$.each(localStorageUsers, function(i, oneElement) {
+
+		// alert(oneUser);
+		var jsonOneElement = JSON.parse(oneElement);
+		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.firstName + " " + jsonOneElement.lastName +  "</option>";
+	});
+	
+	items = items + "</select>";
+	
+	document.getElementById("users").innerHTML = items;
+}
+
+
+function parseDate(dateObject) {
+	
+  //  var d = new Date(dateObject);
+    return dateObject; //jQuery.datepicker.parseDate( "yy-mm-dd", d);
+
+    //return date;
+};

@@ -14,10 +14,29 @@
 		
 		<script type="text/javascript">
 			window.onload = function() {
-				var itemId = window.location.toString().substr(
+				var params = window.location.toString().substr(
 						window.location.toString().indexOf('=') + 1);
+				
+				var equipmentId = params.substr(0,params.indexOf('&'));
+				
+				var paramsTmp = params.substr(params.indexOf('=')+1);
+				
+				//paramsTmp = params.substr(params.indexOf('divingEventId='));
+				
+				var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
+				
+				paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
+				
+				//paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
+				
+				var userId = paramsTmp;
+				
+				//params = 99A&divingEventId=5666771260407808&userId=5717546363781120
 		
-				getInfosFromJackets(itemId);
+				alert(equipmentId);
+				alert(divingEventId);
+				alert(userId);
+				//getInfosFromJackets(itemId);
 			}
 		</script>
 		
