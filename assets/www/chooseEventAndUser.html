@@ -73,7 +73,7 @@
 				if (result.cancelled == false && result.format == "QR_CODE") {
 					var leTextDuQRCode = result.text;
 					/* alert("We got a qrcode = " + leTextDuQRCode); */
-					window.location = "scan.html?text=" + leTextDuQRCode + "&divingEventId=" + selectDivingEventsValue + "&userId=" + selectUsersValue;
+					window.location = "scan.html?equipmentId=" + leTextDuQRCode + "&divingEventId=" + selectDivingEventsValue + "&userId=" + selectUsersValue;
 				} else {
 					//alert("Le scan n'a pas abouti");
 				}

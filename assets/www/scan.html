@@ -33,10 +33,80 @@
 				
 				//params = 99A&divingEventId=5666771260407808&userId=5717546363781120
 		
-				alert(equipmentId);
-				alert(divingEventId);
-				alert(userId);
+				//alert(equipmentId);
+				//alert(divingEventId);
+				//alert(userId);
 				//getInfosFromJackets(itemId);
+				
+				var RentalRecord = function(divingEventId, userId){
+					    this.divingEventId = divingEventId;
+					    this.userId = userId;
+					    
+					    this.jacketId = "null";
+						this.regulatorId = "null";
+						this.tankId = "null";
+				}
+				
+				$.extend(RentalRecord.prototype, {
+					setEquipmentId: function(equipmentId){
+						//this.jacketId = equipmentId;
+						
+						var localStorageEquipments = JSON.parse(window.localStorage
+								.getItem("equipments"));
+						
+						$.each(localStorageEquipments, function(i, oneElement) {
+							var jsonOneElement = JSON.parse(oneElement);
+							if(jsonOneElement.id == equipmentId){
+								return jsonOneElement.type;
+							}
+						});
+						
+						/* 
+						$.each(localStorageEquipments, function(i, oneElement) {
+
+							// alert(oneUser);
+							
+							if(jsonOneElement.id == equipmentId){
+								//alert(equipmentId);
+								if(jsonOneElement.type == 'Tank'){
+									this.tankId = equipmentId;
+									this.jacketId = "null";
+									this.regulatorId = "null";
+									break;
+								}else if(jsonOneElement.type == 'Regulator'){
+									this.regulatorId = equipmentId;
+									this.jacketId = "null";
+									this.tankId = "null";
+									break;
+								} else if(jsonOneElement.type == 'Jacket'){
+									this.jacketId = equipmentId;
+									this.tankId = "null";
+									this.regulatorId = "null";
+									break;
+								}
+							}
+						}); */
+					},
+				  	toString: function() {
+				    	return 'divingEventId=' + this.divingEventId + '&userId=' + this.userId +'&tankId=' + this.tankId+'&regulatorId=' + this.regulatorId+'&jacketId=' + this.jacketId;
+					}
+				});
+				
+				var theNewRentalRecord = new RentalRecord(divingEventId, userId);
+				
+				alert(theNewRentalRecord.setEquipmentId(equipmentId));
+				
+				alert(theNewRentalRecord.toString());
+				/* var equipmentParamAndId;
+				
+				
+
+				var urlToCall =  "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent/" + divingEventId + "?" + equipmentParamAndId;*/
+				
+				//https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent/
+				//5666771260407808?jacketId=99B&regulatorId=28&tankId=211&
+				///api/rentalRecord/addToDivingEvent/
+				//5666771260407808?jacketId=99B&regulatorId=28&tankId=211&
 			}
 		</script>
 		
