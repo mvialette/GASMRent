@@ -13,7 +13,44 @@
 		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 		
 		<script type="text/javascript">
-			window.onload = function() {
+		window.onload = function() {
+			//load I18N bundles
+			jQuery(document).ready(function() {
+		      	initLanguages();
+		    });
+			
+			getInfosOfQRCodeScan();
+		}
+		
+		function loadBundles(lang) {
+	
+				jQuery.i18n
+					.properties({
+						name : 'gasmrent',
+						path : 'i18n/',
+						mode : 'both',
+						language : lang,
+						callback : function() {
+	
+							jQuery.i18n.prop("scanPageTitle");
+							//$("#scanPageTitle").html(scanPageTitle);
+							document.getElementById("scanPageTitle").innerHTML = scanPageTitle;
+							
+							jQuery.i18n.prop("scanDescription");
+							//$("#scanDescription").html(scanDescription);
+							document.getElementById("scanDescription").innerHTML = scanDescription;
+	
+							jQuery.i18n.prop("back");
+							$("#back").html(back);
+							//document.getElementById("back").innerHTML = back;
+						}
+					});
+			}
+		
+		function getInfosOfQRCodeScan() {
+				
+				//params = 99A&divingEventId=5666771260407808&userId=5717546363781120
+				
 				var params = window.location.toString().substr(
 						window.location.toString().indexOf('=') + 1);
 				
@@ -21,92 +58,57 @@
 				
 				var paramsTmp = params.substr(params.indexOf('=')+1);
 				
-				//paramsTmp = params.substr(params.indexOf('divingEventId='));
-				
 				var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
 				
 				paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
 				
-				//paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
-				
 				var userId = paramsTmp;
-				
-				//params = 99A&divingEventId=5666771260407808&userId=5717546363781120
 		
-				//alert(equipmentId);
-				//alert(divingEventId);
-				//alert(userId);
-				//getInfosFromJackets(itemId);
-				
-				var RentalRecord = function(divingEventId, userId){
+				var RentalRecord = function(divingEventId, userId, equipmentId){
 					    this.divingEventId = divingEventId;
 					    this.userId = userId;
+					    this.equipmentId = equipmentId;
 					    
-					    this.jacketId = "null";
-						this.regulatorId = "null";
-						this.tankId = "null";
-				}
-				
-				$.extend(RentalRecord.prototype, {
-					setEquipmentId: function(equipmentId){
-						//this.jacketId = equipmentId;
-						
-						var localStorageEquipments = JSON.parse(window.localStorage
+					    var localStorageEquipments = JSON.parse(window.localStorage
 								.getItem("equipments"));
+					    
+						var equipmentTypeTmp;
 						
 						$.each(localStorageEquipments, function(i, oneElement) {
-							var jsonOneElement = JSON.parse(oneElement);
-							if(jsonOneElement.id == equipmentId){
-								return jsonOneElement.type;
+							
+							var jsonObject = JSON.parse(oneElement);
+							
+							if(jsonObject.reference ==  equipmentId){
+								equipmentTypeTmp = jsonObject.type;
+								return false;
 							}
 						});
 						
-						/* 
-						$.each(localStorageEquipments, function(i, oneElement) {
-
-							// alert(oneUser);
-							
-							if(jsonOneElement.id == equipmentId){
-								//alert(equipmentId);
-								if(jsonOneElement.type == 'Tank'){
-									this.tankId = equipmentId;
-									this.jacketId = "null";
-									this.regulatorId = "null";
-									break;
-								}else if(jsonOneElement.type == 'Regulator'){
-									this.regulatorId = equipmentId;
-									this.jacketId = "null";
-									this.tankId = "null";
-									break;
-								} else if(jsonOneElement.type == 'Jacket'){
-									this.jacketId = equipmentId;
-									this.tankId = "null";
-									this.regulatorId = "null";
-									break;
-								}
-							}
-						}); */
+						this.equipmentType = equipmentTypeTmp;
+				}
+				
+				$.extend(RentalRecord.prototype, {
+					getDivingEventId: function() {
+				    	return this.divingEventId;
 					},
-				  	toString: function() {
-				    	return 'divingEventId=' + this.divingEventId + '&userId=' + this.userId +'&tankId=' + this.tankId+'&regulatorId=' + this.regulatorId+'&jacketId=' + this.jacketId;
+					getUserId: function() {
+				    	return this.userId;
+					},
+					getEquipmentId: function() {
+				    	return this.equipmentId;
+					},
+					toString: function() {
+				    	return 'divingEventId=' + this.divingEventId + '&userId=' + this.userId +'&equipmentId=' + this.equipmentId+'&equipmentType=' + this.equipmentType;
 					}
 				});
 				
-				var theNewRentalRecord = new RentalRecord(divingEventId, userId);
+				var theNewRentalRecord = new RentalRecord(divingEventId, userId, equipmentId);
 				
-				alert(theNewRentalRecord.setEquipmentId(equipmentId));
+				//alert(theNewRentalRecord.toString());
 				
-				alert(theNewRentalRecord.toString());
-				/* var equipmentParamAndId;
-				
-				
-
-				var urlToCall =  "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent/" + divingEventId + "?" + equipmentParamAndId;*/
-				
-				//https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent/
-				//5666771260407808?jacketId=99B&regulatorId=28&tankId=211&
-				///api/rentalRecord/addToDivingEvent/
-				//5666771260407808?jacketId=99B&regulatorId=28&tankId=211&
+				$("#zoneDivingEvent").html("Sortie : <b>" +  theNewRentalRecord.getDivingEventId() + "</b>");
+				$("#zoneUser").html("User : <b>" +  theNewRentalRecord.getUserId() + "</b>");
+				$("#zoneEquipment").html("Equipement : <b>" +  theNewRentalRecord.getEquipmentId() + "</b>");
 			}
 		</script>
 		
@@ -117,26 +119,40 @@
 	<body>
 		<div class="container">
 			<div class="row">
-				<div class="col-12 pageTitle" id="applicationTitle">GASM Rent - Scan</div>
+				<div class="col-12 pageTitle" id="scanPageTitle"></div>
 			</div>
 			<div class="row">
 				<div class="col-12 pageSection">
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="description">Ici nous
-							pourrons scanner un 'QR Code' afin d'identifier un élément, soit à
-							envoyer en location, soit à retourner.</div>
+						<div class="col-12 text-center" id="scanDescription"></div>
 					</div>
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="valeurDuQRCode"></div>
+						<div class="col-12 text-center" id="zoneDivingEvent"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="zoneUser"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="zoneEquipment"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html">Valider le pret & retour au scan pour l'acteur & le diving event donné</a>
+						</div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html">Fin du scan pour cet acteur, résumé du prix</a>
+						</div>
 					</div>
 	
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="doAction"></div>
-					</div>
-	
-					<div class="row largeRow">
-						<div class="col-12 text-center" id="back">
-							<a class="largeButton" href="./index.html">Retour</a>
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html" id="back"></a>
 						</div>
 					</div>
 				</div>
