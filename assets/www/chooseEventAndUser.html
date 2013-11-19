@@ -63,25 +63,14 @@
          });
     }
 	
-	function doScan() {
+	function sendInfoToDoScan() {
 		
 		var selectDivingEventsValue = $("#selectDivingEvents").val();
 		var selectUsersValue = $("#selectUsers").val();
 		
-		window.plugins.barcodeScanner.scan(function(result) {
-
-				if (result.cancelled == false && result.format == "QR_CODE") {
-					var leTextDuQRCode = result.text;
-					/* alert("We got a qrcode = " + leTextDuQRCode); */
-					window.location = "scan.html?equipmentId=" + leTextDuQRCode + "&divingEventId=" + selectDivingEventsValue + "&userId=" + selectUsersValue;
-				} else {
-					//alert("Le scan n'a pas abouti");
-				}
-			}, function(error) {
-				//alert("Scanning failed: " + error);
-			});
-		
+		doScan(selectDivingEventsValue, selectUsersValue);
 	}
+	
 </script>
 	</head>
 	<body>
@@ -115,7 +104,7 @@
 					
 					<div class="row largeRow">
 						<div class="col-12" >
-							<a class="largeButton" href="#" onClick="doScan()" id="scanQRCode">
+							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="scanQRCode">
 								</a>
 						</div>
 					</div>
