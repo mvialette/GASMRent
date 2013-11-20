@@ -374,3 +374,49 @@ function doScan(divingEventId, userId) {
 		});
 	
 }
+
+//function getEquipmentIdFromPageParameter() {
+//	var params = window.location.toString().substr(
+//			window.location.toString().indexOf('=') + 1);
+//	
+//	var equipmentId = params.substr(0,params.indexOf('&'));
+//	
+//	return equipmentId;
+//}
+//
+//function getDivingEventIdFromPageParameter(){
+//	var params = window.location.toString().substr(
+//			window.location.toString().indexOf('=') + 1);
+//	//alert(params);
+//	var paramsTmp = params.substr(params.indexOf('=')+1);
+//	//alert(paramsTmp);
+//	var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
+//	//alert(divingEventId);
+//	return divingEventId;
+//}
+//
+//function getUserIdFromPageParameter(){
+//	var params = window.location.toString().substr(
+//			window.location.toString().indexOf('=') + 1);
+//	
+//	var paramsTmp = params.substr(params.indexOf('=')+1);
+//	
+//	paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
+//	
+//	var userId = paramsTmp;
+//	
+//	return userId;
+//}
+
+function getURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++)
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam)
+        {
+            return sParameterName[1];
+        }
+    }
+}
