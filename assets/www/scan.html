@@ -152,15 +152,26 @@
 			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
 					.getItem("rentalRecords"));
 			
-			alert("old rentalRecords="+rentalRecordsStringFromLocalStorage);
+			alert("old rentalRecordsStringFromLocalStorage="+rentalRecordsStringFromLocalStorage);
 			
-			/* var rentalRecords;
+			var rentalRecordArrays = new Array();
 			
-			if(rentalRecordsStringFromLocalStorage == null){
-				rentalRecords = [];
-			}else{
-				rentalRecords = rentalRecordsStringFromLocalStorage.replace("[","").replace("]","").split(',');	
+			$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
+				rentalRecordArrays.push(oneRentalRecord);
+			});
+			
+	 		alert("cas 0:" + rentalRecordArrays);
+	 			
+	 		alert("start" + rentalRecordArrays.length);
+			if(rentalRecordArrays.length > 0){
+				alert("cas B");
+				rentalRecordArrays.push(JSON.stringify(theNewRentalRecord));
+				//rentalRecords = rentalRecordsStringFromLocalStorage.replace("[","").replace("]","").split(',');	
 			}
+			alert("end="+rentalRecordArrays.length);
+			alert("old rentalRecords="+rentalRecordArrays);
+			
+			/* 
 			
 			rentalRecords.push(JSON.stringify(theNewRentalRecord));
 			alert("rentalRecords="+rentalRecords);
