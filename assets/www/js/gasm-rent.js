@@ -353,8 +353,8 @@ function doScan(divingEventId, userId) {
 	
 //	var selectDivingEventsValue = $("#selectDivingEvents").val();
 //	var selectUsersValue = $("#selectUsers").val();
-	alert("doScan, divingEventId="+divingEventId);
-	alert("doScan, userId="+userId);
+	//alert("doScan, divingEventId="+divingEventId);
+	//alert("doScan, userId="+userId);
 	
 	window.plugins.barcodeScanner.scan(function(result) {
 
@@ -362,8 +362,8 @@ function doScan(divingEventId, userId) {
 				var leTextDuQRCode = result.text;
 				/* alert("We got a qrcode = " + leTextDuQRCode); */
 				
-				alert("doScan2, divingEventId="+divingEventId);
-				alert("doScan2, userId="+userId);
+				//alert("doScan2, divingEventId="+divingEventId);
+				//alert("doScan2, userId="+userId);
 				
 				window.location = "scan.html?equipmentId=" + leTextDuQRCode + "&divingEventId=" + divingEventId + "&userId=" + userId;
 			} else {

@@ -140,11 +140,33 @@
 			
 			var theNewRentalRecord = new RentalRecord(divingEventId, userId, equipmentId);
 			
-			//alert(theNewRentalRecord.toString());
+			//alert("a rentalRecord="+theNewRentalRecord);
+			
+			/* */
 			
 			$("#zoneDivingEvent").html("Sortie : <b>" +  theNewRentalRecord.getDivingEventId() + "</b>");
 			$("#zoneUser").html("User : <b>" +  theNewRentalRecord.getUserId() + "</b>");
 			$("#zoneEquipment").html("Equipement : <b>" +  theNewRentalRecord.getEquipmentId() + "</b>");
+			
+			// persist data in local storage
+			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
+					.getItem("rentalRecords"));
+			
+			alert("old rentalRecords="+rentalRecordsStringFromLocalStorage);
+			
+			/* var rentalRecords;
+			
+			if(rentalRecordsStringFromLocalStorage == null){
+				rentalRecords = [];
+			}else{
+				rentalRecords = rentalRecordsStringFromLocalStorage.replace("[","").replace("]","").split(',');	
+			}
+			
+			rentalRecords.push(JSON.stringify(theNewRentalRecord));
+			alert("rentalRecords="+rentalRecords);
+			
+			 window.localStorage.setItem("rentalRecords", JSON
+						.stringify(rentalRecords)); */
 		}
 		
 		function sendInfoToDoScan() {
