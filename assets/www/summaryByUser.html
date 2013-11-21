@@ -18,12 +18,17 @@
 
 <script type="text/javascript">
 	window.onload = function() {
+		alert("aaaaa");
 		//load I18N bundles
 		jQuery(document).ready(function() {
 			initLanguages();
 		});
-
+		
+		alert("aaaaab");
+		
 		getEquipmentsForTheUser();
+		
+		alert("aaaaac");
 	}
 
 	function loadBundles(lang) {
@@ -33,21 +38,32 @@
 			mode : 'both',
 			language : lang,
 			callback : function() {
+				
+				alert("q");
 				jQuery.i18n.prop("summaryByUserPageTitle");
+				
+				alert("s");
 				$("#summaryByUserPageTitle").html(summaryByUserPageTitle);
 
+				alert("d");
 				jQuery.i18n.prop("summaryByUserDescription");
 
+				alert("f");
 				//jQuery.i18n.prop("summaryByUserDescription");
 				//$("#summaryByUserDescription").html(summaryByUserDescription);
 				
 				jQuery.i18n.prop("continueRentalForSomeoneElse");
+				
+				alert("g");
 				$("#continueRentalForSomeoneElse").html(continueRentalForSomeoneElse);
 				
+				alert("h");
 				jQuery.i18n.prop("summaryByDivingEvent");
+				alert("j");
 				$("#summaryByDivingEvent").html(summaryByDivingEvent);
-				
+				alert("k");
 				jQuery.i18n.prop("back");
+				alert("l");
 				$("#back").html(back);
 			}
 		});
@@ -55,12 +71,20 @@
 
 	function getEquipmentsForTheUser() {
 
+		alert("a");
+		
 		var divingEventId = getURLParameter("divingEventId");
 		var userId = getURLParameter("userId");
+		
+		alert("divingEventId="divingEventId);
+		
+		alert("userId="+userId);
 
 		$("#summaryByUserDescription").html(
 				summaryByUserDescription(userId, divingEventId, '20/11/2013'));
 
+		alert("b");
+		
 		var rentalRecordsStringFromLocalStorage = JSON
 				.parse(window.localStorage.getItem("rentalRecords"));
 
@@ -68,20 +92,29 @@
 		
 		$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
 			rentalRecordArrays.push(oneRentalRecord);
+			alert("c="+oneRentalRecord);
 		});
 		
-		var listOfRentedEquipments = new Array();
+		alert("d="+rentalRecordArrays);
+		var listOfRentedEquipments = "<ul>";
 		
 		$.each(rentalRecordArrays, function(i, oneElement) {
+			alert("e="+oneElement);
 			var currentElementJSON = JSON.parse(oneElement);
+			alert("f="+currentElementJSON);
 			
-			if (currentElementJSON.divingEventId == divingEventId
-					&& currentElementJSON.userId == userId) {
-				listOfRentedEquipments.push(currentElementJSON.equipmentId);
+			if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
+				listOfRentedEquipments = listOfRentedEquipments + "<li>" + currentElementJSON.equipmentId + "</li>";
+				alert("g="+listOfRentedEquipments);
 			}
 		});
 		
+		alert("h="+listOfRentedEquipments);
+		listOfRentedEquipments = listOfRentedEquipments + "</ul>";
+		
+		alert("i="+listOfRentedEquipments);
 		$("#listOfEquipments").html(listOfRentedEquipments);
+		
 	}
 </script>
 

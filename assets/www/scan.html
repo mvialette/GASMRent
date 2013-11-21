@@ -85,19 +85,8 @@
 
 		function getInfosOfQRCodeScan() {
 			
-			//params = 99A&divingEventId=5666771260407808&userId=5717546363781120
-			
-			/* var params = window.location.toString().substr(
-			 	window.location.toString().indexOf('=') + 1);*/	
-			
 			var equipmentId = getURLParameter("equipmentId");
-			
-			/* var paramsTmp = params.substr(params.indexOf('=')+1); */
-			
 			var divingEventId = getURLParameter("divingEventId");
-			
-			/* paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1); */
-			
 			var userId = getURLParameter("userId");
 	
 			var RentalRecord = function(divingEventId, userId, equipmentId){
@@ -140,10 +129,6 @@
 			
 			var theNewRentalRecord = new RentalRecord(divingEventId, userId, equipmentId);
 			
-			//alert("a rentalRecord="+theNewRentalRecord);
-			
-			/* */
-			
 			$("#zoneDivingEvent").html("Sortie : <b>" +  theNewRentalRecord.getDivingEventId() + "</b>");
 			$("#zoneUser").html("User : <b>" +  theNewRentalRecord.getUserId() + "</b>");
 			$("#zoneEquipment").html("Equipement : <b>" +  theNewRentalRecord.getEquipmentId() + "</b>");
@@ -152,26 +137,16 @@
 			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
 					.getItem("rentalRecords"));
 			
-			//alert("old rentalRecordsStringFromLocalStorage="+rentalRecordsStringFromLocalStorage);
-			
 			var rentalRecordArrays = new Array();
 			
 			$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
 				rentalRecordArrays.push(oneRentalRecord);
 			});
 			
-	 		//alert("cas 0:" + rentalRecordArrays);
-	 			
-	 		//alert("start" + rentalRecordArrays.length);
-			if(rentalRecordArrays.length > 0){
-				//alert("cas B");
-				rentalRecordArrays.push(JSON.stringify(theNewRentalRecord));
-				//rentalRecords = rentalRecordsStringFromLocalStorage.replace("[","").replace("]","").split(',');	
-			}
-			//alert("end="+rentalRecordArrays.length);
-			//alert("old rentalRecords="+rentalRecordArrays);
+			rentalRecordArrays.push(JSON.stringify(theNewRentalRecord));
+			
 			 window.localStorage.setItem("rentalRecords", JSON
-						.stringify(rentalRecords));
+						.stringify(rentalRecordArrays));
 		}
 		
 		function sendInfoToDoScan() {
@@ -180,7 +155,9 @@
 		}
 		
 		function sendInfoForSummaryByUser() {
-			window.location = "summaryByUser.html?divingEventId=" + getDivingEventId() + "&userId=" + getUserId();
+			alert(getURLParameter("divingEventId"));
+			alert(getURLParameter("userId"));
+			window.location = "./summaryByUser.html?divingEventId=" + getURLParameter("divingEventId") + "&userId=" + getURLParameter("userId");
 		}
 		</script>
 		
