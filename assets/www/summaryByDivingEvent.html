@@ -61,27 +61,23 @@
 			rentalRecordArrays.push(oneRentalRecord);
 		});
 		
-		
 		var listOfPendingRentalRecords = "<ul>";
-		alert("d"+listOfPendingRentalRecords);
 		
-		/* 
 		$.each(rentalRecordArrays, function(i, oneElement) {
-			alert("e"+oneElement);
+
 			var currentElementJSON = JSON.parse(oneElement);
-			alert("f"+currentElementJSON);
+			
 			if (currentElementJSON.divingEventId == divingEventId) {
-				alert("g");
-				listOfPendingRentalRecords = listOfPendingRentalRecords + "<li>" + currentElementJSON.userId + " : " + currentElementJSON.equipmentId "</li>";
+				listOfPendingRentalRecords = listOfPendingRentalRecords + "<li>" +currentElementJSON.userId + " : " + currentElementJSON.equipmentId + "</li>";
 			}
-			alert("h"+listOfPendingRentalRecords);
 		});
-		*/
-		alert("i"+listOfPendingRentalRecords);
 		
 		listOfPendingRentalRecords = listOfPendingRentalRecords + "</ul>";
-		
 		$("#listOfPendingRentalRecords").html(listOfPendingRentalRecords); 
+	}
+	
+	function sendForSynchronization() {
+		
 	}
 </script>
 
@@ -106,7 +102,7 @@
 
 				<div class="row largeRow">
 					<div class="col-12 text-center">
-						<a class="largeButton" href="#" id="sendForSynchronization"></a>
+						<a class="largeButton" href="#" onclick="sendForSynchronization()" id="sendForSynchronization"></a>
 					</div>
 				</div>
 				
