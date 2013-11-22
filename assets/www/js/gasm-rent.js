@@ -408,15 +408,7 @@ function doScan(divingEventId, userId) {
 //	return userId;
 //}
 
-function getURLParameter(sParam){
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++)
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam)
-        {
-            return sParameterName[1];
-        }
-    }
+function getURLParameter(key){
+	var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search); 
+	return result && unescape(result[1]) || ""; 
 }
