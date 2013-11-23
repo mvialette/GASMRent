@@ -67,8 +67,8 @@ function synchronizeDivingEvents() {
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
-						items.push("{\"id\":" + item.id + ",\"lieu\":\""
-								+ item.lieu + "\",\"date\":\"" + item.date
+						items.push("{\"id\":" + item.id + ",\"place\":\""
+								+ item.place + "\",\"date\":\"" + item.date
 								+ "\"}");
 						compteur++;
 					});
@@ -312,7 +312,7 @@ function getInfosOfDivingEvents() {
 
 		// alert(oneUser);
 		var jsonOneElement = JSON.parse(oneElement);
-		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.lieu + " le " + parseDate(jsonOneElement.date) +  "</option>";
+		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.place + " le " + parseDate(jsonOneElement.date) +  "</option>";
 	});
 	
 	items = items + "</select>";
