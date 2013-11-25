@@ -67,8 +67,8 @@ function synchronizeDivingEvents() {
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
-						items.push("{\"id\":" + item.id + ",\"lieu\":\""
-								+ item.lieu + "\",\"date\":\"" + item.date
+						items.push("{\"id\":" + item.id + ",\"place\":\""
+								+ item.place + "\",\"date\":\"" + item.date
 								+ "\"}");
 						compteur++;
 					});
@@ -300,3 +300,115 @@ function initLanguages() {
 	loadBundles(userLang);
 }
 
+function getInfosOfDivingEvents() {
+
+	var localStorageDivingEvents = JSON.parse(window.localStorage
+			.getItem("divingEvents"));
+
+	// alert(localStorageUsers);
+	var items = "<select id=\"selectDivingEvents\">";
+
+	$.each(localStorageDivingEvents, function(i, oneElement) {
+
+		// alert(oneUser);
+		var jsonOneElement = JSON.parse(oneElement);
+		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.place + " le " + parseDate(jsonOneElement.date) +  "</option>";
+	});
+	
+	items = items + "</select>";
+	
+	document.getElementById("divingEvents").innerHTML = items;
+}
+
+function getInfosOfUsers() {
+
+	var localStorageUsers = JSON.parse(window.localStorage
+			.getItem("users"));
+
+	// alert(localStorageUsers);
+	var items = "<select id=\"selectUsers\">";
+
+	$.each(localStorageUsers, function(i, oneElement) {
+
+		// alert(oneUser);
+		var jsonOneElement = JSON.parse(oneElement);
+		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.firstName + " " + jsonOneElement.lastName +  "</option>";
+	});
+	
+	items = items + "</select>";
+	
+	document.getElementById("users").innerHTML = items;
+}
+
+
+function parseDate(dateObject) {
+	
+  //  var d = new Date(dateObject);
+    return dateObject; //jQuery.datepicker.parseDate( "yy-mm-dd", d);
+
+    //return date;
+};
+
+function doScan(divingEventId, userId) {
+	
+//	var selectDivingEventsValue = $("#selectDivingEvents").val();
+//	var selectUsersValue = $("#selectUsers").val();
+	//alert("doScan, divingEventId="+divingEventId);
+	//alert("doScan, userId="+userId);
+	
+	window.plugins.barcodeScanner.scan(function(result) {
+
+			if (result.cancelled == false && result.format == "QR_CODE") {
+				var leTextDuQRCode = result.text;
+				/* alert("We got a qrcode = " + leTextDuQRCode); */
+				
+				//alert("doScan2, divingEventId="+divingEventId);
+				//alert("doScan2, userId="+userId);
+				
+				window.location = "scan.html?equipmentId=" + leTextDuQRCode + "&divingEventId=" + divingEventId + "&userId=" + userId;
+			} else {
+				//alert("Le scan n'a pas abouti");
+			}
+		}, function(error) {
+			//alert("Scanning failed: " + error);
+		});
+	
+}
+
+//function getEquipmentIdFromPageParameter() {
+//	var params = window.location.toString().substr(
+//			window.location.toString().indexOf('=') + 1);
+//	
+//	var equipmentId = params.substr(0,params.indexOf('&'));
+//	
+//	return equipmentId;
+//}
+//
+//function getDivingEventIdFromPageParameter(){
+//	var params = window.location.toString().substr(
+//			window.location.toString().indexOf('=') + 1);
+//	//alert(params);
+//	var paramsTmp = params.substr(params.indexOf('=')+1);
+//	//alert(paramsTmp);
+//	var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
+//	//alert(divingEventId);
+//	return divingEventId;
+//}
+//
+//function getUserIdFromPageParameter(){
+//	var params = window.location.toString().substr(
+//			window.location.toString().indexOf('=') + 1);
+//	
+//	var paramsTmp = params.substr(params.indexOf('=')+1);
+//	
+//	paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
+//	
+//	var userId = paramsTmp;
+//	
+//	return userId;
+//}
+
+function getURLParameter(key){
+	var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search); 
+	return result && unescape(result[1]) || ""; 
+}

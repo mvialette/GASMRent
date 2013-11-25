@@ -7,15 +7,10 @@
 
 <!-- Javascripts -->
 <script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="./js/barcodescanner.js"></script>
 <script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 
 <!-- CSS -->
@@ -47,12 +42,12 @@
 						jQuery.i18n.prop("applicationDescription");
 						document.getElementById("applicationDescription").innerHTML = applicationDescription;
 
-						jQuery.i18n.prop("startRent");
-						document.getElementById("startRent").innerHTML = startRent;
+						jQuery.i18n.prop("startRentSession");
+						document.getElementById("startRentSession").innerHTML = startRentSession;
 
-						/* jQuery.i18n.prop("scanQRCode");
-						document.getElementById("scanQRCode").innerHTML=scanQRCode; */
-
+						jQuery.i18n.prop("resumeRentSession");
+						document.getElementById("resumeRentSession").innerHTML = resumeRentSession;
+						
 						jQuery.i18n.prop("viewItems");
 						document.getElementById("viewItems").innerHTML = viewItems;
 
@@ -64,6 +59,15 @@
 					}
 				});
 	}
+	
+	function startANewRentSession() {
+		// clear rentalRecords of the local storage
+		var rentalRecordArrays = new Array();
+		window.localStorage.setItem("rentalRecords", JSON.stringify(rentalRecordArrays));
+		
+		window.location = "./chooseEventAndUser.html";
+	} 
+	
 </script>
 
 </head>
@@ -81,8 +85,13 @@
 
 				<div class="row largeRow">
 					<div class="col-12">
-						<a class="largeButton" href="./chooseEventAndUser.html"
-							id="startRent"></a>
+						<a class="largeButton" onclick="startANewRentSession()" href="#" id="startRentSession"></a>
+					</div>
+				</div>	
+				
+				<div class="row largeRow">
+					<div class="col-12">
+						<a class="largeButton" href="./chooseEventAndUser.html" id="resumeRentSession"></a>
 					</div>
 				</div>				
 

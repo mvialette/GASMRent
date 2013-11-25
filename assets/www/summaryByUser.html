@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>G.A.S.M. Rent</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Javascripts -->
+<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script> 
+<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+<!--  -->
+
+<script type="text/javascript">
+	window.onload = function() {
+		//load I18N bundles
+		 jQuery(document).ready(function() {
+			initLanguages();
+		});
+		
+		getEquipmentsForTheUser();
+	}
+
+	function loadBundles(lang) {
+		jQuery.i18n.properties({
+			name : 'gasmrent',
+			path : 'i18n/',
+			mode : 'both',
+			language : lang,
+			callback : function() {
+				
+				jQuery.i18n.prop("summaryByUserPageTitle");
+				
+				$("#summaryByUserPageTitle").html(summaryByUserPageTitle);
+
+				jQuery.i18n.prop("summaryByUserDescription");
+
+				jQuery.i18n.prop("continueRentalForSomeoneElse");
+				
+				$("#continueRentalForSomeoneElse").html(continueRentalForSomeoneElse);
+				
+				jQuery.i18n.prop("summaryByDivingEvent");
+				$("#summaryByDivingEvent").html(summaryByDivingEvent);
+				
+				jQuery.i18n.prop("back");
+				$("#back").html(back);
+			}
+		});
+	} 
+
+	function getEquipmentsForTheUser() {
+
+		var divingEventId = getURLParameter("divingEventId");
+		
+		var userId = getURLParameter("userId");
+		
+		
+		 $("#summaryByUserDescription").html(
+				summaryByUserDescription(userId, divingEventId, '20/11/2013'));
+
+		var rentalRecordsStringFromLocalStorage = JSON
+				.parse(window.localStorage.getItem("rentalRecords"));
+
+		var rentalRecordArrays = new Array();
+		
+		$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
+			rentalRecordArrays.push(oneRentalRecord);
+		});
+		
+		var listOfRentedEquipments = "<ul>";
+		
+		$.each(rentalRecordArrays, function(i, oneElement) {
+			var currentElementJSON = JSON.parse(oneElement);
+			
+			if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
+				listOfRentedEquipments = listOfRentedEquipments + "<li>" + currentElementJSON.equipmentId + "</li>";
+			}
+		});
+		
+		listOfRentedEquipments = listOfRentedEquipments + "</ul>";
+		$("#listOfRentedEquipments").html(listOfRentedEquipments);
+	}
+	
+	function sendInfoForSummaryByDivingEvent() {
+		window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
+	}
+</script>
+
+<!-- CSS -->
+<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./css/gasm.css" rel="stylesheet" media="screen">
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 pageTitle" id="summaryByUserPageTitle"></div>
+		</div>
+		<div class="row">
+			<div class="col-12 pageSection">
+				<div class="row largeRow">
+					<div class="col-12 text-center" id="summaryByUserDescription"></div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12 text-center" id="listOfRentedEquipments"></div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12 text-center">
+						<a class="largeButton" href="./chooseEventAndUser.html"
+							id="continueRentalForSomeoneElse"></a>
+					</div>
+				</div>
+				
+				<div class="row largeRow">
+					<div class="col-12 text-center">
+						<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+					</div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12 text-center">
+						<a class="largeButton" href="./index.html" id="back"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

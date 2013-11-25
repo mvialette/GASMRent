@@ -8,17 +8,155 @@
 		<!-- Javascripts -->
 		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
 		
 		<script type="text/javascript">
-			window.onload = function() {
-				var itemId = window.location.toString().substr(
-						window.location.toString().indexOf('=') + 1);
+			
+		window.onload = function() {
+			//load I18N bundles
+			jQuery(document).ready(function() {
+		      	initLanguages();
+		    });
+			
+			getInfosOfQRCodeScan();
+		}
 		
-				getInfosFromJackets(itemId);
+		function loadBundles(lang) {
+	          jQuery.i18n.properties({
+	        	 name:'gasmrent',
+	        	 path:'i18n/',
+	        	 mode:'both',
+	        	 language:lang,
+	        	 callback: function() {
+	        		 jQuery.i18n.prop("scanPageTitle");
+	        		 $("#scanPageTitle").html(scanPageTitle);
+	        		 
+	        		 jQuery.i18n.prop("scanDescription");
+	        		 $("#scanDescription").html(scanDescription);
+	        		 
+	        		 jQuery.i18n.prop("continueScan");
+	        		 $("#continueScan").html(continueScan);
+	        		 
+	        		 jQuery.i18n.prop("summaryByUser");
+	        		 $("#summaryByUser").html(summaryByUser);
+						
+	        		 jQuery.i18n.prop("back");
+	        		 $("#back").html(back);
+	       		 }
+	         });
+	    }
+		
+		function getEquipmentId() {
+			var params = window.location.toString().substr(
+					window.location.toString().indexOf('=') + 1);
+			
+			var equipmentId = params.substr(0,params.indexOf('&'));
+			
+			return equipmentId;
+		}
+		
+		function getDivingEventId(){
+			var params = window.location.toString().substr(
+					window.location.toString().indexOf('=') + 1);
+			//alert(params);
+			var paramsTmp = params.substr(params.indexOf('=')+1);
+			//alert(paramsTmp);
+			var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
+			//alert(divingEventId);
+			return divingEventId;
+		}
+		
+		function getUserId(){
+			var params = window.location.toString().substr(
+					window.location.toString().indexOf('=') + 1);
+			
+			var paramsTmp = params.substr(params.indexOf('=')+1);
+			
+			paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
+			
+			var userId = paramsTmp;
+			
+			return userId;
+		}
+
+		function getInfosOfQRCodeScan() {
+			
+			var equipmentId = getURLParameter("equipmentId");
+			var divingEventId = getURLParameter("divingEventId");
+			var userId = getURLParameter("userId");
+	
+			var RentalRecord = function(divingEventId, userId, equipmentId){
+				    this.divingEventId = divingEventId;
+				    this.userId = userId;
+				    this.equipmentId = equipmentId;
+				    
+				    var localStorageEquipments = JSON.parse(window.localStorage
+							.getItem("equipments"));
+				    
+					var equipmentTypeTmp;
+					
+					$.each(localStorageEquipments, function(i, oneElement) {
+						
+						var jsonObject = JSON.parse(oneElement);
+						
+						if(jsonObject.reference ==  equipmentId){
+							equipmentTypeTmp = jsonObject.type;
+							return false;
+						}
+					});
+					
+					this.equipmentType = equipmentTypeTmp;
 			}
+			
+			$.extend(RentalRecord.prototype, {
+				getDivingEventId: function() {
+			    	return this.divingEventId;
+				},
+				getUserId: function() {
+			    	return this.userId;
+				},
+				getEquipmentId: function() {
+			    	return this.equipmentId;
+				},
+				toString: function() {
+			    	return 'divingEventId=' + this.divingEventId + '&userId=' + this.userId +'&equipmentId=' + this.equipmentId+'&equipmentType=' + this.equipmentType;
+				}
+			});
+			
+			var theNewRentalRecord = new RentalRecord(divingEventId, userId, equipmentId);
+			
+			$("#zoneDivingEvent").html("Sortie : <b>" +  theNewRentalRecord.getDivingEventId() + "</b>");
+			$("#zoneUser").html("User : <b>" +  theNewRentalRecord.getUserId() + "</b>");
+			$("#zoneEquipment").html("Equipement : <b>" +  theNewRentalRecord.getEquipmentId() + "</b>");
+			
+			// persist data in local storage
+			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
+					.getItem("rentalRecords"));
+			
+			var rentalRecordArrays = new Array();
+			
+			$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
+				rentalRecordArrays.push(oneRentalRecord);
+			});
+			
+			rentalRecordArrays.push(JSON.stringify(theNewRentalRecord));
+			
+			 window.localStorage.setItem("rentalRecords", JSON
+						.stringify(rentalRecordArrays));
+		}
+		
+		function sendInfoToDoScan() {
+			
+			doScan( getDivingEventId(), getUserId());
+		}
+		
+		function sendInfoForSummaryByUser() {
+			window.location = "./summaryByUser.html?divingEventId=" + getURLParameter("divingEventId") + "&userId=" + getURLParameter("userId");
+		}
 		</script>
 		
 		<!-- CSS -->
@@ -28,26 +166,41 @@
 	<body>
 		<div class="container">
 			<div class="row">
-				<div class="col-12 pageTitle" id="applicationTitle">GASM Rent - Scan</div>
+				<div class="col-12 pageTitle" id="scanPageTitle"></div>
 			</div>
 			<div class="row">
 				<div class="col-12 pageSection">
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="description">Ici nous
-							pourrons scanner un 'QR Code' afin d'identifier un élément, soit à
-							envoyer en location, soit à retourner.</div>
+						<div class="col-12 text-center" id="scanDescription"></div>
 					</div>
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="valeurDuQRCode"></div>
+						<div class="col-12 text-center" id="zoneDivingEvent"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="zoneUser"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="zoneEquipment"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center" >
+							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="continueScan">
+							</a>
+						</div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="#" onClick="sendInfoForSummaryByUser()" id="summaryByUser"></a>
+						</div>
 					</div>
 	
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="doAction"></div>
-					</div>
-	
-					<div class="row largeRow">
-						<div class="col-12 text-center" id="back">
-							<a class="largeButton" href="./index.html">Retour</a>
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html" id="back"></a>
 						</div>
 					</div>
 				</div>

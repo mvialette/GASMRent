@@ -20,11 +20,20 @@
 		
 		<!-- JS Function that can be called -->
 <script type="text/javascript">
-	//load I18N bundles
-	jQuery(document).ready(function() {
-      	initLanguages();
-    });
-	
+
+	window.onload = function() {
+		//load I18N bundles
+		jQuery(document).ready(function() {
+	      	initLanguages();
+	    });
+		
+		// We retreive informations about the diving events
+		getInfosOfDivingEvents();
+		
+		// We retreive informations about the users
+		getInfosOfUsers();
+	}
+
 	function loadBundles(lang) {
           jQuery.i18n.properties({
         	 name:'gasmrent',
@@ -40,13 +49,13 @@
         		 document.getElementById("chooseEventAndUserDescription").innerHTML=chooseEventAndUserDescription;
         		 
         		 jQuery.i18n.prop("user");
-        		 document.getElementById("user").innerHTML=user;
+        		 document.getElementById("user").innerHTML=user + " :";
         		 
         		 jQuery.i18n.prop("divingEvent");
-        		 document.getElementById("divingEvent").innerHTML=divingEvent;
+        		 document.getElementById("divingEvent").innerHTML=divingEvent + " :";
         		 
-        /* 		 jQuery.i18n.prop("scanQRCode");
-        		 document.getElementById("scanQRCode").innerHTML=scanQRCode; */
+         		 jQuery.i18n.prop("scanQRCode");
+        		 document.getElementById("scanQRCode").innerHTML=scanQRCode;
         		 
         		 jQuery.i18n.prop("back");
         		 document.getElementById("back").innerHTML=back;
@@ -54,21 +63,14 @@
          });
     }
 	
-	function doScan() {
+	function sendInfoToDoScan() {
 		
-		window.plugins.barcodeScanner.scan(function(result) {
-
-			if (result.cancelled == false && result.format == "QR_CODE") {
-				var leTextDuQRCode = result.text;
-				/* alert("We got a qrcode = " + leTextDuQRCode); */
-				window.location = "scan.html?text=" + leTextDuQRCode;
-			} else {
-				//alert("Le scan n'a pas abouti");
-			}
-		}, function(error) {
-			//alert("Scanning failed: " + error);
-		});
+		var selectDivingEventsValue = $("#selectDivingEvents").val();
+		var selectUsersValue = $("#selectUsers").val();
+		
+		doScan(selectDivingEventsValue, selectUsersValue);
 	}
+	
 </script>
 	</head>
 	<body>
@@ -89,15 +91,7 @@
 					</div>
 					
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="selectDivingEvent">
-						
-						<select class="selectpicker">
-						    <option>A</option>
-						    <option>B</option>
-						    <option>C</option>
-						  </select>
-  
-						</div>
+						<div class="col-12 text-center" id="divingEvents"></div>
 					</div>
 					
 					<div class="row largeRow">
@@ -105,19 +99,13 @@
 					</div>
 					
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="selectUser">
-						
-						<select class="selectpicker">
-						    <option>Max</option>
-						    <option>Jess</option>
-						  </select>
-						</div>
+						<div class="col-12 text-center" id="users"></div>
 					</div>
 					
 					<div class="row largeRow">
-						<div class="col-12" id="scanQRCode">
-							<a class="largeButton" href="#" onClick="doScan()">
-								Scanner</a>
+						<div class="col-12" >
+							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="scanQRCode">
+								</a>
 						</div>
 					</div>
 					

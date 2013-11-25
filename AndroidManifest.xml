@@ -36,20 +36,16 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
-
-        <!-- android:theme="@style/AppTheme" > -->
-        <activity
-            android:name="org.gasm.villeurbanne.mobile.rent.MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+        android:icon="@drawable/gasmrest_ic_launcher"
+        android:label="@string/app_name" 
+        >
+ 
+        <!-- 
+         android:label="GASM Rent"
+         <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_diver_launcher"
+        android:label="@string/app_name" > -->
         <!-- ZXing activities -->
         <activity
             android:name="com.google.zxing.client.android.CaptureActivity"
@@ -58,14 +54,15 @@
             android:exported="false"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:label="GASM Rent" >
             <intent-filter>
                 <action android:name="com.phonegap.plugins.barcodescanner.SCAN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
+       
+       <!--  <activity
             android:name="com.google.zxing.client.android.encode.EncodeActivity"
             android:label="@string/share_name" >
             <intent-filter>
@@ -73,8 +70,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-        <activity
+        </activity> -->
+       <!--  <activity
             android:name="com.google.zxing.client.android.HelpActivity"
             android:label="@string/share_name" >
             <intent-filter>
@@ -82,7 +79,21 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity> -->
+        
+        <!-- android:theme="@style/AppTheme" > -->
+        <!--  -->
+        <activity
+            android:name=".MainActivity"
+            android:label="GASM Rent"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+        
     </application>
-
 </manifest>
