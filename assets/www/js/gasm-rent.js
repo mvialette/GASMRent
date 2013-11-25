@@ -67,9 +67,12 @@ function synchronizeDivingEvents() {
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
+						var threshold = (item.billingThreshold==undefined?-1:item.billingThreshold);
+						
 						items.push("{\"id\":" + item.id + ",\"place\":\""
 								+ item.place + "\",\"date\":\"" + item.date
-								+ "\"}");
+								+ "\",\"billingThreshold\":" + threshold + "}");
+						
 						compteur++;
 					});
 					// alert(items);
@@ -105,141 +108,6 @@ function synchronizeDivingEvents() {
 			});
 }
 
-function getInfosOfEquipments() {
-
-	var localStorageEquipments = JSON.parse(window.localStorage
-			.getItem("equipments"));
-
-	// alert(localStorageUsers);
-	var compteur = 0;
-
-	var items = "";
-
-	$.each(localStorageEquipments, function(i, oneElement) {
-
-		// alert(oneUser);
-		var jsonOneElement = JSON.parse(oneElement);
-		
-		var typeLocalized;
-		
-		//alert(tank);
-		//alert(jsonOneElement);
-		if(jsonOneElement.type == 'Tank'){
-			typeLocalized = tank;
-		}else if(jsonOneElement.type == 'Regulator'){
-			typeLocalized = regulator;
-		} else if(jsonOneElement.type == 'Jacket'){
-			typeLocalized = jacket;
-		} 
-
-		items = items + "<li>" + typeLocalized + " n° <b>" + jsonOneElement.reference + "</b></li>";
-
-		// var jsonOneElement = JSON.parse(oneElement);
-		// alert("reference="+jsonOneElement.reference);
-		compteur++;
-	});
-
-	document.getElementById("liste").innerHTML = items;
-	// document.getElementById("equipments").innerHTML = "Offline mode :
-	// Retreive " + compteur + " equipments from local storage";
-}
-
-function getInfosFromJackets(jacketId) {
-
-	// alert("offline mode, search item=" + jacketId);
-
-	var localStorageUsers = JSON.parse(window.localStorage.getItem("jackets"));
-
-	// alert(localStorageUsers);
-
-	var itemReference = null;
-	var itemType = null;
-
-	$.each(localStorageUsers, function(i, oneElement) {
-
-		// alert(oneUser);
-
-		var jsonOneElement = JSON.parse(oneElement);
-
-		var itemReferenceTmp = jsonOneElement.reference;
-
-		// alert(itemReferenceTmp);
-
-		if (jacketId == itemReferenceTmp) {
-			itemReference = itemReferenceTmp;
-			itemType = jsonOneElement.type;
-
-			return false;
-		}
-
-		// alert("reference="+jsonOneElement.reference);
-	});
-
-	if (itemReference != null) {
-		document.getElementById("valeurDuQRCode").innerHTML = "Id="
-				+ itemReference + " type=" + itemType;
-	} else {
-		document.getElementById("valeurDuQRCode").innerHTML = "Item not found";
-	}
-}
-
-function synchronizeJackets() {
-	var urlComplete = "https://mindful-girder-344.appspot.com/api/jacket/";
-	// alert(urlComplete);
-
-	jQuery
-			.ajax({
-				type : "GET",
-				url : urlComplete,
-				contentType : "application/json; charset=utf-8",
-				dataType : "json",
-				success : function(data, status, jqXHR) {
-
-					// alert("online mode");
-
-					var items = [];
-					var compteur = 0;
-
-					$.each(data, function(i, item) {
-
-						items.push("{\"reference\":\"" + item.reference
-								+ "\",\"type\":\"" + item.reference + "\"}");
-
-						compteur++;
-					});
-					// alert(JSON.stringify(items));
-
-					window.localStorage.setItem("jackets", JSON
-							.stringify(items));
-
-					document.getElementById("jackets").innerHTML = "Online mode : "
-							+ compteur + " jackets updated in local storage";
-				},
-				error : function(jqXHR, status) {
-
-					// alert("offline mode");
-
-					var localStorageUsers = JSON.parse(window.localStorage
-							.getItem("jackets"));
-
-					// alert(localStorageUsers);
-					var compteur = 0;
-
-					$.each(localStorageUsers, function(i, oneElement) {
-
-						// alert(oneUser);
-
-						var jsonOneElement = JSON.parse(oneElement);
-						// alert("reference="+jsonOneElement.reference);
-						compteur++;
-					});
-
-					document.getElementById("jackets").innerHTML = "Offline mode : Retreive "
-							+ compteur + " jackets from local storage";
-				}
-			});
-}
-
 function synchronizeEquipments() {
 	var urlComplete = "https://mindful-girder-344.appspot.com/api/equipment";
 	// alert(urlComplete);
@@ -260,7 +128,8 @@ function synchronizeEquipments() {
 					$.each(data, function(i, item) {
 
 						equipments.push("{\"reference\":\"" + item.reference
-								+ "\",\"type\":\"" + item.type + "\"}");
+								+ "\",\"type\":\"" + item.type + "\",\"price\":" + item.price + ",\"rented\":" + item.rented + "}");
+						
 						compteur++;
 					});
 					// alert(JSON.stringify(items));
@@ -294,6 +163,48 @@ function synchronizeEquipments() {
 			});
 }
 
+function getInfosOfEquipments() {
+
+	var localStorageEquipments = JSON.parse(window.localStorage
+			.getItem("equipments"));
+
+	alert(localStorageEquipments);
+	var compteur = 0;
+
+	var items = "";
+
+	$.each(localStorageEquipments, function(i, oneElement) {
+
+		// alert(oneUser);
+		var jsonOneElement = JSON.parse(oneElement);
+		
+		var typeLocalized;
+		
+		//alert(tank);
+		//alert(jsonOneElement);
+		if(jsonOneElement.type == 'Tank'){
+			typeLocalized = tank;
+		}else if(jsonOneElement.type == 'Regulator'){
+			typeLocalized = regulator;
+		} else if(jsonOneElement.type == 'Jacket'){
+			typeLocalized = jacket;
+		} 
+		
+		items = items + "<li>" + typeLocalized + " n° <b>" + jsonOneElement.reference + "</b></li>";
+
+		// var jsonOneElement = JSON.parse(oneElement);
+		// alert("reference="+jsonOneElement.reference);
+		compteur++;
+	});
+	
+	alert(compteur);
+
+	document.getElementById("liste").innerHTML = items;
+	// document.getElementById("equipments").innerHTML = "Offline mode :
+	// Retreive " + compteur + " equipments from local storage";
+}
+
+
 function initLanguages() {
 	var userLang = navigator.language || navigator.userLanguage;
 	userLang = userLang.substring(0, 2);
@@ -305,13 +216,13 @@ function getInfosOfDivingEvents() {
 	var localStorageDivingEvents = JSON.parse(window.localStorage
 			.getItem("divingEvents"));
 
-	// alert(localStorageUsers);
+	alert(localStorageDivingEvents);
 	var items = "<select id=\"selectDivingEvents\">";
 
 	$.each(localStorageDivingEvents, function(i, oneElement) {
 
-		// alert(oneUser);
 		var jsonOneElement = JSON.parse(oneElement);
+		alert(jsonOneElement);
 		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.place + " le " + parseDate(jsonOneElement.date) +  "</option>";
 	});
 	

@@ -57,9 +57,9 @@
 		
 		var userId = getURLParameter("userId");
 		
-		
+		//TODO MAV : Implement billing rules
 		 $("#summaryByUserDescription").html(
-				summaryByUserDescription(userId, divingEventId, '20/11/2013'));
+				summaryByUserDescription(userId, divingEventId, '20/11/2013', "595"));
 
 		var rentalRecordsStringFromLocalStorage = JSON
 				.parse(window.localStorage.getItem("rentalRecords"));
@@ -103,18 +103,18 @@
 				<div class="row largeRow">
 					<div class="col-12 text-center" id="summaryByUserDescription"></div>
 				</div>
-
+				
 				<div class="row largeRow">
 					<div class="col-12 text-center" id="listOfRentedEquipments"></div>
 				</div>
-
+					
 				<div class="row largeRow">
 					<div class="col-12 text-center">
 						<a class="largeButton" href="./chooseEventAndUser.html"
 							id="continueRentalForSomeoneElse"></a>
 					</div>
 				</div>
-				
+			
 				<div class="row largeRow">
 					<div class="col-12 text-center">
 						<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
