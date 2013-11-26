@@ -47,38 +47,6 @@
 			}
 		});
 	}
-
-	function getEquipmentsByDivingEventId(divingEventId) {
-		 $("#summaryByDivingEventDescription").html(
-				 summaryByDivingEventDescription(divingEventId, '20/11/2013'));
-
-		var rentalRecordsStringFromLocalStorage = JSON
-				.parse(window.localStorage.getItem("rentalRecords"));
-		
-		var rentalRecordArrays = new Array();
-		
-		$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {
-			rentalRecordArrays.push(oneRentalRecord);
-		});
-		
-		var listOfPendingRentalRecords = "<ul>";
-		
-		$.each(rentalRecordArrays, function(i, oneElement) {
-
-			var currentElementJSON = JSON.parse(oneElement);
-			
-			if (currentElementJSON.divingEventId == divingEventId) {
-				listOfPendingRentalRecords = listOfPendingRentalRecords + "<li>" +currentElementJSON.userId + " : " + currentElementJSON.equipmentId + "</li>";
-			}
-		});
-		
-		listOfPendingRentalRecords = listOfPendingRentalRecords + "</ul>";
-		$("#listOfPendingRentalRecords").html(listOfPendingRentalRecords); 
-	}
-	
-	function sendForSynchronization() {
-		
-	}
 </script>
 
 <!-- CSS -->

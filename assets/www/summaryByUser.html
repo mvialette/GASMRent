@@ -58,8 +58,11 @@
 		var userId = getURLParameter("userId");
 		
 		//TODO MAV : Implement billing rules
+		
+		var aDivingEvent = getDivingEventById(divingEventId);
+		
 		 $("#summaryByUserDescription").html(
-				summaryByUserDescription(userId, divingEventId, '20/11/2013', "595"));
+				summaryByUserDescription(userId, aDivingEvent.getPlace() , aDivingEvent.getDate(), aDivingEvent.getUserPrice(userId)));
 
 		var rentalRecordsStringFromLocalStorage = JSON
 				.parse(window.localStorage.getItem("rentalRecords"));
@@ -85,6 +88,8 @@
 	}
 	
 	function sendInfoForSummaryByDivingEvent() {
+		
+		// send rented equipements to the server
 		window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
 	}
 </script>
@@ -110,8 +115,7 @@
 					
 				<div class="row largeRow">
 					<div class="col-12 text-center">
-						<a class="largeButton" href="./chooseEventAndUser.html"
-							id="continueRentalForSomeoneElse"></a>
+						<a class="largeButton" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
 					</div>
 				</div>
 			

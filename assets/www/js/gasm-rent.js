@@ -1,3 +1,9 @@
+function initLanguages() {
+	var userLang = navigator.language || navigator.userLanguage;
+	userLang = userLang.substring(0, 2);
+	loadBundles(userLang);
+}
+
 function synchronizeUsers() {
 	var urlComplete = "https://mindful-girder-344.appspot.com/api/adherent/";
 
@@ -163,12 +169,51 @@ function synchronizeEquipments() {
 			});
 }
 
+function sendRentalRecords(divingEventId) {
+
+	var rentalRecordsStringFromLocalStorage = JSON
+			.parse(window.localStorage.getItem("rentalRecords"));
+	
+	var rentalRecordArrays = new Array();
+	
+	$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {
+		rentalRecordArrays.push(oneRentalRecord);
+	});
+	
+	$.each(rentalRecordArrays, function(i, oneElement) {
+		var currentElementJSON = JSON.parse(oneElement);
+		alert("dEventId="+currentElementJSON.divingEventId + "&renterId=" + currentElementJSON.userId + "&equipmentId="+currentElementJSON.equipmentId);
+		
+		/* 
+		 var urlComplete = "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent";
+		alert(urlComplete);
+		
+		jQuery
+			.ajax({
+				url : urlComplete,
+				type : "PUT",
+				contentType : "application/json; charset=utf-8",
+				data: "dEventId=5078785942618112&renterId=5644257041842176&equipmentId=931",
+				success: function(data) {
+					alert('send put ok:' + data);
+				},
+				error: function(e) {
+					alert(JSON.stringify(e));
+				    console.log(e); 
+				}
+			}
+		); 
+		alert("end");
+		*/
+	});
+}
+
 function getInfosOfEquipments() {
 
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem("equipments"));
 
-	alert(localStorageEquipments);
+	//alert(localStorageEquipments);
 	var compteur = 0;
 
 	var items = "";
@@ -197,18 +242,11 @@ function getInfosOfEquipments() {
 		compteur++;
 	});
 	
-	alert(compteur);
+	//alert(compteur);
 
 	document.getElementById("liste").innerHTML = items;
 	// document.getElementById("equipments").innerHTML = "Offline mode :
 	// Retreive " + compteur + " equipments from local storage";
-}
-
-
-function initLanguages() {
-	var userLang = navigator.language || navigator.userLanguage;
-	userLang = userLang.substring(0, 2);
-	loadBundles(userLang);
 }
 
 function getInfosOfDivingEvents() {
@@ -216,13 +254,13 @@ function getInfosOfDivingEvents() {
 	var localStorageDivingEvents = JSON.parse(window.localStorage
 			.getItem("divingEvents"));
 
-	alert(localStorageDivingEvents);
+	//alert(localStorageDivingEvents);
 	var items = "<select id=\"selectDivingEvents\">";
 
 	$.each(localStorageDivingEvents, function(i, oneElement) {
 
 		var jsonOneElement = JSON.parse(oneElement);
-		alert(jsonOneElement);
+		//alert(jsonOneElement);
 		items = items + "<option value=\""+ jsonOneElement.id + "\">" + jsonOneElement.place + " le " + parseDate(jsonOneElement.date) +  "</option>";
 	});
 	
@@ -230,6 +268,7 @@ function getInfosOfDivingEvents() {
 	
 	document.getElementById("divingEvents").innerHTML = items;
 }
+
 
 function getInfosOfUsers() {
 
@@ -253,28 +292,17 @@ function getInfosOfUsers() {
 
 
 function parseDate(dateObject) {
-	
-  //  var d = new Date(dateObject);
-    return dateObject; //jQuery.datepicker.parseDate( "yy-mm-dd", d);
-
-    //return date;
+    var theDate = new Date(parseInt(dateObject));
+    return theDate.getDate() + "/" + (theDate.getMonth() + 1) + "/" + theDate.getFullYear(); //jQuery.datepicker.parseDate( "yy-mm-dd", d);
 };
 
 function doScan(divingEventId, userId) {
-	
-//	var selectDivingEventsValue = $("#selectDivingEvents").val();
-//	var selectUsersValue = $("#selectUsers").val();
-	//alert("doScan, divingEventId="+divingEventId);
-	//alert("doScan, userId="+userId);
 	
 	window.plugins.barcodeScanner.scan(function(result) {
 
 			if (result.cancelled == false && result.format == "QR_CODE") {
 				var leTextDuQRCode = result.text;
 				/* alert("We got a qrcode = " + leTextDuQRCode); */
-				
-				//alert("doScan2, divingEventId="+divingEventId);
-				//alert("doScan2, userId="+userId);
 				
 				window.location = "scan.html?equipmentId=" + leTextDuQRCode + "&divingEventId=" + divingEventId + "&userId=" + userId;
 			} else {
@@ -286,40 +314,95 @@ function doScan(divingEventId, userId) {
 	
 }
 
-//function getEquipmentIdFromPageParameter() {
-//	var params = window.location.toString().substr(
-//			window.location.toString().indexOf('=') + 1);
-//	
-//	var equipmentId = params.substr(0,params.indexOf('&'));
-//	
-//	return equipmentId;
-//}
-//
-//function getDivingEventIdFromPageParameter(){
-//	var params = window.location.toString().substr(
-//			window.location.toString().indexOf('=') + 1);
-//	//alert(params);
-//	var paramsTmp = params.substr(params.indexOf('=')+1);
-//	//alert(paramsTmp);
-//	var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
-//	//alert(divingEventId);
-//	return divingEventId;
-//}
-//
-//function getUserIdFromPageParameter(){
-//	var params = window.location.toString().substr(
-//			window.location.toString().indexOf('=') + 1);
-//	
-//	var paramsTmp = params.substr(params.indexOf('=')+1);
-//	
-//	paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
-//	
-//	var userId = paramsTmp;
-//	
-//	return userId;
-//}
+function getEquipmentsByDivingEventId(divingEventId) {
+	 $("#summaryByDivingEventDescription").html(
+			 summaryByDivingEventDescription(divingEventId, '20/11/2013'));
+
+	var rentalRecordsStringFromLocalStorage = JSON
+			.parse(window.localStorage.getItem("rentalRecords"));
+	
+	var rentalRecordArrays = new Array();
+	
+	$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {
+		rentalRecordArrays.push(oneRentalRecord);
+	});
+	
+	var listOfPendingRentalRecords = "<ul>";
+	
+	$.each(rentalRecordArrays, function(i, oneElement) {
+
+		var currentElementJSON = JSON.parse(oneElement);
+		
+		if (currentElementJSON.divingEventId == divingEventId) {
+			listOfPendingRentalRecords = listOfPendingRentalRecords + "<li>" +currentElementJSON.userId + " : " + currentElementJSON.equipmentId + "</li>";
+		}
+	});
+	
+	listOfPendingRentalRecords = listOfPendingRentalRecords + "</ul>";
+	$("#listOfPendingRentalRecords").html(listOfPendingRentalRecords); 
+}
 
 function getURLParameter(key){
 	var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search); 
 	return result && unescape(result[1]) || ""; 
+}
+
+function getDivingEventById(divingEventId) {
+	var result = null;
+	
+	var DivingEvent = function(divingEventId, place, date){
+	    this.divingEventId = divingEventId;
+	    this.place = place;
+	    this.date = date;
+	}
+
+	$.extend(DivingEvent.prototype, {
+		getDivingEventId: function() {
+	    	return this.divingEventId;
+		},
+		getPlace: function() {
+	    	return this.place;
+		},
+		getDate: function() {
+	    	return this.date;
+		},
+		getUserPrice: function(userId) {
+			
+			var result = 0;
+			
+//			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage.getItem("rentalRecords"));
+//
+//			var rentalRecordArrays = new Array();
+//				
+//			$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
+//				rentalRecordArrays.push(oneRentalRecord);
+//			});
+//	
+//			$.each(rentalRecordArrays, function(i, oneElement) {
+//				var currentElementJSON = JSON.parse(oneElement);
+//				
+//				if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
+//					//currentElementJSON.equipmentId
+//				}
+//			});
+			
+	    	return result;
+		}
+	});
+	
+	var localStorageDivingEvents = JSON.parse(window.localStorage
+			.getItem("divingEvents"));
+	
+	
+	$.each(localStorageDivingEvents, function(i, oneElement) {
+
+		var jsonOneElement = JSON.parse(oneElement);
+		
+		if(divingEventId == jsonOneElement.id){
+			result = new DivingEvent(jsonOneElement.id, jsonOneElement.place, parseDate(jsonOneElement.date));
+			return false;
+		} 
+	});
+
+	return result;
 }
