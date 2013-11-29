@@ -1,3 +1,18 @@
+function getConstants() {
+	var constants = {
+	   "URL_GET_USERS":"https://mindful-girder-344.appspot.com/api/adherent/",
+	   "URL_GET_DIVING_EVENT":"https://mindful-girder-344.appspot.com/api/divingEvent/",
+	   "URL_GET_EQUIPMENT":"https://mindful-girder-344.appspot.com/api/equipment/",
+	   "URL_SEND_RENTAL_RECORDS":"https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent",
+	   "LOCAL_STORAGE_USERS": "offlineUsers",
+	   "LOCAL_STORAGE_DIVING_EVENTS": "offlineDivingEvents",
+	   "LOCAL_STORAGE_EQUIPMENTS": "offlineEquipments",
+	   "LOCAL_STORAGE_RENTAL_RECORDS": "offlineRentalRecords"
+	};
+	
+	return constants;
+}
+
 function initLanguages() {
 	var userLang = navigator.language || navigator.userLanguage;
 	userLang = userLang.substring(0, 2);
@@ -5,7 +20,7 @@ function initLanguages() {
 }
 
 function synchronizeUsers() {
-	var urlComplete = "https://mindful-girder-344.appspot.com/api/adherent/";
+	var urlComplete = getConstants().URL_GET_USERS;
 
 	jQuery.ajax({
 		type : "GET",
@@ -26,7 +41,7 @@ function synchronizeUsers() {
 			});
 			// alert(items);
 
-			window.localStorage.setItem("users", JSON.stringify(items));
+			window.localStorage.setItem(getConstants().LOCAL_STORAGE_USERS, JSON.stringify(items));
 
 			document.getElementById('users').innerHTML = userOnline(compteur);
 
@@ -38,7 +53,7 @@ function synchronizeUsers() {
 			// alert("offline mode");
 
 			var localStorageUsers = JSON.parse(window.localStorage
-					.getItem('users'));
+					.getItem(getConstants().LOCAL_STORAGE_USERS));
 
 			// alert(localStorageUsers);
 			var compteur = 0;
@@ -58,7 +73,7 @@ function synchronizeUsers() {
 }
 
 function synchronizeDivingEvents() {
-	var urlComplete = "https://mindful-girder-344.appspot.com/api/divingEvent/";
+	var urlComplete = getConstants().URL_GET_DIVING_EVENT;
 
 	jQuery
 			.ajax({
@@ -83,7 +98,7 @@ function synchronizeDivingEvents() {
 					});
 					// alert(items);
 
-					window.localStorage.setItem("divingEvents", JSON
+					window.localStorage.setItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS, JSON
 							.stringify(items));
 					
 					document.getElementById('divingEvent').innerHTML = divingEventOnline(compteur);
@@ -93,7 +108,7 @@ function synchronizeDivingEvents() {
 					// alert("offline mode");
 
 					var localStorageDivingEvents = JSON
-							.parse(window.localStorage.getItem("divingEvents"));
+							.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
 
 					// alert(localStorageUsers);
 					var compteur = 0;
@@ -115,64 +130,64 @@ function synchronizeDivingEvents() {
 }
 
 function synchronizeEquipments() {
-	var urlComplete = "https://mindful-girder-344.appspot.com/api/equipment";
+	var urlComplete = getConstants().URL_GET_EQUIPMENT;
 	// alert(urlComplete);
 
 	jQuery
-			.ajax({
-				type : "GET",
-				url : urlComplete,
-				contentType : "application/json; charset=utf-8",
-				dataType : "json",
-				success : function(data, status, jqXHR) {
+		.ajax({
+			type : "GET",
+			url : urlComplete,
+			contentType : "application/json; charset=utf-8",
+			dataType : "json",
+			success : function(data, status, jqXHR) {
 
-					// alert("online mode");
+				// alert("online mode");
 
-					var equipments = [];
-					var compteur = 0;
+				var equipments = [];
+				var compteur = 0;
 
-					$.each(data, function(i, item) {
+				$.each(data, function(i, item) {
 
-						equipments.push("{\"reference\":\"" + item.reference
-								+ "\",\"type\":\"" + item.type + "\",\"price\":" + item.price + ",\"rented\":" + item.rented + "}");
-						
-						compteur++;
-					});
-					// alert(JSON.stringify(items));
-
-					window.localStorage.setItem("equipments", JSON
-							.stringify(equipments));
+					equipments.push("{\"reference\":\"" + item.reference
+							+ "\",\"type\":\"" + item.type + "\",\"price\":" + item.price + ",\"rented\":" + item.rented + "}");
 					
-					document.getElementById('equipments').innerHTML = equipmentOnline(compteur);
-				},
-				error : function(jqXHR, status) {
+					compteur++;
+				});
+				// alert(JSON.stringify(items));
 
-					// alert("offline mode");
+				window.localStorage.setItem(getConstants().LOCAL_STORAGE_EQUIPMENTS, JSON
+						.stringify(equipments));
+				
+				document.getElementById('equipments').innerHTML = equipmentOnline(compteur);
+			},
+			error : function(jqXHR, status) {
 
-					var localStorageEquipments = JSON.parse(window.localStorage
-							.getItem("equipments"));
+				// alert("offline mode");
 
-					// alert(localStorageUsers);
-					var compteur = 0;
+				var localStorageEquipments = JSON.parse(window.localStorage
+						.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
-					$.each(localStorageEquipments, function(i, oneElement) {
+				// alert(localStorageUsers);
+				var compteur = 0;
 
-						// alert(oneUser);
+				$.each(localStorageEquipments, function(i, oneElement) {
 
-						var jsonOneElement = JSON.parse(oneElement);
-						// alert("reference="+jsonOneElement.reference);
-						compteur++;
-					});
-					
-					document.getElementById('equipments').innerHTML = equipmentOffline(compteur);
-				}
-			});
+					// alert(oneUser);
+
+					var jsonOneElement = JSON.parse(oneElement);
+					// alert("reference="+jsonOneElement.reference);
+					compteur++;
+				});
+				
+				document.getElementById('equipments').innerHTML = equipmentOffline(compteur);
+			}
+		});
 }
 
 function sendRentalRecords(divingEventId) {
 
 	var rentalRecordsStringFromLocalStorage = JSON
-			.parse(window.localStorage.getItem("rentalRecords"));
+			.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_RENTAL_RECORDS));
 	
 	var rentalRecordArrays = new Array();
 	
@@ -182,10 +197,10 @@ function sendRentalRecords(divingEventId) {
 	
 	$.each(rentalRecordArrays, function(i, oneElement) {
 		var currentElementJSON = JSON.parse(oneElement);
-		alert("dEventId="+currentElementJSON.divingEventId + "&renterId=" + currentElementJSON.userId + "&equipmentId="+currentElementJSON.equipmentId);
+		var paramToSend = "?dEventId="+currentElementJSON.divingEventId + "&renterId=" + currentElementJSON.userId + "&equipmentId="+currentElementJSON.equipmentId; 
+		alert(paramToSend);
 		
-		/* 
-		 var urlComplete = "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent";
+		var urlComplete = getConstants().URL_SEND_RENTAL_RECORDS + paramToSend;
 		alert(urlComplete);
 		
 		jQuery
@@ -193,7 +208,7 @@ function sendRentalRecords(divingEventId) {
 				url : urlComplete,
 				type : "PUT",
 				contentType : "application/json; charset=utf-8",
-				data: "dEventId=5078785942618112&renterId=5644257041842176&equipmentId=931",
+				data: "",
 				success: function(data) {
 					alert('send put ok:' + data);
 				},
@@ -204,14 +219,13 @@ function sendRentalRecords(divingEventId) {
 			}
 		); 
 		alert("end");
-		*/
 	});
 }
 
 function getInfosOfEquipments() {
 
 	var localStorageEquipments = JSON.parse(window.localStorage
-			.getItem("equipments"));
+			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
 	//alert(localStorageEquipments);
 	var compteur = 0;
@@ -242,9 +256,9 @@ function getInfosOfEquipments() {
 function getInfosOfDivingEvents() {
 
 	var localStorageDivingEvents = JSON.parse(window.localStorage
-			.getItem("divingEvents"));
+			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
 
-	var items = "<select id=\"selectDivingEvents\">";
+	var items = "<select id=\"selectDivingEvents\" class=\"form-control\">";
 
 	$.each(localStorageDivingEvents, function(i, oneElement) {
 		var jsonOneElement = JSON.parse(oneElement);
@@ -260,8 +274,8 @@ function getInfosOfDivingEvents() {
 function getInfosOfUsers() {
 
 	var localStorageUsers = JSON.parse(window.localStorage
-			.getItem("users"));
-	var items = "<select id=\"selectUsers\">";
+			.getItem(getConstants().LOCAL_STORAGE_USERS));
+	var items = "<select id=\"selectUsers\" class=\"form-control\">";
 
 	$.each(localStorageUsers, function(i, oneElement) {
 		var jsonOneElement = JSON.parse(oneElement);
@@ -301,7 +315,7 @@ function getEquipmentsByDivingEventId(divingEventId) {
 			 summaryByDivingEventDescription(divingEventId, '20/11/2013'));
 
 	var rentalRecordsStringFromLocalStorage = JSON
-			.parse(window.localStorage.getItem("rentalRecords"));
+			.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_RENTAL_RECORDS));
 	
 	var rentalRecordArrays = new Array();
 	
@@ -344,7 +358,7 @@ function getEquipmentById(equipmentId){
 	}
 		
 	var localStorageEquipments = JSON.parse(window.localStorage
-			.getItem("equipments"));
+			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
 	$.each(localStorageEquipments, function(i, oneElement) {
 
@@ -386,7 +400,7 @@ function getDivingEventById(divingEventId) {
 			var result = 0;
 			var theDivingEventId =  this.divingEventId;
 			
-			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage.getItem("rentalRecords"));
+			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_RENTAL_RECORDS));
 			var rentalRecordArrays = new Array();
 				
 			$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
@@ -401,14 +415,9 @@ function getDivingEventById(divingEventId) {
 				}
 			});
 			
-			alert("diving event ceilling = " + this.billingThreshold);
-			alert("result = " + result);
-			if(this.billingThreshold == null){
-				// there is no ceilling
-			}else if(this.billingThreshold == -1){
-				// this case the diving event if free.
-				result = 0; 
-			}else if(result > this.billingThreshold){
+			//alert("diving event ceilling = " + this.billingThreshold);
+			//alert("result = " + result);
+			if(this.billingThreshold != null && this.billingThreshold != -1 && result > this.billingThreshold){
 				// if the result if greater thant the ceiling of the diving event, then we have to retur the billingThreshold
 				result = this.billingThreshold;
 			}
@@ -418,7 +427,7 @@ function getDivingEventById(divingEventId) {
 	});
 	
 	var localStorageDivingEvents = JSON.parse(window.localStorage
-			.getItem("divingEvents"));
+			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
 	
 	
 	$.each(localStorageDivingEvents, function(i, oneElement) {
