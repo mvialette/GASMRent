@@ -63,7 +63,7 @@
 	function startANewRentSession() {
 		// clear rentalRecords of the local storage
 		var rentalRecordArrays = new Array();
-		window.localStorage.setItem("rentalRecords", JSON.stringify(rentalRecordArrays));
+		window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON.stringify(rentalRecordArrays));
 		
 		window.location = "./chooseEventAndUser.html";
 	} 

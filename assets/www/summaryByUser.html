@@ -54,18 +54,16 @@
 	function getEquipmentsForTheUser() {
 
 		var divingEventId = getURLParameter("divingEventId");
-		
-		var userId = getURLParameter("userId");
-		
-		//TODO MAV : Implement billing rules
-		
 		var aDivingEvent = getDivingEventById(divingEventId);
 		
+		var userId = getURLParameter("userId");
+		var aUserObject = getUserById(userId);
+		
 		 $("#summaryByUserDescription").html(
-				summaryByUserDescription(userId, aDivingEvent.getPlace() , aDivingEvent.getDate(), aDivingEvent.getUserPrice(userId)));
+				summaryByUserDescription(aUserObject.toString(), aDivingEvent.getPlace() , aDivingEvent.getDate(), aDivingEvent.getUserPrice(userId)));
 
 		var rentalRecordsStringFromLocalStorage = JSON
-				.parse(window.localStorage.getItem("rentalRecords"));
+				.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
 
 		var rentalRecordArrays = new Array();
 		
@@ -85,13 +83,14 @@
 		
 		listOfRentedEquipments = listOfRentedEquipments + "</ul>";
 		$("#listOfRentedEquipments").html(listOfRentedEquipments);
+		
 	}
 	
-	function sendInfoForSummaryByDivingEvent() {
+	/* function sendInfoForSummaryByDivingEvent() {
 		
 		// send rented equipements to the server
 		window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
-	}
+	} */
 </script>
 
 <!-- CSS -->
