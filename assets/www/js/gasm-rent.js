@@ -77,65 +77,65 @@ function synchronizeDivingEvents() {
 	var urlComplete = getConstants().URL_GET_DIVING_EVENT;
 
 	jQuery
-			.ajax({
-				type : "GET",
-				url : urlComplete,
-				contentType : "application/json; charset=utf-8",
-				dataType : "json",
-				success : function(data, status, jqXHR) {
+		.ajax({
+			type : "GET",
+			url : urlComplete,
+			contentType : "application/json; charset=utf-8",
+			dataType : "json",
+			success : function(data, status, jqXHR) {
 
-					// alert("online mode");
-					var items = [];
-					var compteur = 0;
+				var items = [];
+				var compteur = 0;
+				
+				$.each(
+					data,
+					function(i, item) {
+						
+						var threshold = (item.billingType.billingThreshold == undefined ? -1
+								: item.billingType.billingThreshold);
+						
+						items.push("{\"id\":" + item.id
+								+ ",\"place\":\"" + item.place
+								+ "\",\"date\":\"" + item.date
+								+ "\",\"billingThreshold\":"
+								+ threshold + "}");
 
-					$
-							.each(
-									data,
-									function(i, item) {
-										var threshold = (item.billingThreshold == undefined ? -1
-												: item.billingThreshold);
+						compteur++;
+					}
+				);
 
-										items.push("{\"id\":" + item.id
-												+ ",\"place\":\"" + item.place
-												+ "\",\"date\":\"" + item.date
-												+ "\",\"billingThreshold\":"
-												+ threshold + "}");
+				window.localStorage.setItem(
+						getConstants().LOCAL_STORAGE_DIVING_EVENTS, JSON
+								.stringify(items));
 
-										compteur++;
-									});
-					// alert(items);
+				document.getElementById('divingEvent').innerHTML = divingEventOnline(compteur);
+			},
+			error : function(jqXHR, status) {
 
-					window.localStorage.setItem(
-							getConstants().LOCAL_STORAGE_DIVING_EVENTS, JSON
-									.stringify(items));
+				// alert("offline mode");
 
-					document.getElementById('divingEvent').innerHTML = divingEventOnline(compteur);
-				},
-				error : function(jqXHR, status) {
+				var localStorageDivingEvents = JSON
+						.parse(window.localStorage
+								.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
 
-					// alert("offline mode");
+				// alert(localStorageUsers);
+				var compteur = 0;
 
-					var localStorageDivingEvents = JSON
-							.parse(window.localStorage
-									.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
+				$.each(localStorageDivingEvents,
+						function(i, oneDivingEvent) {
 
-					// alert(localStorageUsers);
-					var compteur = 0;
+							// alert(oneUser);
 
-					$.each(localStorageDivingEvents,
-							function(i, oneDivingEvent) {
+							var jsonDivingEvent = JSON
+									.parse(oneDivingEvent);
+							// alert("lieu="+jsonDivingEvent.lieu);
+							compteur++;
+						});
 
-								// alert(oneUser);
-
-								var jsonDivingEvent = JSON
-										.parse(oneDivingEvent);
-								// alert("lieu="+jsonDivingEvent.lieu);
-								compteur++;
-							});
-
-					document.getElementById('divingEvent').innerHTML = divingEventOffline(compteur);
-				}
-			});
+				document.getElementById('divingEvent').innerHTML = divingEventOffline(compteur);
+			}
+		}
+	);
 }
 
 function synchronizeEquipments() {
@@ -307,7 +307,7 @@ function parseDate(dateObject) {
 	var theDate = new Date(parseInt(dateObject));
 	return theDate.getDate() + "/" + (theDate.getMonth() + 1) + "/"
 			+ theDate.getFullYear(); // jQuery.datepicker.parseDate(
-										// "yy-mm-dd", d);
+	// "yy-mm-dd", d);
 };
 
 function isEquipmentAvailableForRent(equipmentId) {
@@ -463,70 +463,72 @@ function getDivingEventById(divingEventId) {
 											.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
 							var lineOfRentalsArrays = new Array();
 
-							var regulatorRented = false;
-							var tankRented = false;
-							var jacketRented = false;
+							var maxPriceForRegulator = 0;
+							var maxPriceForTank = 0;
+							var maxPriceForJacket = 0;
 
 							if (lineOfRentalsFromLocalStorageString != null) {
 								$.each(lineOfRentalsFromLocalStorageString,
-										function(idx2, oneRentalRecord) {
-											lineOfRentalsArrays
-													.push(oneRentalRecord);
-										});
+									function(idx2, oneRentalRecord) {
+										lineOfRentalsArrays
+												.push(oneRentalRecord);
+									}
+								);
 
-								$
-										.each(
-												lineOfRentalsArrays,
-												function(i, oneElement) {
+								$.each(
+									lineOfRentalsArrays,
+									function(i, oneElement) {
 
-													var currentElementJSON = JSON
-															.parse(oneElement);
+										var currentElementJSON = JSON
+												.parse(oneElement);
 
-													if (currentElementJSON.divingEventId == theCurrentDivingEventId
-															&& currentElementJSON.userId == userId) {
-														var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
+										if (currentElementJSON.divingEventId == theCurrentDivingEventId
+												&& currentElementJSON.userId == userId) {
+											var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
 
-														switch (anEquipment
-																.getType()) {
-															case "Tank":
-																if(tankRented == false){
-																	result = result
-																	+ anEquipment
-																			.getPrice();
-																	tankRented = true;
-																}
-																break;
-															case "Regulator":
-																if(regulatorRented == false){
-																	result = result
-																	+ anEquipment
-																			.getPrice();
-																	regulatorRented = true;
-																}
-	
-																break;
-															case "Jacket":
-																if(jacketRented == false){
-																	result = result
-																	+ anEquipment
-																			.getPrice();
-																	jacketRented = true;
-																}
-																break;
-															default:
-																break;
-														}
-													}
-												});
+											switch (anEquipment
+													.getType()) {
+											case "Tank":
+												if (anEquipment
+														.getPrice() > maxPriceForTank) {
+													maxPriceForTank = anEquipment
+															.getPrice();
+												}
+												break;
+											case "Regulator":
+												if (anEquipment
+														.getPrice() > maxPriceForRegulator) {
+													maxPriceForRegulator = anEquipment
+															.getPrice();
+												}
+												break;
+											case "Jacket":
+												if (anEquipment
+														.getPrice() > maxPriceForJacket) {
+													maxPriceForJacket = anEquipment
+															.getPrice();
+												}
+												break;
+											default:
+												alert("Cas non géré")
+												break;
+											}
+										}
+									}
+								);
 							}
 
-							if (this.billingThreshold != null
-									&& this.billingThreshold != -1
-									&& result > this.billingThreshold) {
-								// if the result if greater thant the ceiling of
-								// the diving event, then we have to retur the
-								// billingThreshold
-								result = this.billingThreshold;
+							result = maxPriceForTank + maxPriceForRegulator
+									+ maxPriceForJacket;
+
+							if ((Math.max(result, this.billingThreshold) == result)) {
+								if (this.billingThreshold == -1) {
+									// cela signifie qu'il n'y a pas de plafond
+									// positionné pour cette sortie, le résultat
+									// est donc bien la somme du matos loué.
+								} else {
+									result = this.billingThreshold;
+								}
 							}
 
 							return result;
@@ -541,6 +543,7 @@ function getDivingEventById(divingEventId) {
 		var jsonOneElement = JSON.parse(oneElement);
 
 		if (divingEventId == jsonOneElement.id) {
+			
 			result = new DivingEvent(jsonOneElement.id, jsonOneElement.place,
 					parseDate(jsonOneElement.date),
 					jsonOneElement.billingThreshold);
