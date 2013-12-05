@@ -1,121 +1,128 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>G.A.S.M. Rent</title>
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<!-- Javascripts --> 
-		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
-		<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
-		
-		<!-- CSS -->
-		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-		<link href="./css/gasm.css" rel="stylesheet" media="screen">
-		
-		<!-- JS Function that can be called -->
-<script type="text/javascript">
+<head>
+<title>G.A.S.M. Rent</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Javascripts -->
+<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="./js/barcodescanner.js"></script>
+
+<!-- CSS -->
+<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./css/gasm.css" rel="stylesheet" media="screen">
+
+<!-- JS Function that can be called -->
+<script type="text/javascript">
 	window.onload = function() {
 		//load I18N bundles
 		jQuery(document).ready(function() {
-	      	initLanguages();
-	    });
-		
+			initLanguages();
+		});
+
 		// We retreive informations about the diving events
 		getInfosOfDivingEvents();
-		
+
 		// We retreive informations about the users
 		getInfosOfUsers();
 	}
 
 	function loadBundles(lang) {
-          jQuery.i18n.properties({
-        	 name:'gasmrent',
-        	 path:'i18n/',
-        	 mode:'both',
-        	 language:lang,
-        	 callback: function() {
-        		 
-        		 jQuery.i18n.prop("chooseEventAndUserPageTitle");
-        		 document.getElementById("chooseEventAndUserPageTitle").innerHTML=chooseEventAndUserPageTitle;
-        		 
-        		 jQuery.i18n.prop("chooseEventAndUserDescription");
-        		 document.getElementById("chooseEventAndUserDescription").innerHTML=chooseEventAndUserDescription;
-        		 
-        		 jQuery.i18n.prop("user");
-        		 document.getElementById("user").innerHTML=user + " :";
-        		 
-        		 jQuery.i18n.prop("divingEvent");
-        		 document.getElementById("divingEvent").innerHTML=divingEvent + " :";
-        		 
-         		 jQuery.i18n.prop("scanQRCode");
-        		 document.getElementById("scanQRCode").innerHTML=scanQRCode;
-        		 
-        		 jQuery.i18n.prop("back");
-        		 document.getElementById("back").innerHTML=back;
-       		 }
-         });
-    }
-	
+		jQuery.i18n
+				.properties({
+					name : 'gasmrent',
+					path : 'i18n/',
+					mode : 'both',
+					language : lang,
+					callback : function() {
+
+						jQuery.i18n.prop("chooseEventAndUserPageTitle");
+						document.getElementById("chooseEventAndUserPageTitle").innerHTML = chooseEventAndUserPageTitle;
+
+						jQuery.i18n.prop("chooseEventAndUserDescription");
+						document
+								.getElementById("chooseEventAndUserDescription").innerHTML = chooseEventAndUserDescription;
+
+						jQuery.i18n.prop("user");
+						document.getElementById("user").innerHTML = user + " :";
+
+						jQuery.i18n.prop("divingEvent");
+						document.getElementById("divingEvent").innerHTML = divingEvent
+								+ " :";
+
+						jQuery.i18n.prop("scanQRCode");
+						document.getElementById("scanQRCode").innerHTML = scanQRCode;
+
+						jQuery.i18n.prop("back");
+						document.getElementById("back").innerHTML = back;
+					}
+				});
+	}
+
 	function sendInfoToDoScan() {
-		
+
 		var selectDivingEventsValue = $("#selectDivingEvents").val();
 		var selectUsersValue = $("#selectUsers").val();
-		
+
 		doScan(selectDivingEventsValue, selectUsersValue);
 	}
-	
 </script>
-	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-12 pageTitle" id="chooseEventAndUserPageTitle"></div>
-			</div>
-			<div class="row text-center viewContent">
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-12 pageTitle" id="chooseEventAndUserPageTitle"></div>
+		</div>
+		<form role="form">
+			<div class="row text-center viewContent form-group">
 				<div class="col-12 pageSection">
-				
+
 					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="chooseEventAndUserDescription">
-						</div>
+						<div class="col-12 text-center largeButton"
+							id="chooseEventAndUserDescription"></div>
 					</div>
-					
+
 					<div class="row largeRow">
 						<div class="col-12 text-center" id="divingEvent"></div>
 					</div>
-					
+
 					<div class="row largeRow">
 						<div class="col-12 text-center" id="divingEvents"></div>
 					</div>
-					
+
 					<div class="row largeRow">
 						<div class="col-12 text-center" id="user"></div>
 					</div>
-					
+
 					<div class="row largeRow">
 						<div class="col-12 text-center" id="users"></div>
 					</div>
-					
+
 					<div class="row largeRow">
-						<div class="col-12" >
-							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="scanQRCode">
-								</a>
+						<div class="col-12">
+							<a class="largeButton" href="#" onClick="sendInfoToDoScan()"
+								id="scanQRCode"> </a>
 						</div>
 					</div>
-					
+
 					<div class="row largeRow">
-						<div class="col-12 text-center" >
+						<div class="col-12 text-center">
 							<a class="largeButton" href="./index.html" id="back"></a>
 						</div>
 					</div>
-	        	</div>
-	    	</div>
-	    </div>
-	</body>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
 </html>

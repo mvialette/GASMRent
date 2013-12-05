@@ -54,15 +54,16 @@
 	function getEquipmentsForTheUser() {
 
 		var divingEventId = getURLParameter("divingEventId");
+		var aDivingEvent = getDivingEventById(divingEventId);
 		
 		var userId = getURLParameter("userId");
-		
+		var aUserObject = getUserById(userId);
 		
 		 $("#summaryByUserDescription").html(
-				summaryByUserDescription(userId, divingEventId, '20/11/2013'));
+				summaryByUserDescription(aUserObject.toString(), aDivingEvent.getPlace() , aDivingEvent.getDate(), aDivingEvent.getUserPrice(userId)));
 
 		var rentalRecordsStringFromLocalStorage = JSON
-				.parse(window.localStorage.getItem("rentalRecords"));
+				.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
 
 		var rentalRecordArrays = new Array();
 		
@@ -82,9 +83,12 @@
 		
 		listOfRentedEquipments = listOfRentedEquipments + "</ul>";
 		$("#listOfRentedEquipments").html(listOfRentedEquipments);
+		
 	}
 	
 	function sendInfoForSummaryByDivingEvent() {
+		
+		// send rented equipements to the server
 		window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
 	}
 </script>
@@ -103,18 +107,17 @@
 				<div class="row largeRow">
 					<div class="col-12 text-center" id="summaryByUserDescription"></div>
 				</div>
-
+				
 				<div class="row largeRow">
 					<div class="col-12 text-center" id="listOfRentedEquipments"></div>
 				</div>
-
+					
 				<div class="row largeRow">
 					<div class="col-12 text-center">
-						<a class="largeButton" href="./chooseEventAndUser.html"
-							id="continueRentalForSomeoneElse"></a>
+						<a class="largeButton" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
 					</div>
 				</div>
-				
+			
 				<div class="row largeRow">
 					<div class="col-12 text-center">
 						<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>

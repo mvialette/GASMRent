@@ -43,6 +43,8 @@
 	        		 
 	        		 jQuery.i18n.prop("summaryByUser");
 	        		 $("#summaryByUser").html(summaryByUser);
+	        		 
+	        		 jQuery.i18n.prop("messageErrorEquipmentNotAvailable");
 						
 	        		 jQuery.i18n.prop("back");
 	        		 $("#back").html(back);
@@ -50,69 +52,21 @@
 	         });
 	    }
 		
-		function getEquipmentId() {
-			var params = window.location.toString().substr(
-					window.location.toString().indexOf('=') + 1);
-			
-			var equipmentId = params.substr(0,params.indexOf('&'));
-			
-			return equipmentId;
-		}
-		
-		function getDivingEventId(){
-			var params = window.location.toString().substr(
-					window.location.toString().indexOf('=') + 1);
-			//alert(params);
-			var paramsTmp = params.substr(params.indexOf('=')+1);
-			//alert(paramsTmp);
-			var divingEventId = paramsTmp.substr(0,paramsTmp.indexOf('&'));
-			//alert(divingEventId);
-			return divingEventId;
-		}
-		
-		function getUserId(){
-			var params = window.location.toString().substr(
-					window.location.toString().indexOf('=') + 1);
-			
-			var paramsTmp = params.substr(params.indexOf('=')+1);
-			
-			paramsTmp = paramsTmp.substr(paramsTmp.indexOf('=')+1);
-			
-			var userId = paramsTmp;
-			
-			return userId;
-		}
-
 		function getInfosOfQRCodeScan() {
 			
 			var equipmentId = getURLParameter("equipmentId");
 			var divingEventId = getURLParameter("divingEventId");
 			var userId = getURLParameter("userId");
 	
-			var RentalRecord = function(divingEventId, userId, equipmentId){
+			var LineOfRental = function(divingEventId, userId, equipmentId){
 				    this.divingEventId = divingEventId;
 				    this.userId = userId;
 				    this.equipmentId = equipmentId;
-				    
-				    var localStorageEquipments = JSON.parse(window.localStorage
-							.getItem("equipments"));
-				    
-					var equipmentTypeTmp;
-					
-					$.each(localStorageEquipments, function(i, oneElement) {
-						
-						var jsonObject = JSON.parse(oneElement);
-						
-						if(jsonObject.reference ==  equipmentId){
-							equipmentTypeTmp = jsonObject.type;
-							return false;
-						}
-					});
-					
-					this.equipmentType = equipmentTypeTmp;
+				    var oneEquipment = getEquipmentById(this.equipmentId);
+					this.equipmentType = oneEquipment.getType();
 			}
 			
-			$.extend(RentalRecord.prototype, {
+			$.extend(LineOfRental.prototype, {
 				getDivingEventId: function() {
 			    	return this.divingEventId;
 				},
@@ -127,26 +81,28 @@
 				}
 			});
 			
-			var theNewRentalRecord = new RentalRecord(divingEventId, userId, equipmentId);
+			var theNewLineOfRental = new LineOfRental(divingEventId, userId, equipmentId);
 			
-			$("#zoneDivingEvent").html("Sortie : <b>" +  theNewRentalRecord.getDivingEventId() + "</b>");
-			$("#zoneUser").html("User : <b>" +  theNewRentalRecord.getUserId() + "</b>");
-			$("#zoneEquipment").html("Equipement : <b>" +  theNewRentalRecord.getEquipmentId() + "</b>");
-			
+			$("#zoneDivingEvent").html("Sortie : <b>" +  theNewLineOfRental.getDivingEventId() + "</b>");
+			$("#zoneUser").html("User : <b>" +  theNewLineOfRental.getUserId() + "</b>");
+			$("#zoneEquipment").html("Equipement : <b>" +  theNewLineOfRental.getEquipmentId() + "</b>");
+
 			// persist data in local storage
-			var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
-					.getItem("rentalRecords"));
+			var linesOfRentalFromTheLocalStorage = JSON.parse(window.localStorage
+					.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+
+			var linesOfRentalArrays = new Array();
+
+			if(linesOfRentalFromTheLocalStorage != null){
+				$.each(linesOfRentalFromTheLocalStorage, function(idx2,oneRentalRecord) {                    
+					linesOfRentalArrays.push(oneRentalRecord);
+				});
+			}
+
+			linesOfRentalArrays.push(JSON.stringify(theNewLineOfRental));
 			
-			var rentalRecordArrays = new Array();
-			
-			$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
-				rentalRecordArrays.push(oneRentalRecord);
-			});
-			
-			rentalRecordArrays.push(JSON.stringify(theNewRentalRecord));
-			
-			 window.localStorage.setItem("rentalRecords", JSON
-						.stringify(rentalRecordArrays));
+			window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON
+						.stringify(linesOfRentalArrays));
 		}
 		
 		function sendInfoToDoScan() {
