@@ -224,10 +224,9 @@ function sendLinesOfRental(divingEventId) {
 			contentType : "application/json; charset=utf-8",
 			data : "",
 			success : function(data) {
-				//alert('send put ok:' + data);
-				
 				//la synchronisation s'est correctement déroulé
 				//TODO : Afficher un résumé
+				alert("Synchronisation avec succes");
 			},
 			error : function(e) {
 				alert(JSON.stringify(e));
@@ -257,6 +256,8 @@ function getInfosOfEquipments() {
 			typeLocalized = regulator;
 		} else if (jsonOneElement.type == 'Jacket') {
 			typeLocalized = jacket;
+		} else if (jsonOneElement.type == 'Suit') {
+			typeLocalized = suit;
 		}
 
 		items = items + "<li>" + typeLocalized + " n° <b>"
@@ -321,7 +322,7 @@ function isEquipmentAvailableForRent(equipmentId) {
 		$.each(localStorageRentalRecords, function(i, aRentalRecord) {
 
 			var jsonRentalRecord = JSON.parse(aRentalRecord);
-			alert(jsonRentalRecord.equipmentId);
+			// alert(jsonRentalRecord.equipmentId);
 			if (jsonRentalRecord.equipmentId == equipmentId) {
 				result = false;
 				return false;
@@ -347,6 +348,7 @@ function doScan(divingEventId, userId) {
 						+ "&divingEventId=" + divingEventId + "&userId="
 						+ userId;
 			} else {
+				// Do not comment or delete this alert, it's use to send feedback message to the user
 				alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
 			}
 		} else {
@@ -473,6 +475,7 @@ function getDivingEventById(divingEventId) {
 							var maxPriceForRegulator = 0;
 							var maxPriceForTank = 0;
 							var maxPriceForJacket = 0;
+							var maxPriceForSuit = 0;
 
 							if (lineOfRentalsFromLocalStorageString != null) {
 								$.each(lineOfRentalsFromLocalStorageString,
@@ -516,6 +519,13 @@ function getDivingEventById(divingEventId) {
 															.getPrice();
 												}
 												break;
+											case "Suit":
+												if (anEquipment
+														.getPrice() > maxPriceForSuit) {
+													maxPriceForSuit = anEquipment
+															.getPrice();
+												}
+												break;
 											default:
 												alert("Cas non géré")
 												break;
@@ -526,7 +536,7 @@ function getDivingEventById(divingEventId) {
 							}
 
 							result = maxPriceForTank + maxPriceForRegulator
-									+ maxPriceForJacket;
+									+ maxPriceForJacket + maxPriceForSuit;
 
 							if ((Math.max(result, this.billingThreshold) == result)) {
 								if (this.billingThreshold == -1) {
