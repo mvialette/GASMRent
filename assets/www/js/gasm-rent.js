@@ -196,7 +196,7 @@ function synchronizeEquipments() {
 			});
 }
 
-function sendRentalRecords(divingEventId) {
+function sendLinesOfRental(divingEventId) {
 
 	var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
@@ -213,10 +213,10 @@ function sendRentalRecords(divingEventId) {
 		var paramToSend = "?dEventId=" + currentElementJSON.divingEventId
 				+ "&renterId=" + currentElementJSON.userId + "&equipmentId="
 				+ currentElementJSON.equipmentId;
-		alert(paramToSend);
+		//alert(paramToSend);
 
 		var urlComplete = getConstants().URL_SEND_RENTAL_RECORDS + paramToSend;
-		alert(urlComplete);
+		//alert(urlComplete);
 
 		jQuery.ajax({
 			url : urlComplete,
@@ -224,14 +224,15 @@ function sendRentalRecords(divingEventId) {
 			contentType : "application/json; charset=utf-8",
 			data : "",
 			success : function(data) {
-				alert('send put ok:' + data);
+				//alert('send put ok:' + data);
+				
+				//la synchronisation s'est correctement déroulé
+				//TODO : Afficher un résumé
 			},
 			error : function(e) {
 				alert(JSON.stringify(e));
-				console.log(e);
 			}
 		});
-		alert("end");
 	});
 }
 
@@ -358,8 +359,11 @@ function doScan(divingEventId, userId) {
 }
 
 function getEquipmentsByDivingEventId(divingEventId) {
+	
+	var aDivingEvent = getDivingEventById(divingEventId);
+	
 	$("#summaryByDivingEventDescription").html(
-			summaryByDivingEventDescription(divingEventId, '20/11/2013'));
+			summaryByDivingEventDescription(aDivingEvent.getPlace(), aDivingEvent.getDate()));
 
 	var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
@@ -378,8 +382,11 @@ function getEquipmentsByDivingEventId(divingEventId) {
 		var currentElementJSON = JSON.parse(oneElement);
 
 		if (currentElementJSON.divingEventId == divingEventId) {
+			
+			var aUserObject = getUserById(currentElementJSON.userId);
+			
 			listOfPendingRentalRecords = listOfPendingRentalRecords + "<li>"
-					+ currentElementJSON.userId + " : "
+					+ aUserObject.toString() + " : "
 					+ currentElementJSON.equipmentId + "</li>";
 		}
 	});

@@ -105,9 +105,12 @@
 						.stringify(linesOfRentalArrays));
 		}
 		
-		function sendInfoToDoScan() {
+		function scanAgain() {
 			
-			doScan( getDivingEventId(), getUserId());
+			var divingEventId = getURLParameter("divingEventId");
+			var userId = getURLParameter("userId");
+
+			doScan(divingEventId, userId);
 		}
 		
 		function sendInfoForSummaryByUser() {
@@ -143,7 +146,7 @@
 					
 					<div class="row largeRow">
 						<div class="col-12 text-center" >
-							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="continueScan">
+							<a class="largeButton" href="#" onClick="scanAgain()" id="continueScan">
 							</a>
 						</div>
 					</div>
