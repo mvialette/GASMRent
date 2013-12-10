@@ -3,11 +3,13 @@ function getConstants() {
 		"URL_GET_USERS" : "https://mindful-girder-344.appspot.com/api/adherent/",
 		"URL_GET_DIVING_EVENT" : "https://mindful-girder-344.appspot.com/api/divingEvent/",
 		"URL_GET_EQUIPMENT" : "https://mindful-girder-344.appspot.com/api/equipment/",
+		"URL_GET_PAYMENT_TYPE" : "https://mindful-girder-344.appspot.com/api/payment",
 		"URL_SEND_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent",
 		"LOCAL_STORAGE_USERS" : "offlineUsers",
 		"LOCAL_STORAGE_DIVING_EVENTS" : "offlineDivingEvents",
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
-		"LOCAL_STORAGE_LINE_OF_RENTAL" : "lineOfRental"
+		"LOCAL_STORAGE_LINE_OF_RENTAL" : "lineOfRental",
+		"LOCAL_STORAGE_PAYMENT_TYPE" : "offlinePaymentType"
 	};
 
 	return constants;
@@ -196,6 +198,66 @@ function synchronizeEquipments() {
 			});
 }
 
+function synchronizePaymentType() {
+	var urlComplete = getConstants().URL_GET_PAYMENT_TYPE;
+	
+	//alert(urlComplete);
+
+	jQuery
+			.ajax({
+				type : "GET",
+				url : urlComplete,
+				contentType : "application/json; charset=utf-8",
+				dataType : "json",
+				success : function(data, status, jqXHR) {
+
+					//alert("online mode");
+
+					var paymentTypes = [];
+					var compteur = 0;
+
+					$.each(data, function(i, item) {
+
+						//alert(JSON.stringify(item));
+						
+						paymentTypes.push(item);
+
+						compteur++;
+					});
+					
+					//alert(JSON.stringify(paymentTypes));
+
+					window.localStorage.setItem(
+							getConstants().LOCAL_STORAGE_PAYMENT_TYPE, JSON
+									.stringify(paymentTypes));
+
+					//alert("ok");
+					document.getElementById('paymentTypes').innerHTML = paymentTypesOnline(compteur);
+				},
+				error : function(jqXHR, status) {
+
+					alert("offline mode");
+
+					var localStoragePaymentTypes = JSON.parse(window.localStorage
+							.getItem(getConstants().LOCAL_STORAGE_PAYMENT_TYPE));
+
+					// alert(localStorageUsers);
+					var compteur = 0;
+
+					$.each(localStoragePaymentTypes, function(i, oneElement) {
+
+						// alert(oneUser);
+
+						var jsonOneElement = JSON.parse(oneElement);
+						// alert("reference="+jsonOneElement.reference);
+						compteur++;
+					});
+
+					document.getElementById('paymentTypes').innerHTML = paymentTypesOffline(compteur);
+				}
+			});
+}
+
 function sendLinesOfRental(divingEventId) {
 
 	var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
@@ -273,6 +335,25 @@ function getInfosOfDivingEvents() {
 
 	var localStorageDivingEvents = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
+
+	var items = "<select id=\"selectDivingEvents\" class=\"form-control\">";
+
+	$.each(localStorageDivingEvents, function(i, oneElement) {
+		var jsonOneElement = JSON.parse(oneElement);
+		items = items + "<option value=\"" + jsonOneElement.id + "\">"
+				+ jsonOneElement.place + " le "
+				+ parseDate(jsonOneElement.date) + "</option>";
+	});
+
+	items = items + "</select>";
+
+	document.getElementById("divingEvents").innerHTML = items;
+}
+
+function getPaymentType() {
+
+	var localStorageDivingEvents = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_PAYMENT_TYPE));
 
 	var items = "<select id=\"selectDivingEvents\" class=\"form-control\">";
 
