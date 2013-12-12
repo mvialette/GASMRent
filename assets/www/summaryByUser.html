@@ -42,6 +42,15 @@
 				
 				$("#continueRentalForSomeoneElse").html(continueRentalForSomeoneElse);
 				
+				jQuery.i18n.prop("hasPaidByCoin");
+				$("#hasPaidByCoin").html(hasPaidByCoin);
+				
+				jQuery.i18n.prop("hasPaidByCheck");
+				$("#hasPaidByCheck").html(hasPaidByCheck);
+				
+				jQuery.i18n.prop("hasNotPaid");
+				$("#hasNotPaid").html(hasNotPaid);
+				
 				jQuery.i18n.prop("summaryByDivingEvent");
 				$("#summaryByDivingEvent").html(summaryByDivingEvent);
 				
@@ -50,6 +59,106 @@
 			}
 		});
 	} 
+	
+	function savePaymentTypeForThisUser(byCoin){
+		
+		var paymentByUserAndDivingEventArray = new Array();
+		//window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArray);
+		
+		//alert("byCoin="+byCoin);
+		
+		var divingEventIdByParam = getURLParameter("divingEventId");
+		//alert("divingEventId="+divingEventIdByParam);
+		
+		var userIdByParam = getURLParameter("userId");
+		//alert("userId="+userIdByParam);
+		
+		var localStorageVarName = getConstants().LOCAL_STORAGE_PAYMENT_BY_USER;
+		//alert("localStorageVarName="+localStorageVarName);
+		
+		var localStorageValue = window.localStorage.getItem(localStorageVarName);
+		//alert("localStorageValue="+localStorageValue);
+		
+		//var localStorageValueStringify = JSON.stringify(localStorageValue);
+		//alert("localStorageValueStringify="+localStorageValueStringify);
+		
+		var paymentByUserAndDivingEventJSON = JSON.parse(localStorageValue);
+		//alert("paymentByUserAndDivingEventJSON="+paymentByUserAndDivingEventJSON);
+		
+		if(paymentByUserAndDivingEventJSON != null){
+			
+		//	alert("localStorageValue is not null");
+			
+			$.each(paymentByUserAndDivingEventJSON, function(i,oneRecord) {                    
+			//	alert("found one record in local storage");
+				paymentByUserAndDivingEventArray.push(oneRecord);
+			});
+		}
+		
+		alert("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArray);
+		
+		 var BillingRecord = function(object) {
+			this.userId = object.userId;
+			this.divingEventId = object.divingEventId;
+			this.paymentMode = object.paymentMode;
+			
+			this.getUserId = function() {
+				return this.userId;
+			}, 
+			
+			this.getDivingEventId = function() {
+				return this.divingEventId;
+			},
+			
+			this.getPaymentMode = function() {
+				return this.paymentMode;
+			},
+			
+			this.setPaymentMode = function(newPaymentMode) {
+				this.paymentMode = newPaymentMode;
+			}
+		}
+		
+		var recordFound = false;
+		//alert("record initial=" + paymentByUserAndDivingEventArray);
+		
+		var paymentByUserAndDivingEventstringify = JSON.stringify(paymentByUserAndDivingEventArray);
+		//alert("paymentByUserAndDivingEventstringify=" + paymentByUserAndDivingEventstringify);
+		
+		var paymentByUserAndDivingEventParse = JSON.parse(paymentByUserAndDivingEventstringify);
+		//alert("paymentByUserAndDivingEventParse=" + paymentByUserAndDivingEventParse);
+		
+		$.each(paymentByUserAndDivingEventParse, function(idx2,aRecordOfTheArray) {  
+			/* alert("oneRecord");
+			alert("oneRecord, userid="+ aRecordOfTheArray.userId);
+			var currentItem = JSON.parse(aRecordOfTheArray);
+			 alert("currentItem="+ currentItem); */
+			// alert("aa"); 
+			var aBillingRecord = new BillingRecord(aRecordOfTheArray);
+			//alert("aaa");
+			//alert("oneRecord.getUserId()="+ aBillingRecord.getUserId());
+			//alert("oneRecord.getDivingEventId()="+aBillingRecord.getDivingEventId());
+			
+			if(userIdByParam == aBillingRecord.getUserId() && divingEventIdByParam == aBillingRecord.getDivingEventId()){
+				alert("set payment mode");
+				aRecordOfTheArray.paymentMode=byCoin;
+				recordFound=true;
+				alert("return");
+				return false;
+			}
+		});
+		
+		alert("recordFound="+recordFound);
+		if(recordFound == false){
+			var oneBillingRecord = new BillingRecord(userIdByParam,divingEventIdByParam,byCoin);	
+			paymentByUserAndDivingEventArray. .push(oneBillingRecord);
+		}
+		
+		var paymentByUserAndDivingEventArrayStringify = JSON.stringify(paymentByUserAndDivingEventArray);
+		alert("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArrayStringify); 
+		
+		window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArrayStringify);
+	}
 
 	function getEquipmentsForTheUser() {
 
@@ -86,12 +195,6 @@
 		
 	}
 	
-	function getPaymentType() {
-
-		// TODO : to implement
-		
-	}
-	
 	function sendInfoForSummaryByDivingEvent() {
 		
 		// send rented equipements to the server
@@ -116,22 +219,23 @@
 				
 				<div class="row largeRow">
 					<div class="col-12 text-center" id="listOfRentedEquipments"></div>
-				</div>
-				
-				<div class="row largeRow">
-					<div class="col-12 text-center" id="paymentType"></div>
-				</div>
-				
+				</div>				
 				
 				<div class="row largeRow">
 					<div class="col-12 text-center">
-						<a class="largeButton" href="#" id="hasPaid"></a>
+						<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
 					</div>
 				</div>
 				
 				<div class="row largeRow">
 					<div class="col-12 text-center">
-						<a class="largeButton" href="#" id="hasNotPaid"></a>
+						<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
+					</div>
+				</div>
+				
+				<div class="row largeRow">
+					<div class="col-12 text-center">
+						<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
 					</div>
 				</div>
 					

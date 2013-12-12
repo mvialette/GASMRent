@@ -9,7 +9,8 @@ function getConstants() {
 		"LOCAL_STORAGE_DIVING_EVENTS" : "offlineDivingEvents",
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
 		"LOCAL_STORAGE_LINE_OF_RENTAL" : "lineOfRental",
-		"LOCAL_STORAGE_PAYMENT_TYPE" : "offlinePaymentType"
+		"LOCAL_STORAGE_PAYMENT_TYPE" : "offlinePaymentType",
+		"LOCAL_STORAGE_PAYMENT_BY_USER" : "offlinePaymentByUser"
 	};
 
 	return constants;
@@ -350,23 +351,22 @@ function getInfosOfDivingEvents() {
 	document.getElementById("divingEvents").innerHTML = items;
 }
 
-function getPaymentType() {
-
-	var localStorageDivingEvents = JSON.parse(window.localStorage
+function getPaymentTypeFromLocalStorage() {
+	
+	var localStoragePaymentTypes = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_PAYMENT_TYPE));
 
-	var items = "<select id=\"selectDivingEvents\" class=\"form-control\">";
+	var items = "<select id=\"paymentType\" class=\"form-control\">";
 
-	$.each(localStorageDivingEvents, function(i, oneElement) {
-		var jsonOneElement = JSON.parse(oneElement);
-		items = items + "<option value=\"" + jsonOneElement.id + "\">"
-				+ jsonOneElement.place + " le "
-				+ parseDate(jsonOneElement.date) + "</option>";
+	$.each(localStoragePaymentTypes, function(i, oneElement) {
+		
+		items = items + "<option value=\"" + oneElement + "\">"
+				+ oneElement + "</option>";
 	});
 
 	items = items + "</select>";
-
-	document.getElementById("divingEvents").innerHTML = items;
+	
+	$("#paymentType").html(items);
 }
 
 function getInfosOfUsers() {
