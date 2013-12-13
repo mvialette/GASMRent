@@ -5,6 +5,7 @@ function getConstants() {
 		"URL_GET_EQUIPMENT" : "https://mindful-girder-344.appspot.com/api/equipment/",
 		"URL_GET_PAYMENT_TYPE" : "https://mindful-girder-344.appspot.com/api/payment",
 		"URL_SEND_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent",
+		"URL_TO_PAY_A_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/paid/",
 		"LOCAL_STORAGE_USERS" : "offlineUsers",
 		"LOCAL_STORAGE_DIVING_EVENTS" : "offlineDivingEvents",
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
@@ -288,8 +289,12 @@ function sendLinesOfRental(divingEventId) {
 			data : "",
 			success : function(data) {
 				//la synchronisation s'est correctement déroulé
-				//TODO : Afficher un résumé
-				alert("Synchronisation avec succes");
+				alert("Synchronisation");
+				
+				//TODO : payment gesture
+				var idOfTheRentalRecord = data;
+				//var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS + idOfTheRentalRecord + "?payment=" + ;
+				//"https://mindful-girder-344.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
 			},
 			error : function(e) {
 				alert(JSON.stringify(e));
