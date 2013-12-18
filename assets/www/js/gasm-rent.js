@@ -11,7 +11,9 @@ function getConstants() {
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
 		"LOCAL_STORAGE_LINE_OF_RENTAL" : "lineOfRental",
 		"LOCAL_STORAGE_PAYMENT_TYPE" : "offlinePaymentType",
-		"LOCAL_STORAGE_PAYMENT_BY_USER" : "offlinePaymentByUser"
+		"LOCAL_STORAGE_PAYMENT_BY_USER" : "offlinePaymentByUser",
+		"PAYMENT_BY_COIN" : "Liquide",
+		"PAYMENT_BY_CHECK" : "Chèque"
 	};
 
 	return constants;
@@ -261,7 +263,13 @@ function synchronizePaymentType() {
 }
 
 function sendLinesOfRental(divingEventId) {
-
+	
+	var paymentByUserAndDivingEventArrayStringify = window.localStorage.getItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
+	//alert("paymentByUserAndDivingEventArrayStringify="+paymentByUserAndDivingEventArrayStringify);
+	
+	var paymentByUserAndDivingEventArrayJSON = JSON.parse(paymentByUserAndDivingEventArrayStringify);
+	//alert("paymentByUserAndDivingEventArrayJSON="+paymentByUserAndDivingEventArrayJSON);
+	
 	var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
 
@@ -270,37 +278,93 @@ function sendLinesOfRental(divingEventId) {
 	$.each(rentalRecordsStringFromLocalStorage,
 			function(idx2, oneRentalRecord) {
 				rentalRecordArrays.push(oneRentalRecord);
-			});
+		}
+	);
 
-	$.each(rentalRecordArrays, function(i, oneElement) {
-		var currentElementJSON = JSON.parse(oneElement);
-		var paramToSend = "?dEventId=" + currentElementJSON.divingEventId
+	$.each(rentalRecordArrays, 
+		function(i, oneElement) {
+			var currentElementJSON = JSON.parse(oneElement);
+			var paramToSend = "?dEventId=" + currentElementJSON.divingEventId
 				+ "&renterId=" + currentElementJSON.userId + "&equipmentId="
 				+ currentElementJSON.equipmentId;
-		//alert(paramToSend);
+			
+			//alert(paramToSend);
 
-		var urlComplete = getConstants().URL_SEND_RENTAL_RECORDS + paramToSend;
-		//alert(urlComplete);
-
-		jQuery.ajax({
-			url : urlComplete,
-			type : "PUT",
-			contentType : "application/json; charset=utf-8",
-			data : "",
-			success : function(data) {
-				//la synchronisation s'est correctement déroulé
-				alert("Synchronisation");
-				
-				//TODO : payment gesture
-				var idOfTheRentalRecord = data;
-				//var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS + idOfTheRentalRecord + "?payment=" + ;
-				//"https://mindful-girder-344.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
-			},
-			error : function(e) {
-				alert(JSON.stringify(e));
-			}
-		});
-	});
+			var urlComplete = getConstants().URL_SEND_RENTAL_RECORDS + paramToSend;
+//			//alert(urlComplete);
+	
+			jQuery.ajax({
+				url : urlComplete,
+				type : "PUT",
+				contentType : "application/json; charset=utf-8",
+				data : "",
+				success : function(data) {
+					//la synchronisation s'est correctement déroulé
+					alert("Synchronisation");
+					
+					//TODO : payment gesture
+					var idOfTheRentalRecord = data;
+					
+					currentElementJSON.userId
+					
+					//alert("currentElementJSON.userId="+currentElementJSON.userId);
+					//alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
+					
+					var paymentModeOfTheUser = null;
+					
+					$.each(paymentByUserAndDivingEventArrayJSON,
+							function(idx3, onePayment) {
+								//alert("onePayment.userId="+onePayment.userId);
+								//alert("onePayment.divingEventId="+onePayment.divingEventId);
+								
+								if(currentElementJSON.userId == onePayment.userId && currentElementJSON.divingEventId == onePayment.divingEventId){
+									// we have found a payment entry
+									//alert("find");
+									//alert("onePayment.paymentMode="+onePayment.paymentMode);
+									paymentModeOfTheUser=onePayment.paymentMode;
+									return false;
+								}
+								//alert("next");
+						}
+					);
+					
+					//alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+					
+					if(paymentModeOfTheUser != null){
+						if(paymentModeOfTheUser == true){
+							//COIN
+							paymentModeOfTheUser = getConstants().PAYMENT_BY_COIN;
+						}else if(paymentModeOfTheUser == false){
+							//CHECK
+							paymentModeOfTheUser = getConstants().PAYMENT_BY_CHECK;
+						}
+						
+						var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS + idOfTheRentalRecord + "?payment=" + paymentModeOfTheUser;
+						//alert("urlCompleteToPay="+urlCompleteToPay);
+						//"https://mindful-girder-344.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
+						
+						jQuery.ajax({
+							url : urlCompleteToPay,
+							type : "PUT",
+							contentType : "application/json; charset=utf-8",
+							data : "",
+							success : function(data) {
+								alert("payment send");
+							},
+							error : function(e) {
+								alert(JSON.stringify(e));
+							}
+						});
+					}else{
+						alert("no payment");
+					}
+				},
+				error : function(e) {
+					alert(JSON.stringify(e));
+				}
+			});
+		}
+	);
 }
 
 function getInfosOfEquipments() {
@@ -532,111 +596,110 @@ function getDivingEventById(divingEventId) {
 		this.billingThreshold = billingThreshold;
 	}
 
-	$
-			.extend(
-					DivingEvent.prototype,
-					{
-						getDivingEventId : function() {
-							return this.theDivingEventId;
-						},
-						getPlace : function() {
-							return this.place;
-						},
-						getDate : function() {
-							return this.date;
-						},
-						getBillingThreshold : function() {
-							return this.billingThreshold;
-						},
-						getUserPrice : function(userId) {
+	$.extend(
+			DivingEvent.prototype,
+			{
+				getDivingEventId : function() {
+					return this.theDivingEventId;
+				},
+				getPlace : function() {
+					return this.place;
+				},
+				getDate : function() {
+					return this.date;
+				},
+				getBillingThreshold : function() {
+					return this.billingThreshold;
+				},
+				getUserPrice : function(userId) {
 
-							var result = 0;
-							var theCurrentDivingEventId = this.theDivingEventId;
+					var result = 0;
+					var theCurrentDivingEventId = this.theDivingEventId;
 
-							var lineOfRentalsFromLocalStorageString = JSON
-									.parse(window.localStorage
-											.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
-							var lineOfRentalsArrays = new Array();
+					var lineOfRentalsFromLocalStorageString = JSON
+							.parse(window.localStorage
+									.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+					var lineOfRentalsArrays = new Array();
 
-							var maxPriceForRegulator = 0;
-							var maxPriceForTank = 0;
-							var maxPriceForJacket = 0;
-							var maxPriceForSuit = 0;
+					var maxPriceForRegulator = 0;
+					var maxPriceForTank = 0;
+					var maxPriceForJacket = 0;
+					var maxPriceForSuit = 0;
 
-							if (lineOfRentalsFromLocalStorageString != null) {
-								$.each(lineOfRentalsFromLocalStorageString,
-									function(idx2, oneRentalRecord) {
-										lineOfRentalsArrays
-												.push(oneRentalRecord);
-									}
-								);
-
-								$.each(
-									lineOfRentalsArrays,
-									function(i, oneElement) {
-
-										var currentElementJSON = JSON
-												.parse(oneElement);
-
-										if (currentElementJSON.divingEventId == theCurrentDivingEventId
-												&& currentElementJSON.userId == userId) {
-											var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
-
-											switch (anEquipment
-													.getType()) {
-											case "Tank":
-												if (anEquipment
-														.getPrice() > maxPriceForTank) {
-													maxPriceForTank = anEquipment
-															.getPrice();
-												}
-												break;
-											case "Regulator":
-												if (anEquipment
-														.getPrice() > maxPriceForRegulator) {
-													maxPriceForRegulator = anEquipment
-															.getPrice();
-												}
-												break;
-											case "Jacket":
-												if (anEquipment
-														.getPrice() > maxPriceForJacket) {
-													maxPriceForJacket = anEquipment
-															.getPrice();
-												}
-												break;
-											case "Suit":
-												if (anEquipment
-														.getPrice() > maxPriceForSuit) {
-													maxPriceForSuit = anEquipment
-															.getPrice();
-												}
-												break;
-											default:
-												alert("Cas non géré")
-												break;
-											}
-										}
-									}
-								);
+					if (lineOfRentalsFromLocalStorageString != null) {
+						$.each(lineOfRentalsFromLocalStorageString,
+							function(idx2, oneRentalRecord) {
+								lineOfRentalsArrays
+										.push(oneRentalRecord);
 							}
+						);
 
-							result = maxPriceForTank + maxPriceForRegulator
-									+ maxPriceForJacket + maxPriceForSuit;
+						$.each(
+							lineOfRentalsArrays,
+							function(i, oneElement) {
 
-							if ((Math.max(result, this.billingThreshold) == result)) {
-								if (this.billingThreshold == -1) {
-									// cela signifie qu'il n'y a pas de plafond
-									// positionné pour cette sortie, le résultat
-									// est donc bien la somme du matos loué.
-								} else {
-									result = this.billingThreshold;
+								var currentElementJSON = JSON
+										.parse(oneElement);
+
+								if (currentElementJSON.divingEventId == theCurrentDivingEventId
+										&& currentElementJSON.userId == userId) {
+									var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
+
+									switch (anEquipment
+											.getType()) {
+									case "Tank":
+										if (anEquipment
+												.getPrice() > maxPriceForTank) {
+											maxPriceForTank = anEquipment
+													.getPrice();
+										}
+										break;
+									case "Regulator":
+										if (anEquipment
+												.getPrice() > maxPriceForRegulator) {
+											maxPriceForRegulator = anEquipment
+													.getPrice();
+										}
+										break;
+									case "Jacket":
+										if (anEquipment
+												.getPrice() > maxPriceForJacket) {
+											maxPriceForJacket = anEquipment
+													.getPrice();
+										}
+										break;
+									case "Suit":
+										if (anEquipment
+												.getPrice() > maxPriceForSuit) {
+											maxPriceForSuit = anEquipment
+													.getPrice();
+										}
+										break;
+									default:
+										alert("Cas non géré")
+										break;
+									}
 								}
 							}
+						);
+					}
 
-							return result;
+					result = maxPriceForTank + maxPriceForRegulator
+							+ maxPriceForJacket + maxPriceForSuit;
+
+					if ((Math.max(result, this.billingThreshold) == result)) {
+						if (this.billingThreshold == -1) {
+							// cela signifie qu'il n'y a pas de plafond
+							// positionné pour cette sortie, le résultat
+							// est donc bien la somme du matos loué.
+						} else {
+							result = this.billingThreshold;
 						}
-					});
+					}
+
+					return result;
+				}
+			});
 
 	var localStorageDivingEvents = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
