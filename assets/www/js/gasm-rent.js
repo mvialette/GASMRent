@@ -13,7 +13,7 @@ function getConstants() {
 		"LOCAL_STORAGE_PAYMENT_TYPE" : "offlinePaymentType",
 		"LOCAL_STORAGE_PAYMENT_BY_USER" : "offlinePaymentByUser",
 		"PAYMENT_BY_COIN" : "Liquide",
-		"PAYMENT_BY_CHECK" : "Chèque"
+		"PAYMENT_BY_CHECK" : "Ch%C3%A8que"
 	};
 
 	return constants;
@@ -307,28 +307,29 @@ function sendLinesOfRental(divingEventId) {
 					
 					currentElementJSON.userId
 					
-					//alert("currentElementJSON.userId="+currentElementJSON.userId);
-					//alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
+					alert("currentElementJSON.userId="+currentElementJSON.userId);
+					alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
 					
 					var paymentModeOfTheUser = null;
 					
 					$.each(paymentByUserAndDivingEventArrayJSON,
 							function(idx3, onePayment) {
-								//alert("onePayment.userId="+onePayment.userId);
-								//alert("onePayment.divingEventId="+onePayment.divingEventId);
+						
+								alert("onePayment.userId="+onePayment.userId);
+								alert("onePayment.divingEventId="+onePayment.divingEventId);
 								
 								if(currentElementJSON.userId == onePayment.userId && currentElementJSON.divingEventId == onePayment.divingEventId){
 									// we have found a payment entry
-									//alert("find");
-									//alert("onePayment.paymentMode="+onePayment.paymentMode);
+									alert("find");
+									alert("onePayment.paymentMode="+onePayment.paymentMode);
 									paymentModeOfTheUser=onePayment.paymentMode;
 									return false;
 								}
-								//alert("next");
+								alert("next");
 						}
 					);
 					
-					//alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+					alert("paymentModeOfTheUser="+paymentModeOfTheUser);
 					
 					if(paymentModeOfTheUser != null){
 						if(paymentModeOfTheUser == true){
@@ -340,7 +341,7 @@ function sendLinesOfRental(divingEventId) {
 						}
 						
 						var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS + idOfTheRentalRecord + "?payment=" + paymentModeOfTheUser;
-						//alert("urlCompleteToPay="+urlCompleteToPay);
+						alert("urlCompleteToPay="+urlCompleteToPay);
 						//"https://mindful-girder-344.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
 						
 						jQuery.ajax({
