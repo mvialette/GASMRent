@@ -534,13 +534,17 @@ function getEquipmentsByDivingEventId(divingEventId) {
 
 		var currentElementJSON = JSON.parse(oneElement);
 
+		alert(JSON.stringify(currentElementJSON));
+		
 		if (currentElementJSON.divingEventId == divingEventId) {
 			
 			var aUserObject = getUserById(currentElementJSON.userId);
 			
+			var anEquipmentObject = getEquipmentById(currentElementJSON.equipmentId);
+			
 			listOfPendingRentalRecords = listOfPendingRentalRecords + "<li>"
 					+ aUserObject.toString() + " : "
-					+ currentElementJSON.equipmentId + "</li>";
+					+ anEquipmentObject.toString() + "</li>";
 		}
 	});
 
@@ -566,6 +570,30 @@ function getEquipmentById(equipmentId) {
 			return this.price;
 		}, this.getType = function() {
 			return this.type;
+		}, this.toString = function() {
+			
+			var frenchType = this.type;
+			
+			switch (this.type) {
+			case "Tank":
+				frenchType = tank;
+				break;
+			case "Regulator":
+				frenchType = regulator;
+				
+				break;
+			case "Jacket":
+				frenchType = jacket;
+				break;
+			case "Suit":
+				frenchType = suit;
+				break;
+			default:
+				alert("Cas non géré")
+				break;
+			}
+			
+			return frenchType + " n°<b>"+equipmentId+"</b>";
 		}
 	}
 
@@ -595,6 +623,9 @@ function getDivingEventById(divingEventId) {
 		this.place = place;
 		this.date = date;
 		this.billingThreshold = billingThreshold;
+		this.toString = function() {
+			return "<b>" + this.place + "</b> le <b>" + this.date+"</b>";
+		}
 	}
 
 	$.extend(

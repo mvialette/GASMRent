@@ -83,9 +83,13 @@
 			
 			var theNewLineOfRental = new LineOfRental(divingEventId, userId, equipmentId);
 			
-			$("#zoneDivingEvent").html("Sortie : <b>" +  theNewLineOfRental.getDivingEventId() + "</b>");
-			$("#zoneUser").html("User : <b>" +  theNewLineOfRental.getUserId() + "</b>");
-			$("#zoneEquipment").html("Equipement : <b>" +  theNewLineOfRental.getEquipmentId() + "</b>");
+			var anEquipment = getEquipmentById(theNewLineOfRental.getEquipmentId());
+			var aUser = getUserById(theNewLineOfRental.getUserId());
+			var aDivingEvent = getDivingEventById(theNewLineOfRental.getDivingEventId());
+			
+			$("#zoneDivingEvent").html("Sortie : " + aDivingEvent.toString());
+			$("#zoneUser").html("L'utilisateur : <b>" + aUser.toString()  + "</b>");
+			$("#zoneEquipment").html("L'équipement : <b>" + anEquipment.toString()  + "</b>");
 
 			// persist data in local storage
 			var linesOfRentalFromTheLocalStorage = JSON.parse(window.localStorage
@@ -132,15 +136,15 @@
 					<div class="row largeRow">
 						<div class="col-12 text-center" id="scanDescription"></div>
 					</div>
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="zoneDivingEvent"></div>
 					</div>
 					
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="zoneUser"></div>
 					</div>
 					
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="zoneEquipment"></div>
 					</div>
 					
