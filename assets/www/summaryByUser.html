@@ -1,136 +1,255 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-<title>G.A.S.M. Rent</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Javascripts -->
-<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script> 
-<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
-<!--  -->
-
-<script type="text/javascript">
-	window.onload = function() {
-		//load I18N bundles
-		 jQuery(document).ready(function() {
-			initLanguages();
-		});
+	<head>
+		<title>G.A.S.M. Rent</title>
 		
-		getEquipmentsForTheUser();
-	}
-
-	function loadBundles(lang) {
-		jQuery.i18n.properties({
-			name : 'gasmrent',
-			path : 'i18n/',
-			mode : 'both',
-			language : lang,
-			callback : function() {
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Javascripts -->
+		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script> 
+		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+		<!--  -->
+		
+		<script type="text/javascript">
+			window.onload = function() {
+				//load I18N bundles
+				 jQuery(document).ready(function() {
+					initLanguages();
+				});
 				
-				jQuery.i18n.prop("summaryByUserPageTitle");
-				
-				$("#summaryByUserPageTitle").html(summaryByUserPageTitle);
-
-				jQuery.i18n.prop("summaryByUserDescription");
-
-				jQuery.i18n.prop("continueRentalForSomeoneElse");
-				
-				$("#continueRentalForSomeoneElse").html(continueRentalForSomeoneElse);
-				
-				jQuery.i18n.prop("summaryByDivingEvent");
-				$("#summaryByDivingEvent").html(summaryByDivingEvent);
-				
-				jQuery.i18n.prop("back");
-				$("#back").html(back);
+				getEquipmentsForTheUser();
 			}
-		});
-	} 
-
-	function getEquipmentsForTheUser() {
-
-		var divingEventId = getURLParameter("divingEventId");
-		var aDivingEvent = getDivingEventById(divingEventId);
 		
-		var userId = getURLParameter("userId");
-		var aUserObject = getUserById(userId);
+			function loadBundles(lang) {
+				jQuery.i18n.properties({
+					name : 'gasmrent',
+					path : 'i18n/',
+					mode : 'both',
+					language : lang,
+					callback : function() {
+						
+						jQuery.i18n.prop("summaryByUserPageTitle");
+						
+						$("#summaryByUserPageTitle").html(summaryByUserPageTitle);
 		
-		 $("#summaryByUserDescription").html(
-				summaryByUserDescription(aUserObject.toString(), aDivingEvent.getPlace() , aDivingEvent.getDate(), aDivingEvent.getUserPrice(userId)));
-
-		var rentalRecordsStringFromLocalStorage = JSON
-				.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
-
-		var rentalRecordArrays = new Array();
+						jQuery.i18n.prop("summaryByUserDescription");
 		
-		$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
-			rentalRecordArrays.push(oneRentalRecord);
-		});
-		
-		var listOfRentedEquipments = "<ul>";
-		
-		$.each(rentalRecordArrays, function(i, oneElement) {
-			var currentElementJSON = JSON.parse(oneElement);
+						jQuery.i18n.prop("continueRentalForSomeoneElse");
+						
+						$("#continueRentalForSomeoneElse").html(continueRentalForSomeoneElse);
+						
+						jQuery.i18n.prop("hasPaidByCoin");
+						$("#hasPaidByCoin").html(hasPaidByCoin);
+						
+						jQuery.i18n.prop("hasPaidByCheck");
+						$("#hasPaidByCheck").html(hasPaidByCheck);
+						
+						jQuery.i18n.prop("hasNotPaid");
+						$("#hasNotPaid").html(hasNotPaid);
+						
+						jQuery.i18n.prop("summaryByDivingEvent");
+						$("#summaryByDivingEvent").html(summaryByDivingEvent);
+						
+						jQuery.i18n.prop("back");
+						$("#back").html(back);
+					}
+				});
+			} 
 			
-			if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
-				listOfRentedEquipments = listOfRentedEquipments + "<li>" + currentElementJSON.equipmentId + "</li>";
-			}
-		});
-		
-		listOfRentedEquipments = listOfRentedEquipments + "</ul>";
-		$("#listOfRentedEquipments").html(listOfRentedEquipments);
-		
-	}
-	
-	function sendInfoForSummaryByDivingEvent() {
-		
-		// send rented equipements to the server
-		window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
-	}
-</script>
-
-<!-- CSS -->
-<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="./css/gasm.css" rel="stylesheet" media="screen">
-</head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-12 pageTitle" id="summaryByUserPageTitle"></div>
-		</div>
-		<div class="row">
-			<div class="col-12 pageSection">
-				<div class="row largeRow">
-					<div class="col-12 text-center" id="summaryByUserDescription"></div>
-				</div>
+			function savePaymentTypeForThisUser(byCoin){
 				
-				<div class="row largeRow">
-					<div class="col-12 text-center" id="listOfRentedEquipments"></div>
-				</div>
+				var paymentByUserAndDivingEventArray = new Array();
+				//window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArray);
+				
+				//alert("byCoin="+byCoin);
+				
+				var divingEventIdByParam = getURLParameter("divingEventId");
+				//alert("divingEventId="+divingEventIdByParam);
+				
+				var userIdByParam = getURLParameter("userId");
+				//alert("userId="+userIdByParam);
+				
+				var localStorageVarName = getConstants().LOCAL_STORAGE_PAYMENT_BY_USER;
+				//alert("localStorageVarName="+localStorageVarName);
+				
+				var localStorageValue = window.localStorage.getItem(localStorageVarName);
+				//alert("localStorageValue="+localStorageValue);
+				
+				//var localStorageValueStringify = JSON.stringify(localStorageValue);
+				//alert("localStorageValueStringify="+localStorageValueStringify);
+				
+				var paymentByUserAndDivingEventJSON = JSON.parse(localStorageValue);
+				//alert("paymentByUserAndDivingEventJSON="+paymentByUserAndDivingEventJSON);
+				
+				if(paymentByUserAndDivingEventJSON != null){
 					
-				<div class="row largeRow">
-					<div class="col-12 text-center">
-						<a class="largeButton" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
-					</div>
-				</div>
+				//	alert("localStorageValue is not null");
+					
+					$.each(paymentByUserAndDivingEventJSON, function(i,oneRecord) {                    
+					//	alert("found one record in local storage");
+						paymentByUserAndDivingEventArray.push(oneRecord);
+					});
+				}
+				
+				//alert("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArray);
+				
+				 var BillingRecord = function(userId, divingEventId, paymentMode) {
+					this.userId = userId;
+					this.divingEventId = divingEventId;
+					this.paymentMode = paymentMode;
+					
+					this.getUserId = function() {
+						return this.userId;
+					}, 
+					
+					this.getDivingEventId = function() {
+						return this.divingEventId;
+					},
+					
+					this.getPaymentMode = function() {
+						return this.paymentMode;
+					},
+					
+					this.setPaymentMode = function(newPaymentMode) {
+						this.paymentMode = newPaymentMode;
+					}
+				}
+				
+				var recordFound = false;
+				//alert("record initial=" + paymentByUserAndDivingEventArray);
+				
+				var paymentByUserAndDivingEventstringify = JSON.stringify(paymentByUserAndDivingEventArray);
+				//alert("paymentByUserAndDivingEventstringify=" + paymentByUserAndDivingEventstringify);
+				
+				var paymentByUserAndDivingEventParse = JSON.parse(paymentByUserAndDivingEventstringify);
+				//alert("paymentByUserAndDivingEventParse=" + paymentByUserAndDivingEventParse);
+				
+				paymentByUserAndDivingEventArray.forEach(
+					function updatePaymentMode(anItem) {
+						if(userIdByParam == anItem.userId && divingEventIdByParam == anItem.divingEventId){
+							//alert("set payment mode");
+							anItem.paymentMode=byCoin;
+							recordFound=true;
+							//alert("return:"+byCoin);
+							//return false;
+						}
+					}		
+				);
+				
+				//alert("recordFound="+recordFound);
+				if(recordFound == false){
+					var oneBillingRecord = new BillingRecord(userIdByParam,divingEventIdByParam,byCoin);	
+					paymentByUserAndDivingEventArray.push(oneBillingRecord);
+				}
+				
+				var paymentByUserAndDivingEventArrayStringify = JSON.stringify(paymentByUserAndDivingEventArray);
+				//alert("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArrayStringify); 
+				
+				window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArrayStringify);
+			}
+		
+			function getEquipmentsForTheUser() {
+		
+				var divingEventId = getURLParameter("divingEventId");
+				var aDivingEvent = getDivingEventById(divingEventId);
+				
+				var userId = getURLParameter("userId");
+				var aUserObject = getUserById(userId);
+				
+				 $("#summaryByUserDescription").html(
+						summaryByUserDescription(aUserObject.toString(), aDivingEvent.getPlace() , aDivingEvent.getDate(), aDivingEvent.getUserPrice(userId)));
+		
+				var rentalRecordsStringFromLocalStorage = JSON
+						.parse(window.localStorage.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+		
+				var rentalRecordArrays = new Array();
+				
+				$.each(rentalRecordsStringFromLocalStorage, function(idx2,oneRentalRecord) {                    
+					rentalRecordArrays.push(oneRentalRecord);
+				});
+				
+				var listOfRentedEquipments = "<ul>";
+				
+				$.each(rentalRecordArrays, function(i, oneElement) {
+					var currentElementJSON = JSON.parse(oneElement);
+					
+					if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
+						listOfRentedEquipments = listOfRentedEquipments + "<li>" + currentElementJSON.equipmentId + "</li>";
+					}
+				});
+				
+				listOfRentedEquipments = listOfRentedEquipments + "</ul>";
+				$("#listOfRentedEquipments").html(listOfRentedEquipments);
+				
+			}
 			
-				<div class="row largeRow">
-					<div class="col-12 text-center">
-						<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+			function sendInfoForSummaryByDivingEvent() {
+				
+				// send rented equipements to the server
+				window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
+			}
+		</script>
+		
+		<!-- CSS -->
+		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/gasm.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-12 pageTitle" id="summaryByUserPageTitle"></div>
+			</div>
+			<div class="row">
+				<div class="col-12 pageSection">
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="summaryByUserDescription"></div>
 					</div>
-				</div>
-
-				<div class="row largeRow">
-					<div class="col-12 text-center">
-						<a class="largeButton" href="./index.html" id="back"></a>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center" id="listOfRentedEquipments"></div>
+					</div>				
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
+						</div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
+						</div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
+						</div>
+					</div>
+						
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
+						</div>
+					</div>
+				
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+						</div>
+					</div>
+	
+					<div class="row largeRow">
+						<div class="col-12 text-center">
+							<a class="largeButton" href="./index.html" id="back"></a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</body>
+	</body>
 </html>

@@ -47,24 +47,25 @@
 					callback : function() {
 
 						jQuery.i18n.prop("chooseEventAndUserPageTitle");
-						document.getElementById("chooseEventAndUserPageTitle").innerHTML = chooseEventAndUserPageTitle;
+						$("#chooseEventAndUserPageTitle").html(chooseEventAndUserPageTitle);
 
 						jQuery.i18n.prop("chooseEventAndUserDescription");
-						document
-								.getElementById("chooseEventAndUserDescription").innerHTML = chooseEventAndUserDescription;
+						$("#chooseEventAndUserDescription").html(chooseEventAndUserDescription);
 
 						jQuery.i18n.prop("user");
-						document.getElementById("user").innerHTML = user + " :";
+						$("#user").html(user + " :");
 
 						jQuery.i18n.prop("divingEvent");
-						document.getElementById("divingEvent").innerHTML = divingEvent
-								+ " :";
+						$("#divingEvent").html(divingEvent + " :");
 
 						jQuery.i18n.prop("scanQRCode");
-						document.getElementById("scanQRCode").innerHTML = scanQRCode;
+						$("#scanQRCode").html(scanQRCode);
+						
+						jQuery.i18n.prop("summaryByUser");
+		        		 $("#summaryByUser").html(summaryByUser);
 
 						jQuery.i18n.prop("back");
-						document.getElementById("back").innerHTML = back;
+						$("#back").html(back);
 					}
 				});
 	}
@@ -75,6 +76,14 @@
 		var selectUsersValue = $("#selectUsers").val();
 
 		doScan(selectDivingEventsValue, selectUsersValue);
+	}
+	
+	function sendInfoForSummaryByUser() {
+		
+		var selectDivingEventsValue = $("#selectDivingEvents").val();
+		var selectUsersValue = $("#selectUsers").val();
+		
+		window.location = "./summaryByUser.html?divingEventId=" + selectDivingEventsValue + "&userId=" + selectUsersValue;
 	}
 </script>
 </head>
@@ -110,8 +119,13 @@
 
 					<div class="row largeRow">
 						<div class="col-12">
-							<a class="largeButton" href="#" onClick="sendInfoToDoScan()"
-								id="scanQRCode"> </a>
+							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="scanQRCode"> </a>
+						</div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12">
+							<a class="largeButton" href="#" onClick="sendInfoForSummaryByUser()" id="summaryByUser"> </a>
 						</div>
 					</div>
 

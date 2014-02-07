@@ -51,7 +51,7 @@
 }
 
 body {
-	background-color: #9DB3E4;
+	background-color: #c2c2c2;
 }
 
 .pageTitle {
@@ -60,7 +60,7 @@ body {
 	border-left-width: 0px;
 	border-right-width: 0px;
 	border-top-width: 0px;
-	color: #bc252a;
+	color: #2d4859;
 	font-size: 2rem;
 	font-weight: bold;
 	/* margin: 5%; */
@@ -76,10 +76,10 @@ body {
 } */
 
 .pageSection {
-	background-color: #D6DDED;
+	background-color: #72b8e4;
 	border-width: 2px;
 	border-style: solid;
-	border-color: #bc252a;
+	border-color: #2d4859;
 	border-top-left-radius: 20px 20px;
 	border-bottom-right-radius: 20px 20px;
 	/* margin: 5%; */
@@ -94,12 +94,12 @@ a.largeButton {
 }
 
 a.largeButton {
-	background-color: #FFD278;
+	background-color: #c2c2c2;
 	border: 2px solid;
-	border-color: #bc252a;
+	border-color: #2d4859;
 	border-top-left-radius: 20px 20px;
 	border-bottom-right-radius: 20px 20px;
-	color: #bc252a;
+	color: #2d4859;
 	font-size: 1rem;
 	font-weight: bold;
 	margin: 5px;

@@ -31,6 +31,9 @@
 				
 				// Send informations of rented equipments to the server
 				//sendRentalRecords();
+				
+				// We ask the synchronize the payment type
+				synchronizePaymentType();
 			}
 			
 			function loadBundles(lang) {
@@ -52,6 +55,9 @@
 		        		 
 		        		 jQuery.i18n.prop('equipmentOnline');
 		        		 jQuery.i18n.prop('equipmentOffline');
+		        		 
+		        		 jQuery.i18n.prop('paymentTypesOnline');
+		        		 jQuery.i18n.prop('paymentTypesOffline');
 		        		 
 		        		 jQuery.i18n.prop("back");
 		        		 document.getElementById("back").innerHTML=back;
@@ -83,6 +89,10 @@
 					
 					<div class="row largeRow">
 						<div class="col-12 text-center largeButton" id="equipments"></div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12 text-center largeButton" id="paymentTypes"></div>
 					</div>
 	
 					<div class="row largeRow">
