@@ -31,10 +31,13 @@
 		});
 
 		// We retreive informations about the diving events
-		getInfosOfDivingEvents();
+		getInfosOfDivingEventsForSelect();
 
 		// We retreive informations about the users
 		getInfosOfUsers();
+		
+		// We retreive informations about equipments
+		getInfosOfEquipmentsForSelect();
 	}
 
 	function loadBundles(lang) {
@@ -57,9 +60,15 @@
 
 						jQuery.i18n.prop("divingEvent");
 						$("#divingEvent").html(divingEvent + " :");
+						
+						jQuery.i18n.prop("equipment");
+						$("#equipment").html(equipment + " :");
 
 						jQuery.i18n.prop("scanQRCode");
 						$("#scanQRCode").html(scanQRCode);
+						
+						jQuery.i18n.prop("rentWithoutScan");
+						$("#rentWithoutScan").html(rentWithoutScan);
 						
 						jQuery.i18n.prop("summaryByUser");
 		        		 $("#summaryByUser").html(summaryByUser);
@@ -96,30 +105,48 @@
 			<div class="row text-center viewContent form-group">
 				<div class="col-12 pageSection">
 
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center largeButton"
 							id="chooseEventAndUserDescription"></div>
 					</div>
 
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="divingEvent"></div>
 					</div>
 
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="divingEvents"></div>
 					</div>
 
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="user"></div>
 					</div>
 
-					<div class="row largeRow">
+					<div class="row">
 						<div class="col-12 text-center" id="users"></div>
+					</div>
+					
+					<div class="row">
+						<div class="col-12 text-center" id="equipment"></div>
+					</div>
+
+					<div class="row">
+						<div class="col-12 text-center" id="equipments"></div>
+					</div>
+					
+					<div class="row largeRow">
+						
 					</div>
 
 					<div class="row largeRow">
 						<div class="col-12">
 							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="scanQRCode"> </a>
+						</div>
+					</div>
+					
+					<div class="row largeRow">
+						<div class="col-12">
+							<a class="largeButton" href="#" onClick="sendInfoWithoutScan()" id="rentWithoutScan"></a>
 						</div>
 					</div>
 					
