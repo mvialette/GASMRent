@@ -392,9 +392,14 @@ function getInfosOfEquipments() {
 		} else if (jsonOneElement.type == 'Suit') {
 			typeLocalized = suit;
 		}
+		
+		
+		var anEquipment = getEquipmentById(jsonOneElement.reference);
 
-		items = items + "<li>" + typeLocalized + " n° <b>"
-				+ jsonOneElement.reference + "</b></li>";
+		items = items + "<li>" + anEquipment.toString() + "</li>";
+		
+//		items = items + "<li>" + typeLocalized + " n° <b>"
+//				+ jsonOneElement.reference + "</b></li>";
 
 		compteur++;
 	});
@@ -465,23 +470,33 @@ function parseDate(dateObject) {
 
 function isEquipmentAvailableForRent(equipmentId) {
 	var result = true;
-	// alert("equipment cherche " + equipmentId);
+	//alert("equipment cherche " + equipmentId);
 	var localStorageRentalRecords = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
-	// alert("localStorageRentalRecords" + localStorageRentalRecords);
-	if (localStorageRentalRecords != null) {
-		$.each(localStorageRentalRecords, function(i, aRentalRecord) {
+	//alert("localStorageRentalRecords" + localStorageRentalRecords);
+	
+	//is it an knowing reference
+	var anIdentifiedEquipment = getEquipmentById(equipmentId);
+	
+	//alert("anIdentifiedEquipment=" + anIdentifiedEquipment);
+	
+	if(anIdentifiedEquipment == null){
+		result = false;
+	}else{
+		if (localStorageRentalRecords != null) {
+			$.each(localStorageRentalRecords, function(i, aRentalRecord) {
 
-			var jsonRentalRecord = JSON.parse(aRentalRecord);
-			// alert(jsonRentalRecord.equipmentId);
-			if (jsonRentalRecord.equipmentId == equipmentId) {
-				result = false;
-				return false;
-			}
-		});
+				var jsonRentalRecord = JSON.parse(aRentalRecord);
+				//alert(jsonRentalRecord.equipmentId);
+				if (jsonRentalRecord.equipmentId == equipmentId) {
+					result = false;
+					return false;
+				}
+			});
+		}
 	}
-
-	// alert("end"+result);
+	
+	//alert("end"+result);
 	return result;
 }
 
@@ -580,7 +595,6 @@ function getEquipmentById(equipmentId) {
 				break;
 			case "Regulator":
 				frenchType = regulator;
-				
 				break;
 			case "Jacket":
 				frenchType = jacket;
