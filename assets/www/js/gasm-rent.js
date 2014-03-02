@@ -522,23 +522,25 @@ function isEquipmentAvailableForRent(equipmentId) {
 	return result;
 }
 
+function rentAnEquipment(divingEventId, userId, equipmentId){
+
+	// we have to know if this equipment is available for rent
+	if (isEquipmentAvailableForRent(equipmentId)) {
+		window.location = "scan.html?equipmentId=" + equipmentId
+				+ "&divingEventId=" + divingEventId + "&userId="
+				+ userId;
+	} else {
+		// Do not comment or delete this alert, it's use to send feedback message to the user
+		alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
+	}
+}
+
 function doScan(divingEventId, userId) {
 
 	window.plugins.barcodeScanner.scan(function(result) {
 
 		if (result.cancelled == false && result.format == "QR_CODE") {
-			var leTextDuQRCode = result.text;
-			/* alert("We got a qrcode = " + leTextDuQRCode); */
-
-			// we have to know if this equipment is available for rent
-			if (isEquipmentAvailableForRent(leTextDuQRCode)) {
-				window.location = "scan.html?equipmentId=" + leTextDuQRCode
-						+ "&divingEventId=" + divingEventId + "&userId="
-						+ userId;
-			} else {
-				// Do not comment or delete this alert, it's use to send feedback message to the user
-				alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
-			}
+			rentAnEquipment(divingEventId, userId, result.text);
 		} else {
 			// alert("Le scan n'a pas abouti");
 		}

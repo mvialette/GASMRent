@@ -87,6 +87,15 @@
 		doScan(selectDivingEventsValue, selectUsersValue);
 	}
 	
+	function sendInfoWithoutScan() {
+
+		var selectDivingEventsValue = $("#selectDivingEvents").val();
+		var selectUsersValue = $("#selectUsers").val();
+		var selectEquipmentValue = $("#selectEquipments").val();
+
+		rentAnEquipment(selectDivingEventsValue, selectUsersValue, selectEquipmentValue);
+	}
+	
 	function sendInfoForSummaryByUser() {
 		
 		var selectDivingEventsValue = $("#selectDivingEvents").val();
