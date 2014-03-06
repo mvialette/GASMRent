@@ -20,7 +20,16 @@
 			      	initLanguages();
 			    });
 				
-				//getInfosOfEquipmentsToList();
+				getEquipmentDetail();
+			}
+			
+			function getEquipmentDetail() {
+				
+				var equipmentId = getURLParameter("equipmentId");
+				
+				var equiment = getEquipmentById(equipmentId);
+				
+				document.getElementById("description").innerHTML=equiment.toCompleteString();
 			}
 			
 			function loadBundles(lang) {
@@ -33,13 +42,6 @@
 		        		 
 		        		 jQuery.i18n.prop("viewEquipmentDetailPageTitle");
 		        		 document.getElementById("viewEquipmentDetailPageTitle").innerHTML=viewEquipmentDetailPageTitle;
-		        		 
-		        		 document.getElementById("description").innerHTML=getURLParameter("equipmentId");
-		        		 
-		        		 jQuery.i18n.prop('tank');
-		        		 jQuery.i18n.prop('regulator');
-		        		 jQuery.i18n.prop('jacket');
-		        		 jQuery.i18n.prop('suit');
 		        		 
 		        		 jQuery.i18n.prop("back");
 		        		 document.getElementById("back").innerHTML=back;

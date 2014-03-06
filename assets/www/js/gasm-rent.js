@@ -658,6 +658,34 @@ function getEquipmentById(equipmentId) {
 			}
 			
 			return frenchType + " n°<b>"+equipmentId+"</b>";
+		}, this.toCompleteString = function() {
+			
+			var frenchType = this.type;
+			var otherFields = "";
+			
+			switch (this.type) {
+			case "Tank":
+				frenchType = tank;
+				
+				otherFields = otherFields + "<br><br>price="+ price;
+				otherFields = otherFields + "<br><br>rented="+ rented;
+				
+				break;
+			case "Regulator":
+				frenchType = regulator;
+				break;
+			case "Jacket":
+				frenchType = jacket;
+				break;
+			case "Suit":
+				frenchType = suit;
+				break;
+			default:
+				alert("Cas non géré")
+				break;
+			}
+			
+			return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
 		}
 	}
 
