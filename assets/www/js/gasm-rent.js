@@ -531,11 +531,11 @@ function rentAnEquipment(divingEventId, userId, equipmentId){
 				+ userId;
 	} else {
 		// Do not comment or delete this alert, it's use to send feedback message to the user
-		alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
+		alert(messageErrorEquipmentNotAvailable(equipmentId));
 	}
 }
 
-function doScan(divingEventId, userId) {
+function doScanByDivingEventIdAndUserId(divingEventId, userId) {
 
 	window.plugins.barcodeScanner.scan(function(result) {
 
@@ -548,6 +548,32 @@ function doScan(divingEventId, userId) {
 		// alert("Scanning failed: " + error);
 	});
 
+}
+
+function doScanForEquipmentDetail() {
+
+	window.plugins.barcodeScanner.scan(function(result) {
+
+		if (result.cancelled == false && result.format == "QR_CODE") {
+			viewItemDetail(result.text);
+		} else {
+			// alert("Le scan n'a pas abouti");
+		}
+	}, function(error) {
+		// alert("Scanning failed: " + error);
+	});
+
+}
+
+function viewItemDetail(equipmentId){
+
+	// we have to know if this equipment is available for rent
+	if (isEquipmentAvailableForRent(equipmentId)) {
+		window.location = "viewEquipmentDetail.html?equipmentId=" + equipmentId;
+	} else {
+		// Do not comment or delete this alert, it's use to send feedback message to the user
+		alert(messageErrorEquipmentNotAvailable(equipmentId));
+	}
 }
 
 function getEquipmentsByDivingEventId(divingEventId) {
