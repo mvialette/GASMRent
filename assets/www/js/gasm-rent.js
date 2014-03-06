@@ -368,7 +368,7 @@ function sendLinesOfRental(divingEventId) {
 	);
 }
 
-function getInfosOfEquipments() {
+function getInfosOfEquipmentsToList() {
 
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
@@ -381,18 +381,17 @@ function getInfosOfEquipments() {
 	$.each(localStorageEquipments, function(i, oneElement) {
 
 		var jsonOneElement = JSON.parse(oneElement);
-		var typeLocalized;
-
-		if (jsonOneElement.type == 'Tank') {
-			typeLocalized = tank;
-		} else if (jsonOneElement.type == 'Regulator') {
-			typeLocalized = regulator;
-		} else if (jsonOneElement.type == 'Jacket') {
-			typeLocalized = jacket;
-		} else if (jsonOneElement.type == 'Suit') {
-			typeLocalized = suit;
-		}
-		
+//		var typeLocalized;
+//
+//		if (jsonOneElement.type == 'Tank') {
+//			typeLocalized = tank;
+//		} else if (jsonOneElement.type == 'Regulator') {
+//			typeLocalized = regulator;
+//		} else if (jsonOneElement.type == 'Jacket') {
+//			typeLocalized = jacket;
+//		} else if (jsonOneElement.type == 'Suit') {
+//			typeLocalized = suit;
+//		}
 		
 		var anEquipment = getEquipmentById(jsonOneElement.reference);
 
@@ -404,10 +403,33 @@ function getInfosOfEquipments() {
 		compteur++;
 	});
 
-	document.getElementById("liste").innerHTML = items;
+	document.getElementById("equipments").innerHTML = items;
 }
 
-function getInfosOfDivingEvents() {
+function getInfosOfEquipmentsForSelect() {
+
+	var localStorageEquipments = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
+	
+	var items = "<select id=\"selectEquipments\" class=\"form-control\">";
+
+	items = items + "<option value=\"null\"></option>";
+	
+	$.each(localStorageEquipments, function(i, oneElement) {
+		var jsonOneElement = JSON.parse(oneElement);
+		
+		var anEquipment = getEquipmentById(jsonOneElement.reference);
+		
+		items = items + "<option value=\"" + jsonOneElement.reference + "\">"
+				+ anEquipment.toString() + "</option>";
+	});
+
+	items = items + "</select>";
+
+	document.getElementById("equipments").innerHTML = items;
+}
+
+function getInfosOfDivingEventsForSelect() {
 
 	var localStorageDivingEvents = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
@@ -500,23 +522,25 @@ function isEquipmentAvailableForRent(equipmentId) {
 	return result;
 }
 
+function rentAnEquipment(divingEventId, userId, equipmentId){
+
+	// we have to know if this equipment is available for rent
+	if (isEquipmentAvailableForRent(equipmentId)) {
+		window.location = "scan.html?equipmentId=" + equipmentId
+				+ "&divingEventId=" + divingEventId + "&userId="
+				+ userId;
+	} else {
+		// Do not comment or delete this alert, it's use to send feedback message to the user
+		alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
+	}
+}
+
 function doScan(divingEventId, userId) {
 
 	window.plugins.barcodeScanner.scan(function(result) {
 
 		if (result.cancelled == false && result.format == "QR_CODE") {
-			var leTextDuQRCode = result.text;
-			/* alert("We got a qrcode = " + leTextDuQRCode); */
-
-			// we have to know if this equipment is available for rent
-			if (isEquipmentAvailableForRent(leTextDuQRCode)) {
-				window.location = "scan.html?equipmentId=" + leTextDuQRCode
-						+ "&divingEventId=" + divingEventId + "&userId="
-						+ userId;
-			} else {
-				// Do not comment or delete this alert, it's use to send feedback message to the user
-				alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
-			}
+			rentAnEquipment(divingEventId, userId, result.text);
 		} else {
 			// alert("Le scan n'a pas abouti");
 		}
