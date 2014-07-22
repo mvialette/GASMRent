@@ -1,11 +1,11 @@
 function getConstants() {
 	var constants = {
-		"URL_GET_USERS" : "https://mindful-girder-344.appspot.com/api/adherent/",
-		"URL_GET_DIVING_EVENT" : "https://mindful-girder-344.appspot.com/api/divingEvent/",
-		"URL_GET_EQUIPMENT" : "https://mindful-girder-344.appspot.com/api/equipment/",
-		"URL_GET_PAYMENT_TYPE" : "https://mindful-girder-344.appspot.com/api/payment",
-		"URL_SEND_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent",
-		"URL_TO_PAY_A_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/paid/",
+		"URL_GET_USERS" : "https://.appspot.com/api/adherent/",
+		"URL_GET_DIVING_EVENT" : "https://gasmrent-webapp.appspot.com/api/divingEvent/",
+		"URL_GET_EQUIPMENT" : "https://gasmrent-webapp.appspot.com/api/equipment/",
+		"URL_GET_PAYMENT_TYPE" : "https://gasmrent-webapp.appspot.com/api/payment",
+		"URL_SEND_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent",
+		"URL_TO_PAY_A_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/",
 		"LOCAL_STORAGE_USERS" : "offlineUsers",
 		"LOCAL_STORAGE_DIVING_EVENTS" : "offlineDivingEvents",
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
@@ -146,7 +146,7 @@ function synchronizeDivingEvents() {
 
 function synchronizeEquipments() {
 	var urlComplete = getConstants().URL_GET_EQUIPMENT;
-	// alert(urlComplete);
+	alert(urlComplete);
 
 	jQuery
 			.ajax({
@@ -156,21 +156,66 @@ function synchronizeEquipments() {
 				dataType : "json",
 				success : function(data, status, jqXHR) {
 
-					// alert("online mode");
+					alert("online mode");
 
 					var equipments = [];
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
-
-						equipments.push("{\"reference\":\"" + item.reference
-								+ "\",\"type\":\"" + item.type
-								+ "\",\"price\":" + item.price + ",\"rented\":"
-								+ item.rented + "}");
-
+						if(item.type == "Tank"){
+							/**
+							* {
+							* 	"reference":"215",
+							* 	"brand":"Roth",
+							* 	"historyList":[],
+							* 	"serialNumber":"5555555215",
+							* 	"material":"Steal",
+							* 	"gaz":"Air",
+							* 	"screw":"Air",
+							* 	"weight":20.0,
+							* 	"capacity":"Litre_12",
+							* 	"buildDate":1406073600000,
+							* 	"operatingPressure":200.0,
+							* 	"testPressure":300.0,
+							* 	"testDate":1406678400000,
+							* 	"punch":false,
+							* 	"lastDateOfTIV":1406678400000,
+							* 	"status":false,
+							* 	"type":"Tank",
+							* 	"price":4.5,
+							* 	"rented":false,
+							* 	"renterFullName":null,
+							* 	"created":true
+							* }
+							*/
+							equipments.push("{\"reference\":\"" + item.reference
+									+ "\",\"brand\":\"" + item.brand
+									+ "\",\"serialNumber\":\"" + item.serialNumber
+									+ "\",\"material\":\"" + item.material
+									+ "\",\"gaz\":\"" + item.gaz
+									+ "\",\"screw\":\"" + item.screw
+									+ "\",\"weight\":\"" + item.weight
+									+ "\",\"buildDate\":\"" + item.buildDate
+									+ "\",\"operatingPressure\":\"" + item.operatingPressure
+									+ "\",\"testPressure\":\"" + item.testPressure
+									+ "\",\"punch\":\"" + item.punch
+									+ "\",\"lastDateOfTIV\":\"" + item.lastDateOfTIV
+									+ "\",\"status\":\"" + item.status
+									+ "\",\"type\":\"" + item.type
+									+ "\",\"price\":\"" + item.price
+									+ "\",\"rented\":\"" + item.rented
+									+ "}");
+						}else{
+							equipments.push("{\"reference\":\"" + item.reference
+									+ "\",\"type\":\"" + item.type
+									+ "\",\"price\":" + item.price + ",\"rented\":"
+									+ item.rented + "}");
+						}
+						
+						
 						compteur++;
 					});
-					// alert(JSON.stringify(items));
+					alert(JSON.stringify(items));
 
 					window.localStorage.setItem(
 							getConstants().LOCAL_STORAGE_EQUIPMENTS, JSON
@@ -180,7 +225,7 @@ function synchronizeEquipments() {
 				},
 				error : function(jqXHR, status) {
 
-					// alert("offline mode");
+					alert("offline mode");
 
 					var localStorageEquipments = JSON.parse(window.localStorage
 							.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
@@ -342,7 +387,7 @@ function sendLinesOfRental(divingEventId) {
 						
 						var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS + idOfTheRentalRecord + "?payment=" + paymentModeOfTheUser;
 						//alert("urlCompleteToPay="+urlCompleteToPay);
-						//"https://mindful-girder-344.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
+						//"https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
 						
 						jQuery.ajax({
 							url : urlCompleteToPay,
