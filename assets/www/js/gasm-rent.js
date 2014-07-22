@@ -35,7 +35,7 @@ function synchronizeUsers() {
 		dataType : "json",
 		success : function(data, status, jqXHR) {
 
-			// alert("online mode");
+			alert("online mode");
 			var items = [];
 			var compteur = 0;
 
@@ -57,7 +57,8 @@ function synchronizeUsers() {
 		},
 		error : function(jqXHR, status) {
 
-			// alert("offline mode");
+			alert("offline mode" + JSON.parse(jqXHR));
+			alert("offline mode" + status);
 
 			var localStorageUsers = JSON.parse(window.localStorage
 					.getItem(getConstants().LOCAL_STORAGE_USERS));
@@ -156,13 +157,18 @@ function synchronizeEquipments() {
 				dataType : "json",
 				success : function(data, status, jqXHR) {
 
-					alert("online mode");
+					//alert("online mode");
 
 					var equipments = [];
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
+						
+						//alert("item=" + JSON.stringify(item));
+						//alert("item.reference=" + item.reference);
+						
 						if(item.type == "Tank"){
+							//alert("ok");
 							/**
 							* {
 							* 	"reference":"215",
@@ -188,6 +194,23 @@ function synchronizeEquipments() {
 							* 	"created":true
 							* }
 							*/
+							alert("reference:" + item.reference);
+							alert("brand:" + item.brand);
+							alert("serialNumber:" + item.serialNumber);
+							alert("material:" + item.material);
+							alert("gaz:" + item.gaz);
+							alert("screw:" + item.screw);
+							alert("weight:" + item.weight);
+							alert("buildDate:" + item.buildDate);
+							alert("operatingPressure:" + item.operatingPressure);
+							alert("testPressure:" + item.testPressure);
+							alert("punch:" + item.punch);
+							alert("lastDateOfTIV:" + item.lastDateOfTIV);
+							alert("status:" + item.status);
+							alert("type:" + item.type);
+							alert("price:" + item.price);
+							alert("rented:" + item.rented);
+							
 							equipments.push("{\"reference\":\"" + item.reference
 									+ "\",\"brand\":\"" + item.brand
 									+ "\",\"serialNumber\":\"" + item.serialNumber
@@ -206,6 +229,7 @@ function synchronizeEquipments() {
 									+ "\",\"rented\":\"" + item.rented
 									+ "}");
 						}else{
+							alert("ko");
 							equipments.push("{\"reference\":\"" + item.reference
 									+ "\",\"type\":\"" + item.type
 									+ "\",\"price\":" + item.price + ",\"rented\":"
@@ -215,7 +239,7 @@ function synchronizeEquipments() {
 						
 						compteur++;
 					});
-					alert(JSON.stringify(items));
+					alert("items=" + JSON.stringify(equipments));
 
 					window.localStorage.setItem(
 							getConstants().LOCAL_STORAGE_EQUIPMENTS, JSON
@@ -225,7 +249,8 @@ function synchronizeEquipments() {
 				},
 				error : function(jqXHR, status) {
 
-					alert("offline mode");
+					//alert("offline mode" + JSON.parse(jqXHR));
+					//alert("offline mode" + status);
 
 					var localStorageEquipments = JSON.parse(window.localStorage
 							.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
