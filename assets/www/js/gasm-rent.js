@@ -146,8 +146,15 @@ function synchronizeDivingEvents() {
 }
 
 function synchronizeEquipments() {
+	
+	//var debuging = true;
+	var debuging = false;
+	
 	var urlComplete = getConstants().URL_GET_EQUIPMENT;
-	alert(urlComplete);
+
+	if(debuging){
+		alert(urlComplete);	
+	}
 
 	jQuery
 			.ajax({
@@ -157,18 +164,42 @@ function synchronizeEquipments() {
 				dataType : "json",
 				success : function(data, status, jqXHR) {
 
-					//alert("online mode");
+					if(debuging){
+						alert("online mode");
+					}
 
 					var equipments = [];
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
-						
-						//alert("item=" + JSON.stringify(item));
-						//alert("item.reference=" + item.reference);
+					
+						if(debuging){
+							alert("item=" + JSON.stringify(item));
+							alert("item.reference=" + item.reference);
+						}
 						
 						if(item.type == "Tank"){
-							//alert("ok");
+
+							if(debuging){
+								alert("ok");
+								
+								alert("reference:" + item.reference);
+								alert("brand:" + item.brand);
+								alert("serialNumber:" + item.serialNumber);
+								alert("material:" + item.material);
+								alert("gaz:" + item.gaz);
+								alert("screw:" + item.screw);
+								alert("weight:" + item.weight);
+								alert("buildDate:" + item.buildDate);
+								alert("operatingPressure:" + item.operatingPressure);
+								alert("testPressure:" + item.testPressure);
+								alert("punch:" + item.punch);
+								alert("lastDateOfTIV:" + item.lastDateOfTIV);
+								alert("status:" + item.status);
+								alert("type:" + item.type);
+								alert("price:" + item.price);
+								alert("rented:" + item.rented);
+							}
 							/**
 							* {
 							* 	"reference":"215",
@@ -194,22 +225,6 @@ function synchronizeEquipments() {
 							* 	"created":true
 							* }
 							*/
-							alert("reference:" + item.reference);
-							alert("brand:" + item.brand);
-							alert("serialNumber:" + item.serialNumber);
-							alert("material:" + item.material);
-							alert("gaz:" + item.gaz);
-							alert("screw:" + item.screw);
-							alert("weight:" + item.weight);
-							alert("buildDate:" + item.buildDate);
-							alert("operatingPressure:" + item.operatingPressure);
-							alert("testPressure:" + item.testPressure);
-							alert("punch:" + item.punch);
-							alert("lastDateOfTIV:" + item.lastDateOfTIV);
-							alert("status:" + item.status);
-							alert("type:" + item.type);
-							alert("price:" + item.price);
-							alert("rented:" + item.rented);
 							
 							equipments.push("{\"reference\":\"" + item.reference
 									+ "\",\"brand\":\"" + item.brand
@@ -226,10 +241,13 @@ function synchronizeEquipments() {
 									+ "\",\"status\":\"" + item.status
 									+ "\",\"type\":\"" + item.type
 									+ "\",\"price\":\"" + item.price
-									+ "\",\"rented\":\"" + item.rented
+									+ "\",\"rented\":" + item.rented
 									+ "}");
 						}else{
-							alert("ko");
+							if(debuging){
+								alert("ko");
+							}
+							
 							equipments.push("{\"reference\":\"" + item.reference
 									+ "\",\"type\":\"" + item.type
 									+ "\",\"price\":" + item.price + ",\"rented\":"
@@ -239,7 +257,10 @@ function synchronizeEquipments() {
 						
 						compteur++;
 					});
-					alert("items=" + JSON.stringify(equipments));
+					
+					if(debuging){
+						alert("items=" + JSON.stringify(equipments));
+					}
 
 					window.localStorage.setItem(
 							getConstants().LOCAL_STORAGE_EQUIPMENTS, JSON
@@ -443,7 +464,8 @@ function getInfosOfEquipmentsToList() {
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
-	// alert(localStorageEquipments);
+	alert(localStorageEquipments);
+	
 	var compteur = 0;
 
 	var items = "";
@@ -451,6 +473,9 @@ function getInfosOfEquipmentsToList() {
 	$.each(localStorageEquipments, function(i, oneElement) {
 
 		var jsonOneElement = JSON.parse(oneElement);
+		
+//		alert(jsonOneElement);
+		
 //		var typeLocalized;
 //
 //		if (jsonOneElement.type == 'Tank') {
@@ -464,12 +489,8 @@ function getInfosOfEquipmentsToList() {
 //		}
 		
 		var anEquipment = getEquipmentById(jsonOneElement.reference);
-
-		items = items + "<li>" + anEquipment.toString() + "</li>";
+		items = items + "<li><a href=\"./viewEquipmentDetail.html?equipmentId="+ anEquipment.equipmentId +"\">"+ anEquipment.equipmentId + "</a></li>";
 		
-//		items = items + "<li>" + typeLocalized + " n° <b>"
-//				+ jsonOneElement.reference + "</b></li>";
-
 		compteur++;
 	});
 
@@ -696,11 +717,13 @@ function getEquipmentById(equipmentId) {
 
 	var result = null;
 
-	var Equipment = function(equipmentId, type, price, rented) {
+	var Equipment = function(equipmentId, type, price, rented, serialNumber) {
 		this.equipmentId = equipmentId;
 		this.type = type;
 		this.price = price;
 		this.rented = rented;
+		this.serialNumber = serialNumber;
+		
 		this.getPrice = function() {
 			return this.price;
 		}, this.getType = function() {
@@ -737,8 +760,9 @@ function getEquipmentById(equipmentId) {
 			case "Tank":
 				frenchType = tank;
 				
-				otherFields = otherFields + "<br><br>price="+ price;
+				otherFields = otherFields + "<br><br>Prix="+ price;
 				otherFields = otherFields + "<br><br>rented="+ rented;
+				otherFields = otherFields + "<br><br>serialNumber="+ serialNumber;
 				
 				break;
 			case "Regulator":
@@ -758,7 +782,26 @@ function getEquipmentById(equipmentId) {
 			return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
 		}
 	}
-
+	
+	
+	/**
+	 * brand
+				serialNumber
+				material
+				gaz
+				screw
+				weight
+				buildDate
+				operatingPressure
+				testPressure
+				punch
+				lastDateOfTIV
+				status
+				type
+				price
+				rented
+	 */
+	
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
@@ -769,7 +812,20 @@ function getEquipmentById(equipmentId) {
 		if (equipmentId == jsonOneElement.reference) {
 			result = new Equipment(jsonOneElement.reference,
 					jsonOneElement.type, jsonOneElement.price,
-					jsonOneElement.rented);
+					jsonOneElement.rented, jsonOneElement.serialNumber);
+			
+//			result.prototype.getSerialNumber = function(){
+//				return jsonOneElement.serialNumber;
+//			}
+			
+//			result.prototype.toCompleteString2 = function() {
+//				
+//				otherFields = otherFields + "<br><br>Prix="+ price;
+//				otherFields = otherFields + "<br><br>rented="+ rented;
+//				otherFields = otherFields + "<br><br>serial=";//+ getSerialNumber();
+//				
+//				return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
+//			}
 			return false;
 		}
 	});
