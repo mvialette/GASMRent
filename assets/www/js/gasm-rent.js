@@ -464,7 +464,7 @@ function getInfosOfEquipmentsToList() {
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
-	alert(localStorageEquipments);
+	//alert(localStorageEquipments);
 	
 	var compteur = 0;
 
@@ -713,6 +713,82 @@ function getURLParameter(key) {
 	return result && unescape(result[1]) || "";
 }
 
+function getNewEquipmentById(equipmentId) {
+
+	var result = null;
+
+	var NewEquipment = function(jsonOneElement) {
+		
+		this.jsonOneElement = jsonOneElement;
+		
+		this.toCompleteString = function() {
+			
+			var otherFields = '';
+			//alert(jsonOneElement);
+      		for (var oneAttribute in jsonOneElement) {
+      			//alert(oneAttribute);
+      			//alert(jsonOneElement[oneAttribute]);
+      			
+      			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + "=" + jsonOneElement[oneAttribute];
+      		}
+      		
+			return otherFields;
+		}
+	}
+	
+	
+	/**
+	 * brand
+				serialNumber
+				material
+				gaz
+				screw
+				weight
+				buildDate
+				operatingPressure
+				testPressure
+				punch
+				lastDateOfTIV
+				status
+				type
+				price
+				rented
+	 */
+	
+	var localStorageEquipments = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
+
+	$.each(localStorageEquipments, function(i, oneElement) {
+
+		var jsonOneElement = JSON.parse(oneElement);
+
+		if (equipmentId == jsonOneElement.reference) {
+			
+			result = new NewEquipment(jsonOneElement); 
+			
+			/*result = new Equipment(jsonOneElement.reference,
+					jsonOneElement.type, jsonOneElement.price,
+					jsonOneElement.rented, jsonOneElement.serialNumber);
+			*/
+//			result.prototype.getSerialNumber = function(){
+//				return jsonOneElement.serialNumber;
+//			}
+			
+//			result.prototype.toCompleteString2 = function() {
+//				
+//				otherFields = otherFields + "<br><br>Prix="+ price;
+//				otherFields = otherFields + "<br><br>rented="+ rented;
+//				otherFields = otherFields + "<br><br>serial=";//+ getSerialNumber();
+//				
+//				return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
+//			}
+			return false;
+		}
+	});
+
+	return result;
+}
+
 function getEquipmentById(equipmentId) {
 
 	var result = null;
@@ -782,7 +858,25 @@ function getEquipmentById(equipmentId) {
 			return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
 		}
 	}
-	
+	/*
+	var NewEquipment = function(jsonOneElement) {
+		
+		this.jsonOneElement = jsonOneElement;
+		
+		this.toCompleteString = function() {
+			
+			var otherFields = null;
+			alert(jsonOneElement);
+      		for (var oneAttribute in jsonOneElement) {
+      			alert(oneAttribute);
+      			alert(jsonOneElement[oneAttribute]);
+      			otherFields = otherFields + "<br>"+ $.i18n(oneAttribute) + "=" + jsonOneElement[oneAttribute];
+      		}
+      		
+			return otherFields;
+		}
+	}
+	*/
 	
 	/**
 	 * brand
@@ -810,6 +904,9 @@ function getEquipmentById(equipmentId) {
 		var jsonOneElement = JSON.parse(oneElement);
 
 		if (equipmentId == jsonOneElement.reference) {
+			
+			//result = new NewEquipment(jsonOneElement); 
+			
 			result = new Equipment(jsonOneElement.reference,
 					jsonOneElement.type, jsonOneElement.price,
 					jsonOneElement.rented, jsonOneElement.serialNumber);

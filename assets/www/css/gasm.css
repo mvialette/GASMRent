@@ -40,6 +40,14 @@
 	}
 } */
 
+/**
+* Surcharge à Bootstrap
+*/
+media="screen" 
+.navbar-inverse {
+	background-color: #4DB5DD;
+}
+
 .container {
  	width: 90%;
 	height: 90%;
@@ -76,15 +84,15 @@ body {
 } */
 
 .pageSection {
-	background-color: #72b8e4;
-	border-width: 2px;
+	/*background-color: #72b8e4;*/
+	/*border-width: 2px;
 	border-style: solid;
 	border-color: #2d4859;
 	border-top-left-radius: 20px 20px;
-	border-bottom-right-radius: 20px 20px;
+	border-bottom-right-radius: 20px 20px;*/
 	/* margin: 5%; */
 	/* min-height: 200px; */
-	padding-left : 5%;
+	/*padding-left : 5%;*/
 }
 
 a.largeButton {
@@ -94,7 +102,7 @@ a.largeButton {
 }
 
 a.largeButton {
-	background-color: #c2c2c2;
+	background-color: #5699C4;
 	border: 2px solid;
 	border-color: #2d4859;
 	border-top-left-radius: 20px 20px;

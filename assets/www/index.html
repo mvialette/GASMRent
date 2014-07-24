@@ -7,11 +7,15 @@
 	
 	<!-- Javascripts -->
 	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+	
 	<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+	<!--
+
+	-->
 	<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
 	
 	<!-- CSS -->
@@ -36,10 +40,10 @@
 						mode : 'both',
 						language : lang,
 						callback : function() {
-	
+							/*
 							jQuery.i18n.prop("applicationTitle");
 							document.getElementById("applicationTitle").innerHTML = applicationTitle;
-	
+	*/
 							jQuery.i18n.prop("applicationDescription");
 							document.getElementById("applicationDescription").innerHTML = applicationDescription;
 	
@@ -78,10 +82,35 @@
 	</script>
 </head>
 <body>
+	<nav class="navbar navbar-default navbar-inverse" role="navigation">
+		<div class="container-fluid" id="navfluid">
+		   <div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<div class="navbar-brand" href="./index.html"><img src="./img/mini_icone.png">GASM Rent</div>
+			</div>
+			<div class="collapse navbar-collapse" id="navigationbar">
+				<ul class="nav navbar-nav">
+				   <li class="active"><a href="./index.html">Accueil</a></li>
+				   <li><a href="./viewEquipments.html" id="viewItems"></a></li>
+				   <li><a href="#" onClick="doScanForEquipmentDetail()" id="scanToViewItemDetail"></a></li>
+				   <li><a href="./synchronize.html" id="synchronize"></a></li>
+				   <li><a href="./about.html" id="about"></a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
 	<div class="container">
+
+		<!--
 		<div class="row">
 			<div class="col-12 pageTitle" id="applicationTitle"></div>
 		</div>
+		-->
 		<div class="row text-center">
 			<div class="col-12 pageSection">
 
@@ -106,30 +135,6 @@
 						<a class="largeButton" href="./chooseEvent.html" id="chooseAnEvent"></a>
 					</div>
 				</div>		
-
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./viewEquipments.html" id="viewItems"></a>
-					</div>
-				</div>
-				
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="#" onClick="doScanForEquipmentDetail()" id="scanToViewItemDetail"></a>
-					</div>
-				</div>
-				
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./synchronize.html" id="synchronize"></a>
-					</div>
-				</div>
-
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./about.html" id="about"></a>
-					</div>
-				</div>
 
 			</div>
 		</div>
