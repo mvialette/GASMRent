@@ -5,6 +5,7 @@
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
+	
 	<!-- Javascripts -->
 	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
 	
@@ -20,6 +21,7 @@
 	
 	<!-- CSS -->
 	<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="./css/font-awesome.min.css" rel="stylesheet">
 	<link href="./css/gasm.css" rel="stylesheet" media="screen">
 	
 	<!-- JS Function that can be called -->
@@ -57,16 +59,16 @@
 							document.getElementById("chooseAnEvent").innerHTML = chooseAnEvent;
 							
 							jQuery.i18n.prop("viewItems");
-							document.getElementById("viewItems").innerHTML = viewItems;
+							document.getElementById("viewItems").innerHTML = "<i class=\"fa fa-eye\"></i> " + viewItems;
 							
 							jQuery.i18n.prop("scanToViewItemDetail");
-							document.getElementById("scanToViewItemDetail").innerHTML = scanToViewItemDetail;
+							document.getElementById("scanToViewItemDetail").innerHTML = "<i class=\"fa fa-qrcode\"></i> " + scanToViewItemDetail;
 	
 							jQuery.i18n.prop("synchronize");
-							document.getElementById("synchronize").innerHTML = synchronize;
+							document.getElementById("synchronize").innerHTML = "<i class=\"fa fa-compress\"></i> "+ synchronize;
 	
 							jQuery.i18n.prop("about");
-							document.getElementById("about").innerHTML = about;
+							document.getElementById("about").innerHTML = "<i class=\"fa fa-info\"></i> " + about;
 						}
 					});
 		}
@@ -95,7 +97,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="navigationbar">
 				<ul class="nav navbar-nav">
-				   <li class="active"><a href="./index.html">Accueil</a></li>
+				   <li class="active"><a href="./index.html"><i class="fa fa-home"></i> Accueil</a></li>
 				   <li><a href="./viewEquipments.html" id="viewItems"></a></li>
 				   <li><a href="#" onClick="doScanForEquipmentDetail()" id="scanToViewItemDetail"></a></li>
 				   <li><a href="./synchronize.html" id="synchronize"></a></li>
@@ -111,6 +113,7 @@
 			<div class="col-12 pageTitle" id="applicationTitle"></div>
 		</div>
 		-->
+				
 		<div class="row text-center">
 			<div class="col-12 pageSection">
 
@@ -119,20 +122,20 @@
 				</div>
 
 				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" onclick="startANewRentSession()" href="#" id="startRentSession"></a>
+					<div class="col-xs-6">
+						<div class="largeButton">
+							<i class="fa fa-play fa-lg"></i> <a onclick="startANewRentSession()" href="#" id="startRentSession"></a>
+						</div>
 					</div>
+					
+					<div class="col-xs-6">
+						<i class="fa fa-pause"></i> <a href="./chooseEventAndUser.html" id="resumeRentSession"></a>
+					</div>					
 				</div>	
-				
+			
 				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./chooseEventAndUser.html" id="resumeRentSession"></a>
-					</div>
-				</div>			
-				
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./chooseEvent.html" id="chooseAnEvent"></a>
+					<div class="col-xs-6">
+						<i class="fa fa-history"></i> <a href="./chooseEvent.html" id="chooseAnEvent"></a>
 					</div>
 				</div>		
 
