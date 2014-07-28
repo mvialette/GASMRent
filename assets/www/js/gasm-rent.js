@@ -1,3 +1,10 @@
+var gasmRentApp = angular.module('GasmRentApp', []);
+
+gasmRentApp.controller('MainController', ['$scope', function ($scope) {
+	// Magie du contrôleur
+	    $scope.text = 'Hello, Angular fanatic.';
+}]);
+
 function getConstants() {
 	var constants = {
 		"URL_GET_USERS" : "https://.appspot.com/api/adherent/",
@@ -728,8 +735,18 @@ function getNewEquipmentById(equipmentId) {
       		for (var oneAttribute in jsonOneElement) {
       			//alert(oneAttribute);
       			//alert(jsonOneElement[oneAttribute]);
+      			var valeurAAfficher = null;
       			
-      			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + "=" + jsonOneElement[oneAttribute];
+      			//alert("oneAttribute=" + oneAttribute + ", test=" + oneAttribute.indexOf("Date"));
+      			
+      			if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
+      				var maintenant = new Date(jsonOneElement[oneAttribute] * 10);
+      				valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
+      			}else{
+      				valeurAAfficher = jsonOneElement[oneAttribute];
+      			}
+      			
+      			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + "=<b>" + valeurAAfficher + "</b>";
       		}
       		
 			return otherFields;
