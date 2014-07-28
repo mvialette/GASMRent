@@ -6,8 +6,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
 	
-	<!-- Javascripts -->
+	<!-- Javascripts --> 
 	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+	
+	
 	
 	<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
@@ -50,25 +52,25 @@
 							document.getElementById("applicationDescription").innerHTML = applicationDescription;
 	
 							jQuery.i18n.prop("startRentSession");
-							document.getElementById("startRentSession").innerHTML = startRentSession;
+							document.getElementById("startRentSession").innerHTML = "<i class=\"fa fa-play\"></i> " + startRentSession;
 	
 							jQuery.i18n.prop("resumeRentSession");
-							document.getElementById("resumeRentSession").innerHTML = resumeRentSession;
+							document.getElementById("resumeRentSession").innerHTML = "<i class=\"fa fa-pause\"></i> " + resumeRentSession;
 							
 							jQuery.i18n.prop("chooseAnEvent");
-							document.getElementById("chooseAnEvent").innerHTML = chooseAnEvent;
+							document.getElementById("chooseAnEvent").innerHTML = "<i class=\"fa fa-eye \"></i> " + chooseAnEvent;
 							
 							jQuery.i18n.prop("viewItems");
-							document.getElementById("viewItems").innerHTML = "<i class=\"fa fa-eye\"></i> " + viewItems;
+							document.getElementById("viewItems").innerHTML = "<i class=\"fa fa-eye fa-fw\"></i> " + viewItems;
 							
 							jQuery.i18n.prop("scanToViewItemDetail");
-							document.getElementById("scanToViewItemDetail").innerHTML = "<i class=\"fa fa-qrcode\"></i> " + scanToViewItemDetail;
+							document.getElementById("scanToViewItemDetail").innerHTML = "<i class=\"fa fa-qrcode fa-fw\"></i> " + scanToViewItemDetail;
 	
 							jQuery.i18n.prop("synchronize");
-							document.getElementById("synchronize").innerHTML = "<i class=\"fa fa-compress\"></i> "+ synchronize;
+							document.getElementById("synchronize").innerHTML = "<i class=\"fa fa-refresh fa-fw\"></i> "+ synchronize;
 	
 							jQuery.i18n.prop("about");
-							document.getElementById("about").innerHTML = "<i class=\"fa fa-info\"></i> " + about;
+							document.getElementById("about").innerHTML = "<i class=\"fa fa-info fa-fw\"></i> " + about;
 						}
 					});
 		}
@@ -84,7 +86,7 @@
 	</script>
 </head>
 <body>
-	<nav class="navbar navbar-default navbar-inverse" role="navigation">
+	<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid" id="navfluid">
 		   <div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
@@ -93,11 +95,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<div class="navbar-brand" href="./index.html"><img src="./img/mini_icone.png">GASM Rent</div>
+				<div class="navbar-brand application-title" href="./index.html"><img src="./img/mini_icone.png"> GASM Rent</div>
 			</div>
 			<div class="collapse navbar-collapse" id="navigationbar">
 				<ul class="nav navbar-nav">
-				   <li class="active"><a href="./index.html"><i class="fa fa-home"></i> Accueil</a></li>
+				   <li class="active"><a href="./index.html"><i class="fa fa-home fa-fw"></i> Accueil</a></li>
 				   <li><a href="./viewEquipments.html" id="viewItems"></a></li>
 				   <li><a href="#" onClick="doScanForEquipmentDetail()" id="scanToViewItemDetail"></a></li>
 				   <li><a href="./synchronize.html" id="synchronize"></a></li>
@@ -122,25 +124,42 @@
 				</div>
 
 				<div class="row largeRow">
-					<div class="col-xs-6">
-						<div class="largeButton">
-							<i class="fa fa-play fa-lg"></i> <a onclick="startANewRentSession()" href="#" id="startRentSession"></a>
-						</div>
+					<div class="col-12">
+						<a class="btn btn-lg btn-primary" onclick="startANewRentSession()" href="#" id="startRentSession">
+						</a>
 					</div>
-					
-					<div class="col-xs-6">
-						<i class="fa fa-pause"></i> <a href="./chooseEventAndUser.html" id="resumeRentSession"></a>
-					</div>					
+				</div>	
+				<div class="row largeRow">				
+					<div class="col-12">
+						<a href="./chooseEventAndUser.html" class="btn btn-lg btn-primary">
+							<div id="resumeRentSession"></div>
+						</a>	
+					</div>						
 				</div>	
 			
 				<div class="row largeRow">
-					<div class="col-xs-6">
-						<i class="fa fa-history"></i> <a href="./chooseEvent.html" id="chooseAnEvent"></a>
+					<div class="col-12">
+						<a href="./chooseEvent.html" class="btn btn-lg btn-primary" id="chooseAnEvent"></a>
 					</div>
 				</div>		
-
+			
 			</div>
 		</div>
+		<!--
+		<footer class="footer">
+			<div class="row">GASM - MJC Villeurbanne</div>
+			<div class="row">GASM-RENT v0.0.1, developped by Maxime VIALETTE</div>
+		</footer>
+		-->
+		<nav class="navbar navbar-fixed-bottom" role="navigation">
+		<div class="container-fluid" id="navfluid">
+		   <div class="navbar-header">
+				<div class="navbar-brand">GASM-RENT v0.0.1</div>
+			</div>
+			
+		</div>
+	</nav>
 	</div>
+	
 </body>
 </html>
