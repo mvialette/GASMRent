@@ -740,13 +740,16 @@ function getNewEquipmentById(equipmentId) {
       			//alert("oneAttribute=" + oneAttribute + ", test=" + oneAttribute.indexOf("Date"));
       			
       			if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
-      				var maintenant = new Date(jsonOneElement[oneAttribute] * 10);
-      				valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
+      				
+      				//var maintenant = new Date(jsonOneElement[oneAttribute]);
+      				//valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
+      				
+      				valeurAAfficher = formatTimestamp(jsonOneElement[oneAttribute]);
       			}else{
       				valeurAAfficher = jsonOneElement[oneAttribute];
       			}
       			
-      			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + "=<b>" + valeurAAfficher + "</b>";
+      			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + " = <b>" + valeurAAfficher + "</b>";
       		}
       		
 			return otherFields;
@@ -1112,4 +1115,25 @@ function getUserById(userId) {
 	});
 
 	return result;
+}
+
+function formatTimestamp(d){
+    // padding function
+    var s = function(p){
+        return (''+p).length<2?'0'+p:''+p;
+    };
+    
+    var dateTmp = null;
+    // default parameter
+    if (typeof d === 'undefined'){
+        dateTmp = new Date();
+    }else  if (typeof d === 'number'){
+        dateTmp = new Date(d);
+    }else  if (typeof d === 'string'){
+        dateTmp = new Date(parseInt(d));
+    }
+    
+    return s(dateTmp.getDate()) + '-' +
+        s(dateTmp.getMonth()+1) + '-' +
+        dateTmp.getFullYear();
 }
