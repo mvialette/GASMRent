@@ -2,7 +2,32 @@ var gasmRentApp = angular.module('GasmRentApp', []);
 
 gasmRentApp.controller('MainController', ['$scope', function ($scope) {
 	// Magie du contrôleur
-	    $scope.text = 'Hello, Angular fanatic.';
+	    //$scope.text = 'Hello, Angular fanatic.';
+	    
+	    $scope.initHeader = function(pageTitle) {
+			  jQuery.i18n.properties({
+				 name:'gasmrent',
+				 path:'i18n/',
+				 mode:'both',
+				 language:'fr',
+				 callback: function() {
+					 
+					$("#pageTitle").html(jQuery.i18n.prop(pageTitle));
+					 
+					jQuery.i18n.prop("viewItems");
+					$("#viewItems").html("<i class=\"fa fa-eye fa-fw\"></i> " + viewItems);
+					
+					jQuery.i18n.prop("scanToViewItemDetail");
+					$("#scanToViewItemDetail").html("<i class=\"fa fa-qrcode fa-fw\"></i> " + scanToViewItemDetail);
+
+					jQuery.i18n.prop("synchronize");
+					$("#synchronize").html("<i class=\"fa fa-refresh fa-fw\"></i> "+ synchronize);
+
+					jQuery.i18n.prop("about");
+					$("#about").html("<i class=\"fa fa-info fa-fw\"></i> " + about);
+				 }
+			 });
+		}
 }]);
 
 function getConstants() {
@@ -737,17 +762,20 @@ function getNewEquipmentById(equipmentId) {
       			//alert(jsonOneElement[oneAttribute]);
       			var valeurAAfficher = null;
       			
-      			//alert("oneAttribute=" + oneAttribute + ", test=" + oneAttribute.indexOf("Date"));
+      			var jsonValue = jsonOneElement[oneAttribute];
       			
-      			if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
-      				
-      				//var maintenant = new Date(jsonOneElement[oneAttribute]);
-      				//valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
-      				
-      				valeurAAfficher = formatTimestamp(jsonOneElement[oneAttribute]);
+      			if(jsonValue == "null"){
+      				valeurAAfficher = "";
       			}else{
-      				valeurAAfficher = jsonOneElement[oneAttribute];
+      				if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
+          				//var maintenant = new Date(jsonOneElement[oneAttribute]);
+          				//valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
+          				valeurAAfficher = formatTimestamp(jsonValue);
+          			}else{
+          				valeurAAfficher = jsonValue;
+          			}	
       			}
+      			
       			
       			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + " = <b>" + valeurAAfficher + "</b>";
       		}
@@ -1133,7 +1161,7 @@ function formatTimestamp(d){
         dateTmp = new Date(parseInt(d));
     }
     
-    return s(dateTmp.getDate()) + '-' +
-        s(dateTmp.getMonth()+1) + '-' +
+    return s(dateTmp.getDate()) + '/' +
+        s(dateTmp.getMonth()+1) + '/' +
         dateTmp.getFullYear();
 }
