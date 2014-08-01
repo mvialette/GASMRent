@@ -30,6 +30,17 @@ gasmRentApp.controller('MainController', ['$scope', function ($scope) {
 		}
 }]);
 
+function getHtmlForBoolean(boolean){
+	var result = null;
+	if(boolean == "true" || boolean === true){
+		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-check fa-stack-1x\"></i></span>"
+	}else if(boolean == "false"  || boolean === false){
+		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-times fa-stack-1x\"></i></span>";
+	}
+	
+	return result;
+}
+
 function getConstants() {
 	var constants = {
 		"URL_GET_USERS" : "https://.appspot.com/api/adherent/",
@@ -766,19 +777,27 @@ function getNewEquipmentById(equipmentId) {
       			
       			if(jsonValue == "null"){
       				valeurAAfficher = "";
-      			}else{
-      				if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
-          				//var maintenant = new Date(jsonOneElement[oneAttribute]);
-          				//valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
-          				valeurAAfficher = formatTimestamp(jsonValue);
-          			}else{
-          				valeurAAfficher = jsonValue;
-          			}	
+      			}else if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
+      				//var maintenant = new Date(jsonOneElement[oneAttribute]);
+      				//valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
+      				valeurAAfficher = formatTimestamp(jsonValue);
+      			}else if(jsonValue == "true" || jsonValue == "false" || jsonValue === true || jsonValue === false){
+      				valeurAAfficher = getHtmlForBoolean(jsonValue);	
+      				//alert(valeurAAfficher);
+      			}else if((oneAttribute.indexOf("Pressure") != -1) || (oneAttribute.indexOf("pressure") != -1)){
+      				valeurAAfficher = jsonValue + " bars";	
+      			}else if(oneAttribute.indexOf("weight") != -1){
+      				valeurAAfficher = jsonValue + " Kg";	
+      			}else if(oneAttribute.indexOf("price") != -1){
+      				valeurAAfficher = jsonValue + " €";	
+      			} else{
+      				valeurAAfficher = jsonValue;
       			}
-      			
       			
       			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + " = <b>" + valeurAAfficher + "</b>";
       		}
+      		
+      		//alert(otherFields);
       		
 			return otherFields;
 		}
@@ -814,22 +833,6 @@ function getNewEquipmentById(equipmentId) {
 			
 			result = new NewEquipment(jsonOneElement); 
 			
-			/*result = new Equipment(jsonOneElement.reference,
-					jsonOneElement.type, jsonOneElement.price,
-					jsonOneElement.rented, jsonOneElement.serialNumber);
-			*/
-//			result.prototype.getSerialNumber = function(){
-//				return jsonOneElement.serialNumber;
-//			}
-			
-//			result.prototype.toCompleteString2 = function() {
-//				
-//				otherFields = otherFields + "<br><br>Prix="+ price;
-//				otherFields = otherFields + "<br><br>rented="+ rented;
-//				otherFields = otherFields + "<br><br>serial=";//+ getSerialNumber();
-//				
-//				return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
-//			}
 			return false;
 		}
 	});

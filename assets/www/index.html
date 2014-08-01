@@ -8,11 +8,11 @@
 	
 	<!-- Javascripts --> 
 	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-	
 	<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
 	
@@ -39,10 +39,7 @@
 						mode : 'both',
 						language : lang,
 						callback : function() {
-							/*
-							jQuery.i18n.prop("applicationTitle");
-							document.getElementById("applicationTitle").innerHTML = applicationTitle;
-	*/
+							
 							jQuery.i18n.prop("applicationDescription");
 							document.getElementById("applicationDescription").innerHTML = applicationDescription;
 	
@@ -80,36 +77,10 @@
 		
 	</script>
 </head>
-<body>
-	<nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-		<div class="container-fluid" id="navfluid">
-		   <div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<div class="navbar-brand application-title" href="./index.html"><img src="./img/mini_icone.png"> GASM Rent</div>
-			</div>
-			<div class="collapse navbar-collapse" id="navigationbar">
-				<ul class="nav navbar-nav">
-				   <li class="active"><a href="./index.html"><i class="fa fa-home fa-fw"></i> Accueil</a></li>
-				   <li><a href="./viewEquipments.html" id="viewItems"></a></li>
-				   <li><a href="#" onClick="doScanForEquipmentDetail()" id="scanToViewItemDetail"></a></li>
-				   <li><a href="./synchronize.html" id="synchronize"></a></li>
-				   <li><a href="./about.html" id="about"></a></li>
-				</ul>
-			</div><!-- /.navbar-collapse -->
-		</div><!-- /.container-fluid -->
-	</nav>
-	<div class="container">
+<body ng-app="GasmRentApp" >
 
-		<!--
-		<div class="row">
-			<div class="col-12 pageTitle" id="applicationTitle"></div>
-		</div>
-		-->
+	<div ng-controller="MainController" class="container">
+		<div ng-include="'./partials/gasm-header.html'" onload="initHeader('applicationTitle')"></div>
 				
 		<div class="row text-center">
 			<div class="col-12 pageSection">
