@@ -1,84 +1,75 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>G.A.S.M. Rent</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Javascripts -->
-<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
-
-<!-- CSS -->
-<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="./css/gasm.css" rel="stylesheet" media="screen">
-
-<!-- JS Function that can be called -->
-<script type="text/javascript">
-	//load I18N bundles
-	jQuery(document).ready(function() {
-		initLanguages();
-	});
-
-	function loadBundles(lang) {
-
-		// alert(lang);
-
-		jQuery.i18n
-				.properties({
-					name : 'gasmrent',
-					path : 'i18n/',
-					mode : 'both',
-					language : lang,
-					callback : function() {
-
-						jQuery.i18n.prop("applicationTitle");
-						document.getElementById("applicationTitle").innerHTML = applicationTitle;
-
-						jQuery.i18n.prop("applicationDescription");
-						document.getElementById("applicationDescription").innerHTML = applicationDescription;
-
-						jQuery.i18n.prop("startRentSession");
-						document.getElementById("startRentSession").innerHTML = startRentSession;
-
-						jQuery.i18n.prop("resumeRentSession");
-						document.getElementById("resumeRentSession").innerHTML = resumeRentSession;
-						
-						jQuery.i18n.prop("chooseAnEvent");
-						document.getElementById("chooseAnEvent").innerHTML = chooseAnEvent;
-						
-						jQuery.i18n.prop("viewItems");
-						document.getElementById("viewItems").innerHTML = viewItems;
-
-						jQuery.i18n.prop("synchronize");
-						document.getElementById("synchronize").innerHTML = synchronize;
-
-						jQuery.i18n.prop("about");
-						document.getElementById("about").innerHTML = about;
-					}
-				});
-	}
+	<title>G.A.S.M. Rent</title>
 	
-	function startANewRentSession() {
-		// clear rentalRecords of the local storage
-		var rentalRecordArrays = new Array();
-		window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON.stringify(rentalRecordArrays));
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	
+	<!-- Javascripts --> 
+	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/barcodescanner.js"></script>
+	
+	<!-- CSS -->
+	<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="./css/font-awesome.min.css" rel="stylesheet">
+	<link href="./css/gasm.css" rel="stylesheet" media="screen">
+	
+	<!-- JS Function that can be called -->
+	<script type="text/javascript">
+		//load I18N bundles
+		jQuery(document).ready(function() {
+			initLanguages();
+		});
+	
+		function loadBundles(lang) {
+	
+			// alert(lang);
+	
+			jQuery.i18n
+					.properties({
+						name : 'gasmrent',
+						path : 'i18n/',
+						mode : 'both',
+						language : lang,
+						callback : function() {
+							
+							jQuery.i18n.prop("applicationDescription");
+							document.getElementById("applicationDescription").innerHTML = applicationDescription;
+	
+							jQuery.i18n.prop("startRentSession");
+							document.getElementById("startRentSession").innerHTML = "<i class=\"fa fa-play\"></i> " + startRentSession;
+	
+							jQuery.i18n.prop("resumeRentSession");
+							document.getElementById("resumeRentSession").innerHTML = "<i class=\"fa fa-pause\"></i> " + resumeRentSession;
+							
+							jQuery.i18n.prop("chooseAnEvent");
+							document.getElementById("chooseAnEvent").innerHTML = "<i class=\"fa fa-eye \"></i> " + chooseAnEvent;
+						}
+					});
+		}
 		
-		window.location = "./chooseEventAndUser.html";
-	} 
-	
-</script>
-
+		function startANewRentSession() {
+			// clear rentalRecords of the local storage
+			var rentalRecordArrays = new Array();
+			window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON.stringify(rentalRecordArrays));
+			
+			window.location = "./chooseEventAndUser.html";
+		} 
+		
+	</script>
 </head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-12 pageTitle" id="applicationTitle"></div>
-		</div>
+<body ng-app="GasmRentApp" >
+
+	<div ng-controller="MainController" class="container">
+		<div ng-include="'./partials/gasm-header.html'" onload="initHeader('applicationTitle')"></div>
+				
 		<div class="row text-center">
 			<div class="col-12 pageSection">
 
@@ -88,42 +79,29 @@
 
 				<div class="row largeRow">
 					<div class="col-12">
-						<a class="largeButton" onclick="startANewRentSession()" href="#" id="startRentSession"></a>
+						<a class="btn btn-lg btn-primary" onclick="startANewRentSession()" href="#" id="startRentSession">
+						</a>
 					</div>
 				</div>	
-				
+				<div class="row largeRow">				
+					<div class="col-12">
+						<a href="./chooseEventAndUser.html" class="btn btn-lg btn-primary">
+							<div id="resumeRentSession"></div>
+						</a>	
+					</div>						
+				</div>	
+			
 				<div class="row largeRow">
 					<div class="col-12">
-						<a class="largeButton" href="./chooseEventAndUser.html" id="resumeRentSession"></a>
-					</div>
-				</div>			
-				
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./chooseEvent.html" id="chooseAnEvent"></a>
+						<a href="./chooseEvent.html" class="btn btn-lg btn-primary" id="chooseAnEvent"></a>
 					</div>
 				</div>		
-
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./viewEquipments.html" id="viewItems"></a>
-					</div>
-				</div>
-
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./synchronize.html" id="synchronize"></a>
-					</div>
-				</div>
-
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="largeButton" href="./about.html" id="about"></a>
-					</div>
-				</div>
-
+			
 			</div>
 		</div>
+
+		<div ng-include="'./partials/gasm-footer.html'"></div>
 	</div>
+	
 </body>
 </html>

@@ -21,7 +21,16 @@
 			      	initLanguages();
 			    });
 				
-				getInfosOfEquipmentsToList();
+				getEquipmentDetail();
+			}
+			
+			function getEquipmentDetail() {
+				
+				var equipmentId = getURLParameter("equipmentId");
+				
+				var equiment = getNewEquipmentById(equipmentId);
+				
+				document.getElementById("description").innerHTML=equiment.toCompleteString();
 			}
 			
 			function loadBundles(lang) {
@@ -31,17 +40,6 @@
 		        	 mode:'both',
 		        	 language:lang,
 		        	 callback: function() {
-		        		 /*
-		        		 jQuery.i18n.prop("viewEquipmentsPageTitle");
-		        		 document.getElementById("viewEquipmentsPageTitle").innerHTML=viewEquipmentsPageTitle;
-		        		 */
-		        		 jQuery.i18n.prop("viewEquipmentsDescription");
-		        		 document.getElementById("description").innerHTML=viewEquipmentsDescription;
-		        		 
-		        		 jQuery.i18n.prop('tank');
-		        		 jQuery.i18n.prop('regulator');
-		        		 jQuery.i18n.prop('jacket');
-		        		 jQuery.i18n.prop('suit');
 		        		 
 		        		 $("#backToHome").html(jQuery.i18n.prop("backToHome"));
 		       		 }
@@ -56,15 +54,13 @@
 	</head>
 	<body ng-app="GasmRentApp" >
 		<div ng-controller="MainController" class="container">
-			<div ng-include="'./partials/gasm-header.html'"  onload="initHeader('viewEquipmentsPageTitle')"></div>
+			<div ng-include="'./partials/gasm-header.html'"   onload="initHeader('viewEquipmentDetailPageTitle')"></div>
 			
 			<div class="row text-center">
 				<div class="col-12 pageSection">
+				
 					<div class="row largeRow">
 						<div class="col-12" id="description"></div>
-					</div>
-					<div class="row largeRow">
-						<div class="col-12" id="equipments"></div>
 					</div>
 	
 					<div class="row largeRow">				
@@ -74,7 +70,7 @@
 							</a>	
 						</div>						
 					</div>
-					
+						
 				</div>
 			</div>
 		</div>

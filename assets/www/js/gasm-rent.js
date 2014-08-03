@@ -1,11 +1,54 @@
+var gasmRentApp = angular.module('GasmRentApp', []);
+
+gasmRentApp.controller('MainController', ['$scope', function ($scope) {
+	// Magie du contrôleur
+	    //$scope.text = 'Hello, Angular fanatic.';
+	    
+	    $scope.initHeader = function(pageTitle) {
+			  jQuery.i18n.properties({
+				 name:'gasmrent',
+				 path:'i18n/',
+				 mode:'both',
+				 language:'fr',
+				 callback: function() {
+					 
+					$("#pageTitle").html(jQuery.i18n.prop(pageTitle));
+					 
+					jQuery.i18n.prop("viewItems");
+					$("#viewItems").html("<i class=\"fa fa-eye fa-fw\"></i> " + viewItems);
+					
+					jQuery.i18n.prop("scanToViewItemDetail");
+					$("#scanToViewItemDetail").html("<i class=\"fa fa-qrcode fa-fw\"></i> " + scanToViewItemDetail);
+
+					jQuery.i18n.prop("synchronize");
+					$("#synchronize").html("<i class=\"fa fa-refresh fa-fw\"></i> "+ synchronize);
+
+					jQuery.i18n.prop("about");
+					$("#about").html("<i class=\"fa fa-info fa-fw\"></i> " + about);
+				 }
+			 });
+		}
+}]);
+
+function getHtmlForBoolean(boolean){
+	var result = null;
+	if(boolean == "true" || boolean === true){
+		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-check fa-stack-1x\"></i></span>"
+	}else if(boolean == "false"  || boolean === false){
+		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-times fa-stack-1x\"></i></span>";
+	}
+	
+	return result;
+}
+
 function getConstants() {
 	var constants = {
-		"URL_GET_USERS" : "https://mindful-girder-344.appspot.com/api/adherent/",
-		"URL_GET_DIVING_EVENT" : "https://mindful-girder-344.appspot.com/api/divingEvent/",
-		"URL_GET_EQUIPMENT" : "https://mindful-girder-344.appspot.com/api/equipment/",
-		"URL_GET_PAYMENT_TYPE" : "https://mindful-girder-344.appspot.com/api/payment",
-		"URL_SEND_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/addToDivingEvent",
-		"URL_TO_PAY_A_RENTAL_RECORDS" : "https://mindful-girder-344.appspot.com/api/rentalRecord/paid/",
+		"URL_GET_USERS" : "https://.appspot.com/api/adherent/",
+		"URL_GET_DIVING_EVENT" : "https://gasmrent-webapp.appspot.com/api/divingEvent/",
+		"URL_GET_EQUIPMENT" : "https://gasmrent-webapp.appspot.com/api/equipment/",
+		"URL_GET_PAYMENT_TYPE" : "https://gasmrent-webapp.appspot.com/api/payment",
+		"URL_SEND_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent",
+		"URL_TO_PAY_A_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/",
 		"LOCAL_STORAGE_USERS" : "offlineUsers",
 		"LOCAL_STORAGE_DIVING_EVENTS" : "offlineDivingEvents",
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
@@ -35,7 +78,7 @@ function synchronizeUsers() {
 		dataType : "json",
 		success : function(data, status, jqXHR) {
 
-			// alert("online mode");
+			alert("online mode");
 			var items = [];
 			var compteur = 0;
 
@@ -57,7 +100,8 @@ function synchronizeUsers() {
 		},
 		error : function(jqXHR, status) {
 
-			// alert("offline mode");
+			alert("offline mode" + JSON.parse(jqXHR));
+			alert("offline mode" + status);
 
 			var localStorageUsers = JSON.parse(window.localStorage
 					.getItem(getConstants().LOCAL_STORAGE_USERS));
@@ -145,8 +189,15 @@ function synchronizeDivingEvents() {
 }
 
 function synchronizeEquipments() {
+	
+	//var debuging = true;
+	var debuging = false;
+	
 	var urlComplete = getConstants().URL_GET_EQUIPMENT;
-	// alert(urlComplete);
+
+	if(debuging){
+		alert(urlComplete);	
+	}
 
 	jQuery
 			.ajax({
@@ -156,21 +207,103 @@ function synchronizeEquipments() {
 				dataType : "json",
 				success : function(data, status, jqXHR) {
 
-					// alert("online mode");
+					if(debuging){
+						alert("online mode");
+					}
 
 					var equipments = [];
 					var compteur = 0;
 
 					$.each(data, function(i, item) {
+					
+						if(debuging){
+							alert("item=" + JSON.stringify(item));
+							alert("item.reference=" + item.reference);
+						}
+						
+						if(item.type == "Tank"){
 
-						equipments.push("{\"reference\":\"" + item.reference
-								+ "\",\"type\":\"" + item.type
-								+ "\",\"price\":" + item.price + ",\"rented\":"
-								+ item.rented + "}");
-
+							if(debuging){
+								alert("ok");
+								
+								alert("reference:" + item.reference);
+								alert("brand:" + item.brand);
+								alert("serialNumber:" + item.serialNumber);
+								alert("material:" + item.material);
+								alert("gaz:" + item.gaz);
+								alert("screw:" + item.screw);
+								alert("weight:" + item.weight);
+								alert("buildDate:" + item.buildDate);
+								alert("operatingPressure:" + item.operatingPressure);
+								alert("testPressure:" + item.testPressure);
+								alert("punch:" + item.punch);
+								alert("lastDateOfTIV:" + item.lastDateOfTIV);
+								alert("status:" + item.status);
+								alert("type:" + item.type);
+								alert("price:" + item.price);
+								alert("rented:" + item.rented);
+							}
+							/**
+							* {
+							* 	"reference":"215",
+							* 	"brand":"Roth",
+							* 	"historyList":[],
+							* 	"serialNumber":"5555555215",
+							* 	"material":"Steal",
+							* 	"gaz":"Air",
+							* 	"screw":"Air",
+							* 	"weight":20.0,
+							* 	"capacity":"Litre_12",
+							* 	"buildDate":1406073600000,
+							* 	"operatingPressure":200.0,
+							* 	"testPressure":300.0,
+							* 	"testDate":1406678400000,
+							* 	"punch":false,
+							* 	"lastDateOfTIV":1406678400000,
+							* 	"status":false,
+							* 	"type":"Tank",
+							* 	"price":4.5,
+							* 	"rented":false,
+							* 	"renterFullName":null,
+							* 	"created":true
+							* }
+							*/
+							
+							equipments.push("{\"reference\":\"" + item.reference
+									+ "\",\"brand\":\"" + item.brand
+									+ "\",\"serialNumber\":\"" + item.serialNumber
+									+ "\",\"material\":\"" + item.material
+									+ "\",\"gaz\":\"" + item.gaz
+									+ "\",\"screw\":\"" + item.screw
+									+ "\",\"weight\":\"" + item.weight
+									+ "\",\"buildDate\":\"" + item.buildDate
+									+ "\",\"operatingPressure\":\"" + item.operatingPressure
+									+ "\",\"testPressure\":\"" + item.testPressure
+									+ "\",\"punch\":\"" + item.punch
+									+ "\",\"lastDateOfTIV\":\"" + item.lastDateOfTIV
+									+ "\",\"status\":\"" + item.status
+									+ "\",\"type\":\"" + item.type
+									+ "\",\"price\":\"" + item.price
+									+ "\",\"rented\":" + item.rented
+									+ "}");
+						}else{
+							if(debuging){
+								alert("ko");
+							}
+							
+							equipments.push("{\"reference\":\"" + item.reference
+									+ "\",\"type\":\"" + item.type
+									+ "\",\"price\":" + item.price + ",\"rented\":"
+									+ item.rented + "}");
+						}
+						
+						
 						compteur++;
 					});
-					// alert(JSON.stringify(items));
+					
+					if(debuging){
+						alert("items=" + JSON.stringify(equipments));
+					}
 
 					window.localStorage.setItem(
 							getConstants().LOCAL_STORAGE_EQUIPMENTS, JSON
@@ -180,7 +313,8 @@ function synchronizeEquipments() {
 				},
 				error : function(jqXHR, status) {
 
-					// alert("offline mode");
+					//alert("offline mode" + JSON.parse(jqXHR));
+					//alert("offline mode" + status);
 
 					var localStorageEquipments = JSON.parse(window.localStorage
 							.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
@@ -342,7 +476,7 @@ function sendLinesOfRental(divingEventId) {
 						
 						var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS + idOfTheRentalRecord + "?payment=" + paymentModeOfTheUser;
 						//alert("urlCompleteToPay="+urlCompleteToPay);
-						//"https://mindful-girder-344.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
+						//"https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
 						
 						jQuery.ajax({
 							url : urlCompleteToPay,
@@ -373,7 +507,8 @@ function getInfosOfEquipmentsToList() {
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
-	// alert(localStorageEquipments);
+	//alert(localStorageEquipments);
+	
 	var compteur = 0;
 
 	var items = "";
@@ -381,6 +516,9 @@ function getInfosOfEquipmentsToList() {
 	$.each(localStorageEquipments, function(i, oneElement) {
 
 		var jsonOneElement = JSON.parse(oneElement);
+		
+//		alert(jsonOneElement);
+		
 //		var typeLocalized;
 //
 //		if (jsonOneElement.type == 'Tank') {
@@ -394,12 +532,8 @@ function getInfosOfEquipmentsToList() {
 //		}
 		
 		var anEquipment = getEquipmentById(jsonOneElement.reference);
-
-		items = items + "<li>" + anEquipment.toString() + "</li>";
+		items = items + "<li><a href=\"./viewEquipmentDetail.html?equipmentId="+ anEquipment.equipmentId +"\">"+ anEquipment.equipmentId + "</a></li>";
 		
-//		items = items + "<li>" + typeLocalized + " n° <b>"
-//				+ jsonOneElement.reference + "</b></li>";
-
 		compteur++;
 	});
 
@@ -531,11 +665,11 @@ function rentAnEquipment(divingEventId, userId, equipmentId){
 				+ userId;
 	} else {
 		// Do not comment or delete this alert, it's use to send feedback message to the user
-		alert(messageErrorEquipmentNotAvailable(leTextDuQRCode));
+		alert(messageErrorEquipmentNotAvailable(equipmentId));
 	}
 }
 
-function doScan(divingEventId, userId) {
+function doScanByDivingEventIdAndUserId(divingEventId, userId) {
 
 	window.plugins.barcodeScanner.scan(function(result) {
 
@@ -548,6 +682,32 @@ function doScan(divingEventId, userId) {
 		// alert("Scanning failed: " + error);
 	});
 
+}
+
+function doScanForEquipmentDetail() {
+
+	window.plugins.barcodeScanner.scan(function(result) {
+
+		if (result.cancelled == false && result.format == "QR_CODE") {
+			viewItemDetail(result.text);
+		} else {
+			// alert("Le scan n'a pas abouti");
+		}
+	}, function(error) {
+		// alert("Scanning failed: " + error);
+	});
+
+}
+
+function viewItemDetail(equipmentId){
+
+	// we have to know if this equipment is available for rent
+	if (isEquipmentAvailableForRent(equipmentId)) {
+		window.location = "viewEquipmentDetail.html?equipmentId=" + equipmentId;
+	} else {
+		// Do not comment or delete this alert, it's use to send feedback message to the user
+		alert(messageErrorEquipmentNotAvailable(equipmentId));
+	}
 }
 
 function getEquipmentsByDivingEventId(divingEventId) {
@@ -596,15 +756,101 @@ function getURLParameter(key) {
 	return result && unescape(result[1]) || "";
 }
 
+function getNewEquipmentById(equipmentId) {
+
+	var result = null;
+
+	var NewEquipment = function(jsonOneElement) {
+		
+		this.jsonOneElement = jsonOneElement;
+		
+		this.toCompleteString = function() {
+			
+			var otherFields = '';
+			//alert(jsonOneElement);
+      		for (var oneAttribute in jsonOneElement) {
+      			//alert(oneAttribute);
+      			//alert(jsonOneElement[oneAttribute]);
+      			var valeurAAfficher = null;
+      			
+      			var jsonValue = jsonOneElement[oneAttribute];
+      			
+      			if(jsonValue == "null"){
+      				valeurAAfficher = "";
+      			}else if(oneAttribute.indexOf("date") != -1 || oneAttribute.indexOf("Date") != -1) {
+      				//var maintenant = new Date(jsonOneElement[oneAttribute]);
+      				//valeurAAfficher = maintenant.getDate() + '/' + (maintenant.getMonth() + 1)  + '/' + maintenant.getFullYear();
+      				valeurAAfficher = formatTimestamp(jsonValue);
+      			}else if(jsonValue == "true" || jsonValue == "false" || jsonValue === true || jsonValue === false){
+      				valeurAAfficher = getHtmlForBoolean(jsonValue);	
+      				//alert(valeurAAfficher);
+      			}else if((oneAttribute.indexOf("Pressure") != -1) || (oneAttribute.indexOf("pressure") != -1)){
+      				valeurAAfficher = jsonValue + " bars";	
+      			}else if(oneAttribute.indexOf("weight") != -1){
+      				valeurAAfficher = jsonValue + " Kg";	
+      			}else if(oneAttribute.indexOf("price") != -1){
+      				valeurAAfficher = jsonValue + " €";	
+      			} else{
+      				valeurAAfficher = jsonValue;
+      			}
+      			
+      			otherFields = otherFields + "<br>"+  jQuery.i18n.prop(oneAttribute) + " = <b>" + valeurAAfficher + "</b>";
+      		}
+      		
+      		//alert(otherFields);
+      		
+			return otherFields;
+		}
+	}
+	
+	
+	/**
+	 * brand
+				serialNumber
+				material
+				gaz
+				screw
+				weight
+				buildDate
+				operatingPressure
+				testPressure
+				punch
+				lastDateOfTIV
+				status
+				type
+				price
+				rented
+	 */
+	
+	var localStorageEquipments = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
+
+	$.each(localStorageEquipments, function(i, oneElement) {
+
+		var jsonOneElement = JSON.parse(oneElement);
+
+		if (equipmentId == jsonOneElement.reference) {
+			
+			result = new NewEquipment(jsonOneElement); 
+			
+			return false;
+		}
+	});
+
+	return result;
+}
+
 function getEquipmentById(equipmentId) {
 
 	var result = null;
 
-	var Equipment = function(equipmentId, type, price, rented) {
+	var Equipment = function(equipmentId, type, price, rented, serialNumber) {
 		this.equipmentId = equipmentId;
 		this.type = type;
 		this.price = price;
 		this.rented = rented;
+		this.serialNumber = serialNumber;
+		
 		this.getPrice = function() {
 			return this.price;
 		}, this.getType = function() {
@@ -632,9 +878,75 @@ function getEquipmentById(equipmentId) {
 			}
 			
 			return frenchType + " n°<b>"+equipmentId+"</b>";
+		}, this.toCompleteString = function() {
+			
+			var frenchType = this.type;
+			var otherFields = "";
+			
+			switch (this.type) {
+			case "Tank":
+				frenchType = tank;
+				
+				otherFields = otherFields + "<br><br>Prix="+ price;
+				otherFields = otherFields + "<br><br>rented="+ rented;
+				otherFields = otherFields + "<br><br>serialNumber="+ serialNumber;
+				
+				break;
+			case "Regulator":
+				frenchType = regulator;
+				break;
+			case "Jacket":
+				frenchType = jacket;
+				break;
+			case "Suit":
+				frenchType = suit;
+				break;
+			default:
+				alert("Cas non géré")
+				break;
+			}
+			
+			return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
 		}
 	}
-
+	/*
+	var NewEquipment = function(jsonOneElement) {
+		
+		this.jsonOneElement = jsonOneElement;
+		
+		this.toCompleteString = function() {
+			
+			var otherFields = null;
+			alert(jsonOneElement);
+      		for (var oneAttribute in jsonOneElement) {
+      			alert(oneAttribute);
+      			alert(jsonOneElement[oneAttribute]);
+      			otherFields = otherFields + "<br>"+ $.i18n(oneAttribute) + "=" + jsonOneElement[oneAttribute];
+      		}
+      		
+			return otherFields;
+		}
+	}
+	*/
+	
+	/**
+	 * brand
+				serialNumber
+				material
+				gaz
+				screw
+				weight
+				buildDate
+				operatingPressure
+				testPressure
+				punch
+				lastDateOfTIV
+				status
+				type
+				price
+				rented
+	 */
+	
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
@@ -643,9 +955,25 @@ function getEquipmentById(equipmentId) {
 		var jsonOneElement = JSON.parse(oneElement);
 
 		if (equipmentId == jsonOneElement.reference) {
+			
+			//result = new NewEquipment(jsonOneElement); 
+			
 			result = new Equipment(jsonOneElement.reference,
 					jsonOneElement.type, jsonOneElement.price,
-					jsonOneElement.rented);
+					jsonOneElement.rented, jsonOneElement.serialNumber);
+			
+//			result.prototype.getSerialNumber = function(){
+//				return jsonOneElement.serialNumber;
+//			}
+			
+//			result.prototype.toCompleteString2 = function() {
+//				
+//				otherFields = otherFields + "<br><br>Prix="+ price;
+//				otherFields = otherFields + "<br><br>rented="+ rented;
+//				otherFields = otherFields + "<br><br>serial=";//+ getSerialNumber();
+//				
+//				return frenchType + " n°<b>"+equipmentId+"</b>" + otherFields;
+//			}
 			return false;
 		}
 	});
@@ -818,4 +1146,25 @@ function getUserById(userId) {
 	});
 
 	return result;
+}
+
+function formatTimestamp(d){
+    // padding function
+    var s = function(p){
+        return (''+p).length<2?'0'+p:''+p;
+    };
+    
+    var dateTmp = null;
+    // default parameter
+    if (typeof d === 'undefined'){
+        dateTmp = new Date();
+    }else  if (typeof d === 'number'){
+        dateTmp = new Date(d);
+    }else  if (typeof d === 'string'){
+        dateTmp = new Date(parseInt(d));
+    }
+    
+    return s(dateTmp.getDate()) + '/' +
+        s(dateTmp.getMonth()+1) + '/' +
+        dateTmp.getFullYear();
 }
