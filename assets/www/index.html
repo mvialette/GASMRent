@@ -51,18 +51,6 @@
 							
 							jQuery.i18n.prop("chooseAnEvent");
 							document.getElementById("chooseAnEvent").innerHTML = "<i class=\"fa fa-eye \"></i> " + chooseAnEvent;
-							
-							jQuery.i18n.prop("viewItems");
-							document.getElementById("viewItems").innerHTML = "<i class=\"fa fa-eye fa-fw\"></i> " + viewItems;
-							
-							jQuery.i18n.prop("scanToViewItemDetail");
-							document.getElementById("scanToViewItemDetail").innerHTML = "<i class=\"fa fa-qrcode fa-fw\"></i> " + scanToViewItemDetail;
-	
-							jQuery.i18n.prop("synchronize");
-							document.getElementById("synchronize").innerHTML = "<i class=\"fa fa-refresh fa-fw\"></i> "+ synchronize;
-	
-							jQuery.i18n.prop("about");
-							document.getElementById("about").innerHTML = "<i class=\"fa fa-info fa-fw\"></i> " + about;
 						}
 					});
 		}
@@ -112,14 +100,7 @@
 			</div>
 		</div>
 
-		<nav class="navbar navbar-fixed-bottom" role="navigation">
-		<div class="container-fluid" id="navfluid">
-		   <div class="navbar-header">
-				<div class="navbar-brand">GASM-RENT v0.0.1</div>
-			</div>
-			
-		</div>
-	</nav>
+		<div ng-include="'./partials/gasm-footer.html'"></div>
 	</div>
 	
 </body>

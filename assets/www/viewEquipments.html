@@ -31,10 +31,10 @@
 		        	 mode:'both',
 		        	 language:lang,
 		        	 callback: function() {
-		        		 
+		        		 /*
 		        		 jQuery.i18n.prop("viewEquipmentsPageTitle");
 		        		 document.getElementById("viewEquipmentsPageTitle").innerHTML=viewEquipmentsPageTitle;
-		        		 
+		        		 */
 		        		 jQuery.i18n.prop("viewEquipmentsDescription");
 		        		 document.getElementById("description").innerHTML=viewEquipmentsDescription;
 		        		 
@@ -43,8 +43,7 @@
 		        		 jQuery.i18n.prop('jacket');
 		        		 jQuery.i18n.prop('suit');
 		        		 
-		        		 jQuery.i18n.prop("back");
-		        		 document.getElementById("back").innerHTML=back;
+		        		 $("#backToHome").html(jQuery.i18n.prop("backToHome"));
 		       		 }
 		         });
 		    }
@@ -58,23 +57,24 @@
 	<body ng-app="GasmRentApp" >
 		<div ng-controller="MainController" class="container">
 			<div ng-include="'./partials/gasm-header.html'"  onload="initHeader('viewEquipmentsPageTitle')"></div>
-			<div class="row">
-				<div class="col-12 pageTitle" id="viewEquipmentsPageTitle"></div>
-			</div>
-			<div class="row">
+			
+			<div class="row text-center">
 				<div class="col-12 pageSection">
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="description"></div>
+						<div class="col-12" id="description"></div>
 					</div>
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="equipments"></div>
+						<div class="col-12" id="equipments"></div>
 					</div>
 	
-					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="./index.html" id="back"></a>
-						</div>
+					<div class="row largeRow">				
+						<div class="col-12">
+							<a href="./index.html" class="btn btn-lg btn-primary">
+								<div id="backToHome"></div>
+							</a>	
+						</div>						
 					</div>
+					
 				</div>
 			</div>
 		</div>
