@@ -15,19 +15,33 @@ gasmRentApp.controller('MainController', ['$scope', function ($scope) {
 					$("#pageTitle").html(jQuery.i18n.prop(pageTitle));
 					 
 					jQuery.i18n.prop("viewItems");
-					$("#viewItems").html("<i class=\"fa fa-eye fa-fw\"></i> " + viewItems);
+					$("#viewItems").html(viewItems);
 					
 					jQuery.i18n.prop("scanToViewItemDetail");
-					$("#scanToViewItemDetail").html("<i class=\"fa fa-qrcode fa-fw\"></i> " + scanToViewItemDetail);
+					$("#scanToViewItemDetail").html(scanToViewItemDetail);
 
 					jQuery.i18n.prop("synchronize");
-					$("#synchronize").html("<i class=\"fa fa-refresh fa-fw\"></i> "+ synchronize);
+					$("#synchronize").html(synchronize);
 
 					jQuery.i18n.prop("about");
-					$("#about").html("<i class=\"fa fa-info fa-fw\"></i> " + about);
+					$("#about").html(about);
 				 }
 			 });
 		}
+	    
+	    $scope.initBackToHome = function() {
+			  jQuery.i18n.properties({
+				 name:'gasmrent',
+				 path:'i18n/',
+				 mode:'both',
+				 language:'fr',
+				 callback: function() {
+					 $("#backToHome").html(jQuery.i18n.prop("backToHome"));
+				 }
+			 });
+		}
+	    
+	    
 }]);
 
 function getHtmlForBoolean(boolean){

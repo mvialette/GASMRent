@@ -5,7 +5,6 @@
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
-	
 	<!-- Javascripts --> 
 	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
@@ -40,17 +39,13 @@
 						language : lang,
 						callback : function() {
 							
-							jQuery.i18n.prop("applicationDescription");
-							document.getElementById("applicationDescription").innerHTML = applicationDescription;
+							$("#applicationDescription").html(jQuery.i18n.prop("applicationDescription"));
 	
-							jQuery.i18n.prop("startRentSession");
-							document.getElementById("startRentSession").innerHTML = "<i class=\"fa fa-play\"></i> " + startRentSession;
+							$("#startRentSession").html(jQuery.i18n.prop("startRentSession"));
 	
-							jQuery.i18n.prop("resumeRentSession");
-							document.getElementById("resumeRentSession").innerHTML = "<i class=\"fa fa-pause\"></i> " + resumeRentSession;
+							$("#resumeRentSession").html(jQuery.i18n.prop("resumeRentSession"));
 							
-							jQuery.i18n.prop("chooseAnEvent");
-							document.getElementById("chooseAnEvent").innerHTML = "<i class=\"fa fa-eye \"></i> " + chooseAnEvent;
+							$("#chooseAnEvent").html(jQuery.i18n.prop("chooseAnEvent"));
 						}
 					});
 		}

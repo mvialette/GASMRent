@@ -27,10 +27,9 @@
 			function getEquipmentDetail() {
 				
 				var equipmentId = getURLParameter("equipmentId");
-				
 				var equiment = getNewEquipmentById(equipmentId);
 				
-				document.getElementById("description").innerHTML=equiment.toCompleteString();
+				$("#description").html(equiment.toCompleteString());
 			}
 			
 			function loadBundles(lang) {
@@ -63,13 +62,7 @@
 						<div class="col-12" id="description"></div>
 					</div>
 	
-					<div class="row largeRow">				
-						<div class="col-12">
-							<a href="./index.html" class="btn btn-lg btn-primary">
-								<div id="backToHome"></div>
-							</a>	
-						</div>						
-					</div>
+					<div ng-include="'./partials/back-to-home.html'" onload="initBackToHome()"></div>
 						
 				</div>
 			</div>

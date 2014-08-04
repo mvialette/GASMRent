@@ -54,16 +54,19 @@ media ="screen"
 }
 
 .container {
+	/*
 	width: 90%;
 	height: 90%;
-	/* margin-left: 5%;
-	margin-right: 5%; */
-	padding-top: 5%;
-	padding-left: 5%;
+	// margin-left: 5%;
+	//margin-right: 5%;
+	*/
+	margin-left: 5%;
+	margin-right: 5%;
 }
 
 body {
 	background-color: #c2c2c2;
+	padding-top: 70px;
 }
 
 /*
@@ -98,7 +101,7 @@ body {
 	/* margin: 5%; */
 	/* min-height: 200px; */
 	/*padding-left : 5%;*/
-	padding-top: 4em;
+	/*padding-top: 4em;*/
 }
 
 a.largeButton {

@@ -37,11 +37,7 @@
 					 language:lang,
 					 callback: function() {
 						 
-						 jQuery.i18n.prop("aboutDescription");
-						 document.getElementById("aboutDescription").innerHTML=aboutDescription;
-						 
-						 jQuery.i18n.prop("back");
-						 document.getElementById("back").innerHTML=back;
+						 $("#aboutDescription").html(jQuery.i18n.prop("aboutDescription"));
 					 }
 				 });
 			}
@@ -60,11 +56,8 @@
 						</div>
 					</div>
 					
-					<div class="row largeRow">
-						<div class="col-12 text-center" >
-							<a class="largeButton" href="./index.html" id="back"></a>
-						</div>
-					</div>
+					<div ng-include="'./partials/back-to-home.html'" onload="initBackToHome()"></div>
+					
 				</div>
 			</div>
 		</div>
