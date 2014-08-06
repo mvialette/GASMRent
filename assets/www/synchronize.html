@@ -7,6 +7,7 @@
 		
 		<!-- Javascripts -->
 		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
@@ -20,20 +21,10 @@
 			      	initLanguages();
 			    });
 				
-				// We ask the synchronize of users informations
-				synchronizeUsers();
-				
-				// We ask the synchronize of diving events
-				synchronizeDivingEvents();	
-				
-				// We ask the synchronize of equipment informations
-				synchronizeEquipments();
+				importDatas();
 				
 				// Send informations of rented equipments to the server
 				//sendRentalRecords();
-				
-				// We ask the synchronize the payment type
-				// synchronizePaymentType();
 			}
 			
 			function loadBundles(lang) {
@@ -44,23 +35,14 @@
 		        	 language:lang,
 		        	 callback: function() {
 		        		 
-		        		 jQuery.i18n.prop("synchronizePageTitle");
-		        		 document.getElementById("synchronizePageTitle").innerHTML=synchronizePageTitle;
+		        		 //jQuery.i18n.prop('online');
+		        		 //jQuery.i18n.prop('offline');
 		        		 
+		        		 /*
 		        		 jQuery.i18n.prop('userOnline');
 		        		 jQuery.i18n.prop('userOffline');
 		        		 
-		        		 jQuery.i18n.prop('divingEventOnline');
-		        		 jQuery.i18n.prop('divingEventOffline');
-		        		 
-		        		 jQuery.i18n.prop('equipmentOnline');
-		        		 jQuery.i18n.prop('equipmentOffline');
-		        		 
-		        		 jQuery.i18n.prop('paymentTypesOnline');
-		        		 jQuery.i18n.prop('paymentTypesOffline');
-		        		 
-		        		 jQuery.i18n.prop("back");
-		        		 document.getElementById("back").innerHTML=back;
+		        		 */
 		       		 }
 		         });
 		    }
@@ -68,38 +50,40 @@
 				
 		<!-- CSS -->
 		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/font-awesome.min.css" rel="stylesheet">
 		<link href="./css/gasm.css" rel="stylesheet" media="screen">
 	
 	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-12 pageTitle" id="synchronizePageTitle"></div>
-			</div>
+	
+	<body ng-app="GasmRentApp" >
+		<div ng-controller="MainController" class="container">
+		
+			<div ng-include="'./partials/gasm-header.html'" onload="initHeader('synchronizePageTitle')"></div>
+			
 			<div class="row text-center viewContent">
 				<div class="col-12 pageSection">
 	
 					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="users"></div>
+						<div class="col-12" id="pageDescription"></div>
 					</div>
 					
-					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="divingEvent"></div>
+					<div class="row">
+						<div class="col-12" id="users"></div>
 					</div>
 					
-					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="equipments"></div>
+					<div class="row">
+						<div class="col-12" id="divingEvent"></div>
 					</div>
 					
-					<div class="row largeRow">
-						<div class="col-12 text-center largeButton" id="paymentTypes"></div>
+					<div class="row">
+						<div class="col-12" id="equipments"></div>
+					</div>
+					
+					<div class="row">
+						<div class="col-12 largeButton" id="paymentTypes"></div>
 					</div>
 	
-					<div class="row largeRow">
-							<div class="col-12 text-center" >
-								<a class="largeButton" href="./index.html" id="back"></a>
-							</div>
-						</div>
+					<div ng-include="'./partials/back-to-home.html'" onload="initBackToHome()"></div>
 				</div>
 			</div>
 		</div>
