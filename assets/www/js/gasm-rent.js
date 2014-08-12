@@ -42,25 +42,15 @@ gasmRentApp.controller('MainController', [ '$scope', function($scope) {
 	}
 } ]);
 
-function getHtmlForBoolean(boolean) {
-	var result = null;
-	if (boolean == "true" || boolean === true) {
-		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-check fa-stack-1x\"></i></span>"
-	} else if (boolean == "false" || boolean === false) {
-		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-times fa-stack-1x\"></i></span>";
-	}
-
-	return result;
-}
-
 function getConstants() {
 	var constants = {
 		"URL_GET_USERS" : "https://gasmrent-webapp.appspot.com/api/adherent/",
 		"URL_GET_DIVING_EVENT" : "https://gasmrent-webapp.appspot.com/api/divingEvent/",
 		"URL_GET_EQUIPMENT" : "https://gasmrent-webapp.appspot.com/api/equipment/",
 		"URL_GET_PAYMENT_TYPE" : "https://gasmrent-webapp.appspot.com/api/payment",
-		"URL_SEND_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent",
-		"URL_TO_PAY_A_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/",
+		"URL_GET_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/",
+		"URL_PUT_NEW_RENTAL_RECORD" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent",
+		"URL_PUT_TO_PAY_A_RENTAL_RECORDS" : "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/",
 		"LOCAL_STORAGE_USERS" : "offlineUsers",
 		"LOCAL_STORAGE_DIVING_EVENTS" : "offlineDivingEvents",
 		"LOCAL_STORAGE_EQUIPMENTS" : "offlineEquipments",
@@ -72,6 +62,17 @@ function getConstants() {
 	};
 
 	return constants;
+}
+
+function getHtmlForBoolean(boolean) {
+	var result = null;
+	if (boolean == "true" || boolean === true) {
+		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-check fa-stack-1x\"></i></span>"
+	} else if (boolean == "false" || boolean === false) {
+		result = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-times fa-stack-1x\"></i></span>";
+	}
+
+	return result;
 }
 
 function initLanguages() {
@@ -423,132 +424,133 @@ function sendLinesOfRental(divingEventId) {
 
 	var rentalRecordArrays = new Array();
 
-	$.each(rentalRecordsStringFromLocalStorage,
-			function(idx2, oneRentalRecord) {
-				rentalRecordArrays.push(oneRentalRecord);
-			});
+	$.each(rentalRecordsStringFromLocalStorage, function(idx2, oneRentalRecord) {
+		rentalRecordArrays.push(oneRentalRecord);
+	});
 
-	$
-			.each(
-					rentalRecordArrays,
-					function(i, oneElement) {
-						var currentElementJSON = JSON.parse(oneElement);
-						var paramToSend = "?dEventId="
-								+ currentElementJSON.divingEventId
-								+ "&renterId=" + currentElementJSON.userId
-								+ "&equipmentId="
-								+ currentElementJSON.equipmentId;
+	$.each(rentalRecordArrays, function(i, oneElement) {
+		
+		var currentElementJSON = JSON.parse(oneElement);
+		var paramToSend = "?dEventId="
+				+ currentElementJSON.divingEventId
+				+ "&renterId=" + currentElementJSON.userId
+				+ "&equipmentId="
+				+ currentElementJSON.equipmentId;
 
-						if(debug === true){
-							alert(paramToSend);
-						}
+		if(debug === true){
+			alert(paramToSend);
+		}
 
-						var urlComplete = getConstants().URL_SEND_RENTAL_RECORDS
-								+ paramToSend;
+		var urlComplete = getConstants().URL_PUT_NEW_RENTAL_RECORD
+				+ paramToSend;
+		
+		if(debug === true){
+			alert(urlComplete);
+		}
+
+		jQuery
+				.ajax({
+					url : urlComplete,
+					type : "PUT",
+					contentType : "application/json; charset=utf-8",
+					data : "",
+					success : function(data) {
+						// la synchronisation s'est correctement
+						// déroulé
+						alert("Synchronisation");
+
+						alert("data="+data);
 						
+						var jsonResponseStringify = JSON.stringify(data);
+						alert("jsonResponseStringify="+jsonResponseStringify);
+						
+						var jsonResponse = JSON.parse(jsonResponseStringify);
+						alert("jsonResponse="+jsonResponse);
+						
+						// TODO : payment gesture
+						var idOfTheRentalRecord = jsonResponse.id;
+
 						if(debug === true){
-							alert(urlComplete);
+							alert("idOfTheRentalRecord="+idOfTheRentalRecord);
+							//alert("currentElementJSON.userId="+currentElementJSON.userId);
+							//alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
 						}
 
-						jQuery
-								.ajax({
-									url : urlComplete,
-									type : "PUT",
-									contentType : "application/json; charset=utf-8",
-									data : "",
-									success : function(data) {
-										// la synchronisation s'est correctement
-										// déroulé
-										alert("Synchronisation");
+						var paymentModeOfTheUser = null;
 
-										// TODO : payment gesture
-										var idOfTheRentalRecord = data;
+						$.each(paymentByUserAndDivingEventArrayJSON, function(idx3, onePayment) {
 
-										if(debug === true){
-											alert("idOfTheRentalRecord="+idOfTheRentalRecord);
-											alert("currentElementJSON.userId="+currentElementJSON.userId);
-											alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
-										}
+							if(debug === true){
+								alert("onePayment.userId="+onePayment.userId + " currentElementJSON.userId=" + currentElementJSON.userId);
+								alert("onePayment.divingEventId="+onePayment.divingEventId + " currentElementJSON.divingEventId=" + currentElementJSON.divingEventId);
+							}
 
-										var paymentModeOfTheUser = null;
+							if (currentElementJSON.userId == onePayment.userId
+									&& currentElementJSON.divingEventId == onePayment.divingEventId) {
 
-										$
-												.each(
-														paymentByUserAndDivingEventArrayJSON,
-														function(idx3,
-																onePayment) {
+								if(debug === true){
+									alert("we have found a payment entry : find");
+									alert("onePayment.paymentMode="+onePayment.paymentMode);
+								}
+								paymentModeOfTheUser = onePayment.paymentMode;
+								return false;
+							}
+							if(debug === true){
+								alert("next");
+							}
+						});
 
-															if(debug === true){
-																alert("onePayment.userId="+onePayment.userId + " currentElementJSON.userId=" + currentElementJSON.userId);
-																alert("onePayment.divingEventId="+onePayment.divingEventId + " currentElementJSON.divingEventId=" + currentElementJSON.divingEventId);
-															}
+						if(debug === true){
+							alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+						}
 
-															if (currentElementJSON.userId == onePayment.userId
-																	&& currentElementJSON.divingEventId == onePayment.divingEventId) {
+						if (paymentModeOfTheUser != null) {
+							if (paymentModeOfTheUser == true) {
+								// COIN
+								paymentModeOfTheUser = getConstants().PAYMENT_BY_COIN;
+							} else if (paymentModeOfTheUser == false) {
+								// CHECK
+								paymentModeOfTheUser = getConstants().PAYMENT_BY_CHECK;
+							}
 
-																if(debug === true){
-																	alert("we have found a payment entry : find");
-																	alert("onePayment.paymentMode="+onePayment.paymentMode);
-																}
-																paymentModeOfTheUser = onePayment.paymentMode;
-																return false;
-															}
-															if(debug === true){
-																alert("next");
-															}
-														});
+							var urlCompleteToPay = getConstants().URL_PUT_TO_PAY_A_RENTAL_RECORDS
+									+ idOfTheRentalRecord
+									+ "?payment="
+									+ paymentModeOfTheUser;
+							
+							if(debug === true){
+								alert("urlCompleteToPay="+urlCompleteToPay);
+							}
+							// "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
 
-										if(debug === true){
-											alert("paymentModeOfTheUser="+paymentModeOfTheUser);
-										}
-
-										if (paymentModeOfTheUser != null) {
-											if (paymentModeOfTheUser == true) {
-												// COIN
-												paymentModeOfTheUser = getConstants().PAYMENT_BY_COIN;
-											} else if (paymentModeOfTheUser == false) {
-												// CHECK
-												paymentModeOfTheUser = getConstants().PAYMENT_BY_CHECK;
-											}
-
-											var urlCompleteToPay = getConstants().URL_TO_PAY_A_RENTAL_RECORDS
-													+ idOfTheRentalRecord
-													+ "?payment="
-													+ paymentModeOfTheUser;
+							jQuery
+									.ajax({
+										url : urlCompleteToPay,
+										type : "PUT",
+										contentType : "application/json; charset=utf-8",
+										data : "",
+										success : function(data) {
 											
 											if(debug === true){
-												alert("urlCompleteToPay="+urlCompleteToPay);
+												alert("payment send");
 											}
-											// "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
-
-											jQuery
-													.ajax({
-														url : urlCompleteToPay,
-														type : "PUT",
-														contentType : "application/json; charset=utf-8",
-														data : "",
-														success : function(data) {
-															
-															if(debug === true){
-																alert("payment send");
-															}
-														},
-														error : function(e) {
-															alert(JSON
-																	.stringify(e));
-														}
-													});
-										} else {
-											if(debug === true){
-												alert("no payment");
-											}
+										},
+										error : function(e) {
+											alert(JSON
+													.stringify(e));
 										}
-									},
-									error : function(e) {
-										alert(JSON.stringify(e));
-									}
-								});
-					});
+									});
+						} else {
+							if(debug === true){
+								alert("no payment");
+							}
+						}
+					},
+					error : function(e) {
+						alert(JSON.stringify(e));
+					}
+				});
+	});
 }
 
 function getInfosOfEquipmentsToList() {
