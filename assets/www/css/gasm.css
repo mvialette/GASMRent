@@ -100,7 +100,8 @@ body {
 	border-bottom-right-radius: 20px 20px;*/
 	/* margin: 5%; */
 	/* min-height: 200px; */
-	/*padding-left : 5%;*/
+	padding-left : 5%;
+	padding-right : 5%;
 	/*padding-top: 4em;*/
 }
 
@@ -135,7 +136,7 @@ a.largeButton {
 }
 
 .largeRow {
-	padding-bottom: 2em;
+	padding-bottom: 1em;
 }
 
 .navbar-brand.application-title {

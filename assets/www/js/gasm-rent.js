@@ -401,14 +401,22 @@ function synchronizePaymentType() {
 }
 
 function sendLinesOfRental(divingEventId) {
+	
+	var debug = true;
 
 	var paymentByUserAndDivingEventArrayStringify = window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
-	// alert("paymentByUserAndDivingEventArrayStringify="+paymentByUserAndDivingEventArrayStringify);
+	
+	if(debug === true){
+		alert("paymentByUserAndDivingEventArrayStringify="+paymentByUserAndDivingEventArrayStringify);
+	}
 
 	var paymentByUserAndDivingEventArrayJSON = JSON
 			.parse(paymentByUserAndDivingEventArrayStringify);
-	// alert("paymentByUserAndDivingEventArrayJSON="+paymentByUserAndDivingEventArrayJSON);
+	
+	if(debug === true){
+		alert("paymentByUserAndDivingEventArrayJSON="+paymentByUserAndDivingEventArrayJSON);
+	}
 
 	var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
@@ -431,11 +439,16 @@ function sendLinesOfRental(divingEventId) {
 								+ "&equipmentId="
 								+ currentElementJSON.equipmentId;
 
-						// alert(paramToSend);
+						if(debug === true){
+							alert(paramToSend);
+						}
 
 						var urlComplete = getConstants().URL_SEND_RENTAL_RECORDS
 								+ paramToSend;
-						// //alert(urlComplete);
+						
+						if(debug === true){
+							alert(urlComplete);
+						}
 
 						jQuery
 								.ajax({
@@ -451,10 +464,11 @@ function sendLinesOfRental(divingEventId) {
 										// TODO : payment gesture
 										var idOfTheRentalRecord = data;
 
-										currentElementJSON.userId
-
-										// alert("currentElementJSON.userId="+currentElementJSON.userId);
-										// alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
+										if(debug === true){
+											alert("idOfTheRentalRecord="+idOfTheRentalRecord);
+											alert("currentElementJSON.userId="+currentElementJSON.userId);
+											alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
+										}
 
 										var paymentModeOfTheUser = null;
 
@@ -464,23 +478,29 @@ function sendLinesOfRental(divingEventId) {
 														function(idx3,
 																onePayment) {
 
-															// alert("onePayment.userId="+onePayment.userId);
-															// alert("onePayment.divingEventId="+onePayment.divingEventId);
+															if(debug === true){
+																alert("onePayment.userId="+onePayment.userId + " currentElementJSON.userId=" + currentElementJSON.userId);
+																alert("onePayment.divingEventId="+onePayment.divingEventId + " currentElementJSON.divingEventId=" + currentElementJSON.divingEventId);
+															}
 
 															if (currentElementJSON.userId == onePayment.userId
 																	&& currentElementJSON.divingEventId == onePayment.divingEventId) {
-																// we have found
-																// a payment
-																// entry
-																// alert("find");
-																// alert("onePayment.paymentMode="+onePayment.paymentMode);
+
+																if(debug === true){
+																	alert("we have found a payment entry : find");
+																	alert("onePayment.paymentMode="+onePayment.paymentMode);
+																}
 																paymentModeOfTheUser = onePayment.paymentMode;
 																return false;
 															}
-															// alert("next");
+															if(debug === true){
+																alert("next");
+															}
 														});
 
-										// alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+										if(debug === true){
+											alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+										}
 
 										if (paymentModeOfTheUser != null) {
 											if (paymentModeOfTheUser == true) {
@@ -495,7 +515,10 @@ function sendLinesOfRental(divingEventId) {
 													+ idOfTheRentalRecord
 													+ "?payment="
 													+ paymentModeOfTheUser;
-											// alert("urlCompleteToPay="+urlCompleteToPay);
+											
+											if(debug === true){
+												alert("urlCompleteToPay="+urlCompleteToPay);
+											}
 											// "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
 
 											jQuery
@@ -505,7 +528,10 @@ function sendLinesOfRental(divingEventId) {
 														contentType : "application/json; charset=utf-8",
 														data : "",
 														success : function(data) {
-															alert("payment send");
+															
+															if(debug === true){
+																alert("payment send");
+															}
 														},
 														error : function(e) {
 															alert(JSON
@@ -513,7 +539,9 @@ function sendLinesOfRental(divingEventId) {
 														}
 													});
 										} else {
-											alert("no payment");
+											if(debug === true){
+												alert("no payment");
+											}
 										}
 									},
 									error : function(e) {
@@ -780,7 +808,7 @@ function getEquipmentsByDivingEventId(divingEventId) {
 
 						var currentElementJSON = JSON.parse(oneElement);
 
-						alert(JSON.stringify(currentElementJSON));
+						// alert(JSON.stringify(currentElementJSON));
 
 						if (currentElementJSON.divingEventId == divingEventId) {
 
@@ -1058,58 +1086,55 @@ function getDivingEventById(divingEventId) {
 													.push(oneRentalRecord);
 										});
 
-								$
-										.each(
-												lineOfRentalsArrays,
-												function(i, oneElement) {
-
-													var currentElementJSON = JSON
-															.parse(oneElement);
-
-													if (currentElementJSON.divingEventId == theCurrentDivingEventId
-															&& currentElementJSON.userId == userId) {
-														var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
-
-														switch (anEquipment
-																.getType()) {
-														case "Tank":
-															if (anEquipment
-																	.getPrice() > maxPriceForTank) {
-																maxPriceForTank = anEquipment
-																		.getPrice();
-															}
-															break;
-														case "Regulator":
-															if (anEquipment
-																	.getPrice() > maxPriceForRegulator) {
-																maxPriceForRegulator = anEquipment
-																		.getPrice();
-															}
-															break;
-														case "Jacket":
-															if (anEquipment
-																	.getPrice() > maxPriceForJacket) {
-																maxPriceForJacket = anEquipment
-																		.getPrice();
-															}
-															break;
-														case "Suit":
-															if (anEquipment
-																	.getPrice() > maxPriceForSuit) {
-																maxPriceForSuit = anEquipment
-																		.getPrice();
-															}
-															break;
-														default:
-															alert("Cas non géré")
-															break;
-														}
-													}
-												});
+								$.each(lineOfRentalsArrays,function(i, oneElement) {
+	
+										var currentElementJSON = JSON
+												.parse(oneElement);
+	
+										if (currentElementJSON.divingEventId == theCurrentDivingEventId
+												&& currentElementJSON.userId == userId) {
+											var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
+	
+											switch (anEquipment
+													.getType()) {
+											case "Tank":
+												if (anEquipment
+														.getPrice() > maxPriceForTank) {
+													maxPriceForTank = anEquipment
+															.getPrice();
+												}
+												break;
+											case "Regulator":
+												if (anEquipment
+														.getPrice() > maxPriceForRegulator) {
+													maxPriceForRegulator = anEquipment
+															.getPrice();
+												}
+												break;
+											case "Jacket":
+												if (anEquipment
+														.getPrice() > maxPriceForJacket) {
+													maxPriceForJacket = anEquipment
+															.getPrice();
+												}
+												break;
+											case "Suit":
+												if (anEquipment
+														.getPrice() > maxPriceForSuit) {
+													maxPriceForSuit = anEquipment
+															.getPrice();
+												}
+												break;
+											default:
+												alert("Cas non géré")
+												break;
+											}
+										}
+									});
 							}
 
-							result = maxPriceForTank + maxPriceForRegulator
-									+ maxPriceForJacket + maxPriceForSuit;
+							// TODO: I have to put a '+' before adding numbers, is there another way ?
+							result = +maxPriceForTank + +maxPriceForRegulator + +maxPriceForJacket + +maxPriceForSuit;
 
 							if ((Math.max(result, this.billingThreshold) == result)) {
 								if (this.billingThreshold == -1) {
@@ -1193,3 +1218,15 @@ function formatTimestamp(d) {
 	return s(dateTmp.getDate()) + '/' + s(dateTmp.getMonth() + 1) + '/'
 			+ dateTmp.getFullYear();
 }
+
+function startANewRentSession() {
+	
+	// clear rentalRecords of the local storage
+	var rentalRecordArrays = new Array();
+	window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON.stringify(rentalRecordArrays));
+	
+	var paymentByUsersArrays = new Array();
+	window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, JSON.stringify(paymentByUsersArrays));
+	
+	window.location = "./chooseEventAndUser.html";
+} 

@@ -7,6 +7,7 @@
 		
 		<!-- Javascripts -->
 		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script> 
 		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
 		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
@@ -32,30 +33,30 @@
 					language : lang,
 					callback : function() {
 						
-						jQuery.i18n.prop("summaryByUserPageTitle");
+						/* jQuery.i18n.prop("summaryByUserPageTitle");
 						
-						$("#summaryByUserPageTitle").html(summaryByUserPageTitle);
+						$("#summaryByUserPageTitle").html(summaryByUserPageTitle); */
 		
-						jQuery.i18n.prop("summaryByUserDescription");
+						/* jQuery.i18n.prop("summaryByUserDescription"); */
 		
-						jQuery.i18n.prop("continueRentalForSomeoneElse");
+						/* jQuery.i18n.prop("continueRentalForSomeoneElse"); */
 						
 						$("#continueRentalForSomeoneElse").html(continueRentalForSomeoneElse);
 						
-						jQuery.i18n.prop("hasPaidByCoin");
+						/* jQuery.i18n.prop("hasPaidByCoin"); */
 						$("#hasPaidByCoin").html(hasPaidByCoin);
 						
-						jQuery.i18n.prop("hasPaidByCheck");
+						/* jQuery.i18n.prop("hasPaidByCheck"); */
 						$("#hasPaidByCheck").html(hasPaidByCheck);
 						
-						jQuery.i18n.prop("hasNotPaid");
+						/* jQuery.i18n.prop("hasNotPaid"); */
 						$("#hasNotPaid").html(hasNotPaid);
 						
-						jQuery.i18n.prop("summaryByDivingEvent");
+						/* jQuery.i18n.prop("summaryByDivingEvent"); */
 						$("#summaryByDivingEvent").html(summaryByDivingEvent);
 						
-						jQuery.i18n.prop("back");
-						$("#back").html(back);
+						/* jQuery.i18n.prop("back");
+						$("#back").html(back); */
 					}
 				});
 			} 
@@ -196,58 +197,51 @@
 		
 		<!-- CSS -->
 		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/font-awesome.min.css" rel="stylesheet">
 		<link href="./css/gasm.css" rel="stylesheet" media="screen">
 	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-12 pageTitle" id="summaryByUserPageTitle"></div>
-			</div>
-			<div class="row">
+	<body ng-app="GasmRentApp">
+		<div ng-controller="MainController" class="container">
+			
+			<div ng-include="'./partials/gasm-header.html'" onload="initHeader('summaryByUserPageTitle')"></div>
+			
+			<div class="row text-center">
 				<div class="col-12 pageSection">
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="summaryByUserDescription"></div>
+						<div class="col-12" id="summaryByUserDescription"></div>
 					</div>
 					
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="listOfRentedEquipments"></div>
+						<div class="col-12" id="listOfRentedEquipments"></div>
 					</div>				
 					
 					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
+						<div class="col-xs-4">
+							<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
 						</div>
-					</div>
-					
-					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
-						</div>
-					</div>
-					
-					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="#" onClick="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
-						</div>
-					</div>
 						
+						<div class="col-xs-4">
+							<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
+						</div>
+						
+						<div class="col-xs-4">
+							<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
+						</div>
+					</div>
+					
 					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
+						<div class="col-12">
+							<a class="btn btn-primary" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
 						</div>
 					</div>
 				
 					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+						<div class="col-12">
+							<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
 						</div>
 					</div>
 	
-					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="./index.html" id="back"></a>
-						</div>
-					</div>
+					<div ng-include="'./partials/back-to-home.html'" onload="initBackToHome()"></div>
 				</div>
 			</div>
 		</div>

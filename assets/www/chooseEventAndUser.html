@@ -7,6 +7,7 @@
 	
 	<!-- Javascripts -->
 	<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+	<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
 	<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
@@ -16,6 +17,7 @@
 	
 	<!-- CSS -->
 	<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="./css/font-awesome.min.css" rel="stylesheet">
 	<link href="./css/gasm.css" rel="stylesheet" media="screen">
 	
 	<!-- JS Function that can be called -->
@@ -45,32 +47,19 @@
 						language : lang,
 						callback : function() {
 	
-							jQuery.i18n.prop("chooseEventAndUserPageTitle");
-							$("#chooseEventAndUserPageTitle").html(chooseEventAndUserPageTitle);
-	
-							jQuery.i18n.prop("chooseEventAndUserDescription");
 							$("#chooseEventAndUserDescription").html(chooseEventAndUserDescription);
 	
-							jQuery.i18n.prop("user");
 							$("#user").html(user + " :");
 	
-							jQuery.i18n.prop("divingEvent");
 							$("#divingEvent").html(divingEvent + " :");
 							
-							jQuery.i18n.prop("equipment");
 							$("#equipment").html(equipment + " :");
 	
-							jQuery.i18n.prop("scanQRCode");
 							$("#scanQRCode").html(scanQRCode);
 							
-							jQuery.i18n.prop("rentWithoutScan");
 							$("#rentWithoutScan").html(rentWithoutScan);
 							
-							jQuery.i18n.prop("summaryByUser");
 			        		 $("#summaryByUser").html(summaryByUser);
-	
-							jQuery.i18n.prop("back");
-							$("#back").html(back);
 						}
 					});
 		}
@@ -101,71 +90,65 @@
 		}
 	</script>
 </head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-12 pageTitle" id="chooseEventAndUserPageTitle"></div>
-		</div>
+<body ng-app="GasmRentApp" >
+	<div ng-controller="MainController" class="container">
+
+		<div ng-include="'./partials/gasm-header.html'" onload="initHeader('chooseEventAndUserPageTitle')"></div>
+		
 		<form role="form">
 			<div class="row text-center viewContent form-group">
 				<div class="col-12 pageSection">
 
 					<div class="row">
-						<div class="col-12 text-center largeButton"
-							id="chooseEventAndUserDescription"></div>
+						<div class="col-12" id="chooseEventAndUserDescription"></div>
+					</div>
+					<div class="row">
+						<div class="col-12" id="divingEvent"></div>
 					</div>
 
 					<div class="row">
-						<div class="col-12 text-center" id="divingEvent"></div>
+						<div class="col-12" id="divingEvents"></div>
 					</div>
 
 					<div class="row">
-						<div class="col-12 text-center" id="divingEvents"></div>
+						<div class="col-12" id="user"></div>
 					</div>
 
 					<div class="row">
-						<div class="col-12 text-center" id="user"></div>
-					</div>
-
-					<div class="row">
-						<div class="col-12 text-center" id="users"></div>
+						<div class="col-12" id="users"></div>
 					</div>
 					
 					<div class="row">
-						<div class="col-12 text-center" id="equipment"></div>
+						<div class="col-12" id="equipment"></div>
 					</div>
 
 					<div class="row">
-						<div class="col-12 text-center" id="equipments"></div>
+						<div class="col-12" id="equipments"></div>
 					</div>
 					
 					<div class="row largeRow">
-						
+						<div class="col-12"><!-- TODO Just to add an empty space, refacto this part by css  --> </div>
 					</div>
-
+					
 					<div class="row largeRow">
 						<div class="col-12">
-							<a class="largeButton" href="#" onClick="sendInfoToDoScan()" id="scanQRCode"> </a>
+							<a class="btn btn-primary" href="#" onClick="sendInfoToDoScan()" id="scanQRCode"> </a>
 						</div>
 					</div>
 					
 					<div class="row largeRow">
 						<div class="col-12">
-							<a class="largeButton" href="#" onClick="sendInfoWithoutScan()" id="rentWithoutScan"></a>
+							<a class="btn btn-primary" href="#" onClick="sendInfoWithoutScan()" id="rentWithoutScan"></a>
 						</div>
 					</div>
 					
 					<div class="row largeRow">
 						<div class="col-12">
-							<a class="largeButton" href="#" onClick="sendInfoForSummaryByUser()" id="summaryByUser"> </a>
+							<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByUser()" id="summaryByUser"> </a>
 						</div>
 					</div>
 
-					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="./index.html" id="back"></a>
-						</div>
-					</div>
+					<div ng-include="'./partials/back-to-home.html'" onload="initBackToHome()"></div>
 				</div>
 			</div>
 		</form>

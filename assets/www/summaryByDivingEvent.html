@@ -1,86 +1,78 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-<title>G.A.S.M. Rent</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- Javascripts -->
-<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script> 
-<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
-
-<script type="text/javascript">
-	window.onload = function() {
-		//load I18N bundles
+	<head>
+		<title>G.A.S.M. Rent</title>
 		
-		jQuery(document).ready(function() {
-			initLanguages();
-		});
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
-		var divingEventId = getURLParameter("divingEventId");
+		<!-- Javascripts -->
+		<script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script> 
+		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
 		
-		getEquipmentsByDivingEventId(divingEventId);
-	}
-
-	function loadBundles(lang) {
-		jQuery.i18n.properties({
-			name : 'gasmrent',
-			path : 'i18n/',
-			mode : 'both',
-			language : lang,
-			callback : function() {
+		<script type="text/javascript">
+			window.onload = function() {
+				//load I18N bundles
 				
-				jQuery.i18n.prop("summaryByDivingEventPageTitle");
-				$("#summaryByDivingEventPageTitle").html(summaryByDivingEventPageTitle);
-
-				jQuery.i18n.prop("summaryByDivingEventDescription");
+				jQuery(document).ready(function() {
+					initLanguages();
+				});
 				
-				jQuery.i18n.prop("sendForSynchronization");
-				$("#sendForSynchronization").html(sendForSynchronization);
+				var divingEventId = getURLParameter("divingEventId");
 				
-				jQuery.i18n.prop("back");
-				$("#back").html(back);
+				getEquipmentsByDivingEventId(divingEventId);
 			}
-		});
-	}
-</script>
-
-<!-- CSS -->
-<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="./css/gasm.css" rel="stylesheet" media="screen">
-</head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-12 pageTitle" id="summaryByDivingEventPageTitle"></div>
-		</div>
-		<div class="row">
-			<div class="col-12 pageSection">
+		
+			function loadBundles(lang) {
+				jQuery.i18n.properties({
+					name : 'gasmrent',
+					path : 'i18n/',
+					mode : 'both',
+					language : lang,
+					callback : function() {
+						
+						$("#sendForSynchronization").html(sendForSynchronization);
+					}
+				});
+			}
+		</script>
+		
+		<!-- CSS -->
+		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/font-awesome.min.css" rel="stylesheet">
+		<link href="./css/gasm.css" rel="stylesheet" media="screen">
+	
+	</head>
+	<body ng-app="GasmRentApp">
+		<div ng-controller="MainController" class="container">
+			
+			<div ng-include="'./partials/gasm-header.html'"
+			onload="initHeader('summaryByDivingEventPageTitle')"></div>
+			
+			<!-- <div class="row "> -->
+			<div class="pageSection text-center">
 				<div class="row largeRow">
-					<div class="col-12 text-center" id="summaryByDivingEventDescription"></div>
+					<div class="col-12" id="summaryByDivingEventDescription"></div>
 				</div>
 
 				<div class="row largeRow">
-					<div class="col-12 text-center" id="listOfPendingRentalRecords"></div>
+					<div class="col-12" id="listOfPendingRentalRecords"></div>
 				</div>
 
 				<div class="row largeRow">
-					<div class="col-12 text-center">
-						<a class="largeButton" href="#" onclick="sendLinesOfRental()" id="sendForSynchronization"></a>
+					<div class="col-12">
+						<a class="btn btn-primary" href="#" onclick="sendLinesOfRental()" id="sendForSynchronization"></a>
 					</div>
 				</div>
 				
-				<div class="row largeRow">
-					<div class="col-12 text-center">
-						<a class="largeButton" href="./index.html" id="back"></a>
-					</div>
-				</div>
+				<div ng-include="'./partials/back-to-home.html'"
+				onload="initBackToHome()"></div>
 			</div>
+			<!-- </div> -->
 		</div>
-	</div>
-</body>
+	</body>
 </html>
