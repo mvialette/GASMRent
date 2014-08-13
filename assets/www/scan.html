@@ -40,12 +40,14 @@
 				$("#scanDescription").html(scanDescription);
 
 				$("#continueScan").html(continueScan);
+				
+				$("#continueWithoutScan").html(rentWithoutScan);
 
 				$("#summaryByUser").html(summaryByUser);
 
-				jQuery.i18n.prop("messageErrorEquipmentNotAvailable");
+				/* jQuery.i18n.prop("messageErrorEquipmentNotAvailable"); */
 
-				$("#back").html(back);
+				/* $("#back").html(back); */
 			}
 		});
 	}
@@ -165,18 +167,16 @@
 
 				<div class="row largeRow">
 					<div class="col-12">
-						<a class="btn btn-primary" href="#" onClick="scanAgain()"
-							id="continueScan"> </a>
+						<a class="btn btn-primary" href="#" onClick="scanAgain()" id="continueScan"> </a>
 					</div>
 				</div>
 				
-				<!--
-				Do something like : continu rental without scan
-				rentWithoutScan=<i class="fa fa-caret-square-o-right"></i> Louer sans scanner
+				<div class="row largeRow">
+					<div class="col-12">
+						<a class="btn btn-primary" href="./chooseEventAndUser.html"><div id="continueWithoutScan"></div></a>
+					</div>
+				</div>
 				
-				 -->
-				
-
 				<div class="row largeRow">
 					<div class="col-12">
 						<a class="btn btn-primary" href="#"

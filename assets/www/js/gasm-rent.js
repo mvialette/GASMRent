@@ -403,7 +403,8 @@ function synchronizePaymentType() {
 
 function sendLinesOfRental(divingEventId) {
 	
-	var debug = true;
+	//var debug = true;
+	var debug = false;
 
 	var paymentByUserAndDivingEventArrayStringify = window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
@@ -448,108 +449,111 @@ function sendLinesOfRental(divingEventId) {
 			alert(urlComplete);
 		}
 
-		jQuery
-				.ajax({
-					url : urlComplete,
-					type : "PUT",
-					contentType : "application/json; charset=utf-8",
-					data : "",
-					success : function(data) {
-						// la synchronisation s'est correctement
-						// déroulé
-						alert("Synchronisation");
+		jQuery.ajax({
+			url : urlComplete,
+			type : "PUT",
+			contentType : "application/json; charset=utf-8",
+			data : "",
+			success : function(data) {
+				// la synchronisation s'est correctement
+				// déroulé
+				alert("Synchronisation");
 
-						alert("data="+data);
-						
-						var jsonResponseStringify = JSON.stringify(data);
-						alert("jsonResponseStringify="+jsonResponseStringify);
-						
-						var jsonResponse = JSON.parse(jsonResponseStringify);
-						alert("jsonResponse="+jsonResponse);
-						
-						// TODO : payment gesture
-						var idOfTheRentalRecord = jsonResponse.id;
+				if(debug === true){
+					alert("data="+data);
+				}
+				
+				var jsonResponseStringify = JSON.stringify(data);
+				
+				if(debug === true){
+					alert("jsonResponseStringify="+jsonResponseStringify);
+				}
+				
+				var jsonResponse = JSON.parse(jsonResponseStringify);
+				if(debug === true){
+					alert("jsonResponse="+jsonResponse);
+				}
+				
+				var idOfTheRentalRecord = jsonResponse.id;
 
-						if(debug === true){
-							alert("idOfTheRentalRecord="+idOfTheRentalRecord);
-							//alert("currentElementJSON.userId="+currentElementJSON.userId);
-							//alert("currentElementJSON.divingEventId="+currentElementJSON.divingEventId);
-						}
+				if(debug === true){
+					alert("idOfTheRentalRecord="+idOfTheRentalRecord);
+				}
 
-						var paymentModeOfTheUser = null;
+				var paymentModeOfTheUser = null;
 
-						$.each(paymentByUserAndDivingEventArrayJSON, function(idx3, onePayment) {
+				$.each(paymentByUserAndDivingEventArrayJSON, function(idx3, onePayment) {
 
-							if(debug === true){
-								alert("onePayment.userId="+onePayment.userId + " currentElementJSON.userId=" + currentElementJSON.userId);
-								alert("onePayment.divingEventId="+onePayment.divingEventId + " currentElementJSON.divingEventId=" + currentElementJSON.divingEventId);
-							}
+					if(debug === true){
+						alert("onePayment.userId="+onePayment.userId + " currentElementJSON.userId=" + currentElementJSON.userId);
+						alert("onePayment.divingEventId="+onePayment.divingEventId + " currentElementJSON.divingEventId=" + currentElementJSON.divingEventId);
+					}
 
-							if (currentElementJSON.userId == onePayment.userId
-									&& currentElementJSON.divingEventId == onePayment.divingEventId) {
-
-								if(debug === true){
-									alert("we have found a payment entry : find");
-									alert("onePayment.paymentMode="+onePayment.paymentMode);
-								}
-								paymentModeOfTheUser = onePayment.paymentMode;
-								return false;
-							}
-							if(debug === true){
-								alert("next");
-							}
-						});
+					if (currentElementJSON.userId == onePayment.userId
+							&& currentElementJSON.divingEventId == onePayment.divingEventId) {
 
 						if(debug === true){
-							alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+							alert("we have found a payment entry : find");
+							alert("onePayment.paymentMode="+onePayment.paymentMode);
 						}
-
-						if (paymentModeOfTheUser != null) {
-							if (paymentModeOfTheUser == true) {
-								// COIN
-								paymentModeOfTheUser = getConstants().PAYMENT_BY_COIN;
-							} else if (paymentModeOfTheUser == false) {
-								// CHECK
-								paymentModeOfTheUser = getConstants().PAYMENT_BY_CHECK;
-							}
-
-							var urlCompleteToPay = getConstants().URL_PUT_TO_PAY_A_RENTAL_RECORDS
-									+ idOfTheRentalRecord
-									+ "?payment="
-									+ paymentModeOfTheUser;
-							
-							if(debug === true){
-								alert("urlCompleteToPay="+urlCompleteToPay);
-							}
-							// "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
-
-							jQuery
-									.ajax({
-										url : urlCompleteToPay,
-										type : "PUT",
-										contentType : "application/json; charset=utf-8",
-										data : "",
-										success : function(data) {
-											
-											if(debug === true){
-												alert("payment send");
-											}
-										},
-										error : function(e) {
-											alert(JSON
-													.stringify(e));
-										}
-									});
-						} else {
-							if(debug === true){
-								alert("no payment");
-							}
-						}
-					},
-					error : function(e) {
-						alert(JSON.stringify(e));
+						paymentModeOfTheUser = onePayment.paymentMode;
+						return false;
+					}
+					if(debug === true){
+						alert("next");
 					}
 				});
+
+				if(debug === true){
+					alert("paymentModeOfTheUser="+paymentModeOfTheUser);
+				}
+
+				if (paymentModeOfTheUser != null) {
+					if (paymentModeOfTheUser == true) {
+						// COIN
+						paymentModeOfTheUser = getConstants().PAYMENT_BY_COIN;
+					} else if (paymentModeOfTheUser == false) {
+						// CHECK
+						paymentModeOfTheUser = getConstants().PAYMENT_BY_CHECK;
+					}
+
+					var urlCompleteToPay = getConstants().URL_PUT_TO_PAY_A_RENTAL_RECORDS
+							+ idOfTheRentalRecord
+							+ "?payment="
+							+ paymentModeOfTheUser;
+					
+					if(debug === true){
+						alert("urlCompleteToPay="+urlCompleteToPay);
+					}
+					// "https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/"{rentalRecordId}?payment={typeDePayment}
+
+					jQuery
+							.ajax({
+								url : urlCompleteToPay,
+								type : "PUT",
+								contentType : "application/json; charset=utf-8",
+								data : "",
+								success : function(data) {
+									
+									if(debug === true){
+										alert("payment envoyé");
+									}
+								},
+								error : function(e) {
+									alert(JSON
+											.stringify(e));
+								}
+							});
+				} else {
+					if(debug === true){
+						alert("no payment");
+					}
+				}
+			},
+			error : function(e) {
+				alert(JSON.stringify(e));
+			}
+		});
 	});
 }
 
