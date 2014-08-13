@@ -7,6 +7,7 @@
 
 <!-- Javascripts -->
 <script type="text/javascript" charset="utf-8" src="./js/cordova.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
 <script type="text/javascript" charset="utf-8"
 	src="./js/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" charset="utf-8"
@@ -20,6 +21,7 @@
 
 <!-- CSS -->
 <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./css/font-awesome.min.css" rel="stylesheet">
 <link href="./css/gasm.css" rel="stylesheet" media="screen">
 
 <!-- JS Function that can be called -->
@@ -43,22 +45,22 @@
 					language : lang,
 					callback : function() {
 
-						jQuery.i18n.prop("chooseEventPageTitle");
-						document.getElementById("chooseEventPageTitle").innerHTML = chooseEventPageTitle;
+/* 						jQuery.i18n.prop("chooseEventPageTitle");
+						document.getElementById("chooseEventPageTitle").innerHTML = chooseEventPageTitle; */
 
-						jQuery.i18n.prop("chooseEventDescription");
+						/* jQuery.i18n.prop("chooseEventDescription"); */
 						document
 								.getElementById("chooseEventDescription").innerHTML = chooseEventDescription;
 
-						jQuery.i18n.prop("divingEvent");
+						/* jQuery.i18n.prop("divingEvent"); */
 						document.getElementById("divingEvent").innerHTML = divingEvent
 								+ " :";
 
-						jQuery.i18n.prop("summaryByDivingEvent");
+						/* jQuery.i18n.prop("summaryByDivingEvent"); */
 						document.getElementById("summaryByDivingEvent").innerHTML = summaryByDivingEvent;
 
-						jQuery.i18n.prop("back");
-						document.getElementById("back").innerHTML = back;
+						/* jQuery.i18n.prop("back");
+						document.getElementById("back").innerHTML = back; */
 					}
 				});
 	}
@@ -72,40 +74,37 @@
 	}
 </script>
 </head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-12 pageTitle" id="chooseEventPageTitle"></div>
-		</div>
+<body ng-app="GasmRentApp">
+	<div ng-controller="MainController" class="container">
+
+		<div ng-include="'./partials/gasm-header.html'"
+			onload="initHeader('chooseEventPageTitle')"></div>
+			
 		<form role="form">
 			<div class="row text-center viewContent form-group">
 				<div class="col-12 pageSection">
 
 					<div class="row largeRow">
-						<div class="col-12 text-center largeButton"
-							id="chooseEventDescription"></div>
+						<div class="col-12" id="chooseEventDescription"></div>
 					</div>
 
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="divingEvent"></div>
+						<div class="col-12" id="divingEvent"></div>
 					</div>
 
 					<div class="row largeRow">
-						<div class="col-12 text-center" id="divingEvents"></div>
+						<div class="col-12" id="divingEvents"></div>
 					</div>
 
 					<div class="row largeRow">
 						<div class="col-12">
-							<a class="largeButton" href="#" onClick="sendInfoForSummaryByDivingEvent()"
+							<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByDivingEvent()"
 								id="summaryByDivingEvent"> </a>
 						</div>
 					</div>
 
-					<div class="row largeRow">
-						<div class="col-12 text-center">
-							<a class="largeButton" href="./index.html" id="back"></a>
-						</div>
-					</div>
+					<div ng-include="'./partials/back-to-home.html'"
+					onload="initBackToHome()"></div>
 				</div>
 			</div>
 		</form>
