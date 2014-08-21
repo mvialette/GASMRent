@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>G.A.S.M. Rent</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Javascripts -->
+<script type="text/javascript" charset="utf-8" src="./cordova.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
+
+<script type="text/javascript">
+	window.onload = function() {
+		//load I18N bundles
+		jQuery(document).ready(function() {
+			initLanguages();
+		});
+
+		getInfosOfQRCodeScan();
+	}
+
+	function loadBundles(lang) {
+		jQuery.i18n.properties({
+			name : 'gasmrent',
+			path : 'i18n/',
+			mode : 'both',
+			language : lang,
+			callback : function() {
+
+				$("#scanDescription").html(scanDescription);
+
+				$("#continueScan").html(continueScan);
+				
+				$("#continueWithoutScan").html(rentWithoutScan);
+
+				$("#summaryByUser").html(summaryByUser);
+
+				/* jQuery.i18n.prop("messageErrorEquipmentNotAvailable"); */
+
+				/* $("#back").html(back); */
+			}
+		});
+	}
+
+	function getInfosOfQRCodeScan() {
+
+		var equipmentId = getURLParameter("equipmentId");
+		var divingEventId = getURLParameter("divingEventId");
+		var userId = getURLParameter("userId");
+
+		var LineOfRental = function(divingEventId, userId, equipmentId) {
+			this.divingEventId = divingEventId;
+			this.userId = userId;
+			this.equipmentId = equipmentId;
+			var oneEquipment = getEquipmentById(this.equipmentId);
+			this.equipmentType = oneEquipment.getType();
+		}
+
+		$.extend(LineOfRental.prototype, {
+			getDivingEventId : function() {
+				return this.divingEventId;
+			},
+			getUserId : function() {
+				return this.userId;
+			},
+			getEquipmentId : function() {
+				return this.equipmentId;
+			},
+			toString : function() {
+				return 'divingEventId=' + this.divingEventId + '&userId='
+						+ this.userId + '&equipmentId=' + this.equipmentId
+						+ '&equipmentType=' + this.equipmentType;
+			}
+		});
+
+		var theNewLineOfRental = new LineOfRental(divingEventId, userId,
+				equipmentId);
+
+		var anEquipment = getEquipmentById(theNewLineOfRental.getEquipmentId());
+		var aUser = getUserById(theNewLineOfRental.getUserId());
+		var aDivingEvent = getDivingEventById(theNewLineOfRental
+				.getDivingEventId());
+
+		$("#zoneDivingEvent").html("Sortie : " + aDivingEvent.toString());
+		$("#zoneUser").html("L'utilisateur : <b>" + aUser.toString() + "</b>");
+		$("#zoneEquipment").html(
+				"L'équipement : <b>" + anEquipment.toString() + "</b>");
+
+		// persist data in local storage
+		var linesOfRentalFromTheLocalStorage = JSON.parse(window.localStorage
+				.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+
+		var linesOfRentalArrays = new Array();
+
+		if (linesOfRentalFromTheLocalStorage != null) {
+			$.each(linesOfRentalFromTheLocalStorage, function(idx2,
+					oneRentalRecord) {
+				linesOfRentalArrays.push(oneRentalRecord);
+			});
+		}
+
+		linesOfRentalArrays.push(JSON.stringify(theNewLineOfRental));
+
+		window.localStorage.setItem(
+				getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON
+						.stringify(linesOfRentalArrays));
+	}
+
+	function scanAgain() {
+
+		var divingEventId = getURLParameter("divingEventId");
+		var userId = getURLParameter("userId");
+
+		doScanByDivingEventIdAndUserId(divingEventId, userId);
+	}
+
+	function sendInfoForSummaryByUser() {
+		window.location = "./summaryByUser.html?divingEventId="
+				+ getURLParameter("divingEventId") + "&userId="
+				+ getURLParameter("userId");
+	}
+</script>
+
+<!-- CSS -->
+<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./css/font-awesome.min.css" rel="stylesheet">
+<link href="./css/gasm.css" rel="stylesheet" media="screen">
+</head>
+<body ng-app="GasmRentApp">
+	<div ng-controller="MainController" class="container">
+
+		<div ng-include="'./partials/gasm-header.html'"
+			onload="initHeader('scanPageTitle')"></div>
+
+		<div class="row text-center">
+			<div class="col-12 pageSection">
+				<div class="row largeRow">
+					<div class="col-12" id="scanDescription"></div>
+				</div>
+				<div class="row largeRow">
+					<div class="col-12" id="zoneDivingEvent"></div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12" id="zoneUser"></div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12" id="zoneEquipment"></div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12">
+						<!-- TODO Just to add an empty space, refacto this part by css  -->
+					</div>
+				</div>
+
+				<div class="row largeRow">
+					<div class="col-12">
+						<a class="btn btn-primary" href="#" onClick="scanAgain()" id="continueScan"> </a>
+					</div>
+				</div>
+				
+				<div class="row largeRow">
+					<div class="col-12">
+						<a class="btn btn-primary" href="./chooseEventAndUser.html"><div id="continueWithoutScan"></div></a>
+					</div>
+				</div>
+				
+				<div class="row largeRow">
+					<div class="col-12">
+						<a class="btn btn-primary" href="#"
+							onClick="sendInfoForSummaryByUser()" id="summaryByUser"></a>
+					</div>
+				</div>
+
+				<div ng-include="'./partials/back-to-home.html'"
+					onload="initBackToHome()"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
