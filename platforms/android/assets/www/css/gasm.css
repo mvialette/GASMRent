@@ -142,3 +142,7 @@ a.largeButton {
 .navbar-brand.application-title {
 	color: white;
 }
+
+.navbar-inverse .navbar-nav>li>a {
+	color: white;
+}
