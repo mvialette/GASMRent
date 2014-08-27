@@ -977,33 +977,37 @@ function doScanByDivingEventIdAndUserId(divingEventId, userId) {
    );
 }
 
+function logMessage(message) {
+	var debug = false;
+
+	if (debug === true) {
+		alert(message);
+	}
+}
+
+
 function doScanForEquipmentDetail() {
 
-	alert("doScanForEquipmentDetail start");
+	logMessage("doScanForEquipmentDetail start");
 
 	cordova.plugins.barcodeScanner.scan(function(result) {
-		alert("We got a barcode\n" + "Result: " + result.text + "\n"
-				+ "Format: " + result.format + "\n" + "Cancelled: "
-				+ result.cancelled);
+		
+		var scanResult = "We got a barcode\n" + "Result: " + result.text + "\n"
+		+ "Format: " + result.format + "\n" + "Cancelled: "
+		+ result.cancelled;
+		
+		logMessage(scanResult);
+		
+		if (result.cancelled == false && result.format == "QR_CODE") {
+			viewItemDetail(result.text);
+		}else{
+			alert("Le scan n''est pas valide : " + scanResult);
+		}
 	}, function(error) {
-		alert("Scanning failed: " + error);
+		alert("Le scan n''a pas abouti : " + error);
 	});
 
-	// window.plugins.barcodeScanner.scan(function(result) {
-	//
-	// alert("aaa");
-	//
-	// if (result.cancelled == false && result.format == "QR_CODE") {
-	// alert(result.text);
-	// viewItemDetail(result.text);
-	// } else {
-	// alert("Le scan n'a pas abouti");
-	// }
-	// }, function(error) {
-	// alert("Scanning failed: " + error);
-	// });
-
-	alert("doScanForEquipmentDetail end");
+	logMessage("doScanForEquipmentDetail end");
 
 }
 
