@@ -914,21 +914,27 @@ function isEquipmentAvailableForRent(equipmentId) {
 	// is it an knowing reference
 	var anIdentifiedEquipment = getEquipmentById(equipmentId);
 
-	// alert("anIdentifiedEquipment=" + anIdentifiedEquipment);
+	//alert("anIdentifiedEquipment=" + anIdentifiedEquipment);
 
 	if (anIdentifiedEquipment == null) {
 		result = false;
 	} else {
-		if (localStorageRentalRecords != null) {
-			$.each(localStorageRentalRecords, function(i, aRentalRecord) {
+		// is the 
+		//alert(anIdentifiedEquipment.isStatus());
+		if(anIdentifiedEquipment.isStatus() === false || anIdentifiedEquipment.isStatus() === 'false'){
+			result = false;
+		}else{
+			if (localStorageRentalRecords != null) {
+				$.each(localStorageRentalRecords, function(i, aRentalRecord) {
 
-				var jsonRentalRecord = JSON.parse(aRentalRecord);
-				// alert(jsonRentalRecord.equipmentId);
-				if (jsonRentalRecord.equipmentId == equipmentId) {
-					result = false;
-					return false;
-				}
-			});
+					var jsonRentalRecord = JSON.parse(aRentalRecord);
+					// alert(jsonRentalRecord.equipmentId);
+					if (jsonRentalRecord.equipmentId == equipmentId) {
+						result = false;
+						return false;
+					}
+				});
+			}
 		}
 	}
 
@@ -1014,13 +1020,13 @@ function doScanForEquipmentDetail() {
 function viewItemDetail(equipmentId) {
 
 	// we have to know if this equipment is available for rent
-	if (isEquipmentAvailableForRent(equipmentId)) {
+	//if (isEquipmentAvailableForRent(equipmentId)) {
 		window.location = "viewEquipmentDetail.html?equipmentId=" + equipmentId;
-	} else {
+	//} else {
 		// Do not comment or delete this alert, it's use to send feedback
 		// message to the user
-		alert(messageErrorEquipmentNotAvailable(equipmentId));
-	}
+//		alert(messageErrorEquipmentNotAvailable(equipmentId));
+	//}
 }
 
 function getEquipmentsByDivingEventId(divingEventId) {
@@ -1156,17 +1162,20 @@ function getEquipmentById(equipmentId) {
 
 	var result = null;
 
-	var Equipment = function(equipmentId, type, price, rented, serialNumber) {
+	var Equipment = function(equipmentId, type, price, rented, serialNumber, status) {
 		this.equipmentId = equipmentId;
 		this.type = type;
 		this.price = price;
 		this.rented = rented;
 		this.serialNumber = serialNumber;
+		this.status = status;
 
 		this.getPrice = function() {
 			return this.price;
 		}, this.getType = function() {
 			return this.type;
+		}, this.isStatus = function() {
+			return this.status;
 		}, this.toString = function() {
 
 			var frenchType = this.type;
@@ -1250,12 +1259,14 @@ function getEquipmentById(equipmentId) {
 		var jsonOneElement = JSON.parse(oneElement);
 
 		if (equipmentId == jsonOneElement.reference) {
+			
+			//alert(jsonOneElement);
 
 			// result = new NewEquipment(jsonOneElement);
 
 			result = new Equipment(jsonOneElement.reference,
 					jsonOneElement.type, jsonOneElement.price,
-					jsonOneElement.rented, jsonOneElement.serialNumber);
+					jsonOneElement.rented, jsonOneElement.serialNumber, jsonOneElement.status);
 
 			// result.prototype.getSerialNumber = function(){
 			// return jsonOneElement.serialNumber;
