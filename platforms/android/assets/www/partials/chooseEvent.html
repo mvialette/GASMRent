@@ -1,0 +1,24 @@
+<form role="form">
+	<div class="row text-center viewContent form-group">
+		<div class="col-12 pageSection">
+
+			<div class="row largeRow">
+				<div class="col-12" id="chooseEventDescription"></div>
+			</div>
+
+			<div class="row largeRow">
+				<div class="col-12" id="divingEvents"></div>
+			</div>
+
+			<div class="row largeRow">
+				<div class="col-12">
+					<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByDivingEvent()"
+						id="summaryByDivingEvent"> </a>
+				</div>
+			</div>
+
+			<div ng-include="'./partials/back-to-home.html'"
+			onload="initBackToHome()"></div>
+		</div>
+	</div>
+</form>

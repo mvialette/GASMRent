@@ -1,0 +1,39 @@
+<div class="row text-center">
+	<div class="col-12 pageSection">
+		<div class="row largeRow">
+			<div class="col-12" id="summaryByUserDescription"></div>
+		</div>
+		
+		<div class="row largeRow">
+			<div class="col-12" id="listOfRentedEquipments"></div>
+		</div>				
+		
+		<div class="row largeRow">
+			<div class="col-xs-4">
+				<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
+			</div>
+			
+			<div class="col-xs-4">
+				<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
+			</div>
+			
+			<div class="col-xs-4">
+				<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
+			</div>
+		</div>
+		
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
+			</div>
+		</div>
+	
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+			</div>
+		</div>
+
+		<div ng-include="'./partials/back-to-home.html'" onload="initBackToHome()"></div>
+	</div>
+</div>

@@ -1,0 +1,46 @@
+<div class="row text-center">
+	<div class="col-12 pageSection">
+		<div class="row largeRow">
+			<div class="col-12" id="scanDescription"></div>
+		</div>
+		<div class="row largeRow">
+			<div class="col-12" id="zoneDivingEvent"></div>
+		</div>
+
+		<div class="row largeRow">
+			<div class="col-12" id="zoneUser"></div>
+		</div>
+
+		<div class="row largeRow">
+			<div class="col-12" id="zoneEquipment"></div>
+		</div>
+
+		<div class="row largeRow">
+			<div class="col-12">
+				<!-- TODO Just to add an empty space, refacto this part by css  -->
+			</div>
+		</div>
+
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" href="#" onClick="scanAgain()" id="continueScan"> </a>
+			</div>
+		</div>
+		
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" href="./chooseEventAndUser.html"><div id="continueWithoutScan"></div></a>
+			</div>
+		</div>
+		
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" href="#"
+					onClick="sendInfoForSummaryByUser()" id="summaryByUser"></a>
+			</div>
+		</div>
+
+		<div ng-include="'./partials/back-to-home.html'"
+			onload="initBackToHome()"></div>
+	</div>
+</div>
