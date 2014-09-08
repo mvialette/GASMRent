@@ -690,7 +690,7 @@ function getInfosOfEquipmentsToList() {
 		// }
 
 		var anEquipment = getEquipmentById(jsonOneElement.reference);
-		items = items + "<li><a href=\"./viewEquipmentDetail.html?equipmentId="
+		items = items + "<li><a href=\"#/viewEquipmentDetail/"
 				+ anEquipment.equipmentId + "\">" + anEquipment.equipmentId
 				+ "</a></li>";
 
@@ -723,24 +723,24 @@ function getInfosOfEquipmentsForSelect() {
 	$("#equipments").html(items);
 }
 
-function getInfosOfDivingEventsForSelect() {
-
-	var localStorageDivingEvents = JSON.parse(window.localStorage
-			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
-
-	var items = "<select id=\"selectDivingEvents\" class=\"form-control\">";
-
-	$.each(localStorageDivingEvents, function(i, oneElement) {
-		var jsonOneElement = JSON.parse(oneElement);
-		items = items + "<option value=\"" + jsonOneElement.id + "\">"
-				+ jsonOneElement.place + " le "
-				+ parseDate(jsonOneElement.date) + "</option>";
-	});
-
-	items = items + "</select>";
-
-	$("#divingEvents").html(items);
-}
+//function getInfosOfDivingEventsForSelect() {
+//
+//	var localStorageDivingEvents = JSON.parse(window.localStorage
+//			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
+//
+//	var items = "<select ng-model=\"\" class=\"form-control\">";
+//	
+//	$.each(localStorageDivingEvents, function(i, oneElement) {
+//		var jsonOneElement = JSON.parse(oneElement);
+//		items = items + "<option value=\"" + jsonOneElement.id + "\">"
+//				+ jsonOneElement.place + " le "
+//				+ parseDate(jsonOneElement.date) + "</option>";
+//	});
+//
+//	items = items + "</select>";
+//
+//	$("#divingEvents").html(items);
+//}
 
 function getPaymentTypeFromLocalStorage() {
 
@@ -914,8 +914,12 @@ function viewItemDetail(equipmentId) {
 
 function getEquipmentsByDivingEventId(divingEventId) {
 
+	//alert(divingEventId);
+	
 	var aDivingEvent = getDivingEventById(divingEventId);
 
+	//alert(aDivingEvent);
+	
 	$("#summaryByDivingEventDescription").html(
 			summaryByDivingEventDescription(aDivingEvent.getPlace(),
 					aDivingEvent.getDate()));
@@ -1380,13 +1384,10 @@ function turnIn(itemReference) {
 	alert("toto=" + urlToForward);
 }
 
-function sendInfoForSummaryByDivingEvent() {
-	
-	var selectDivingEventsValue = $("#selectDivingEvents").val();
-	
-	// send rented equipements to the server
-	window.location = "./summaryByDivingEvent.html?divingEventId=" + selectDivingEventsValue;
-}
+//function sendInfoForSummaryByDivingEvent() {
+//	
+//
+//}
 
 function sendInfoToDoScan() {
 	
@@ -1629,8 +1630,8 @@ function getEquipmentsForTheUser(divingEventId, userId) {
 	
 }
 
-function sendInfoForSummaryByDivingEvent() {
+function sendInfoForSummaryByDivingEvent(divingEventId) {
 	
 	// send rented equipements to the server
-	window.location = "./summaryByDivingEvent.html?divingEventId=" + getURLParameter("divingEventId");
+	window.location = "#/summaryByDivingEvent/" + divingEventId;
 }

@@ -109,8 +109,31 @@ appControllers.controller('MainController', ['$scope','$http', function($scope, 
 
 appControllers.controller('ChooseEventController', ['$scope','$http', function($scope, $http) {
 	
-	// We retreive informations about the diving events
-	getInfosOfDivingEventsForSelect();
+	var localStorageDivingEvents = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
+
+	$scope.divingEvents = [];
+	
+	$.each(localStorageDivingEvents, function(i, oneElement) {
+		var jsonOneElement = JSON.parse(oneElement);
+		$scope.divingEvents.push(jsonOneElement);
+		
+//		items = items + "<option value=\"" + jsonOneElement.id + "\">"
+//				+ jsonOneElement.place + " le "
+//				+ parseDate(jsonOneElement.date) + "</option>";
+	});
+	
+	$scope.selectedDivingEvent = $scope.divingEvents[0];
+	
+	//$scope.divingEvents = localStorageDivingEvents;
+	
+	$scope.sendInfoForSummaryByDivingEvent = function(selectedDivingEvent){
+		//alert(selectedDivingEvent);
+//		alert(selectedDivingEvent.id);
+		
+		// send rented equipements to the server
+		window.location = "#/summaryByDivingEvent/" + selectedDivingEvent.id;
+    }
 	
 	jQuery.i18n
 			.properties({
