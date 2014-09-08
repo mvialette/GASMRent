@@ -700,47 +700,31 @@ function getInfosOfEquipmentsToList() {
 	$("#equipments").html(items);
 }
 
-function getInfosOfEquipmentsForSelect() {
+function clearLineOfRental() {
+	var lineOfRentalEmptyArray = new Array();
+	window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON.stringify(lineOfRentalEmptyArray));
+}
+
+function clearPaymentByUser() {
+	var emptyPaymentByUsersArrays = new Array();
+	window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, JSON.stringify(emptyPaymentByUsersArrays));
+}
+
+function getAllEquipments() {
 
 	var localStorageEquipments = JSON.parse(window.localStorage
 			.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
 
-	var items = "<select id=\"selectEquipments\" class=\"form-control\">";
-
-	items = items + "<option value=\"null\"></option>";
+	var equipments = [];
 
 	$.each(localStorageEquipments, function(i, oneElement) {
 		var jsonOneElement = JSON.parse(oneElement);
-
 		var anEquipment = getEquipmentById(jsonOneElement.reference);
-
-		items = items + "<option value=\"" + jsonOneElement.reference + "\">"
-				+ anEquipment.toString() + "</option>";
+		equipments.push(anEquipment);
 	});
 
-	items = items + "</select>";
-
-	$("#equipments").html(items);
+	return equipments;
 }
-
-//function getInfosOfDivingEventsForSelect() {
-//
-//	var localStorageDivingEvents = JSON.parse(window.localStorage
-//			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
-//
-//	var items = "<select ng-model=\"\" class=\"form-control\">";
-//	
-//	$.each(localStorageDivingEvents, function(i, oneElement) {
-//		var jsonOneElement = JSON.parse(oneElement);
-//		items = items + "<option value=\"" + jsonOneElement.id + "\">"
-//				+ jsonOneElement.place + " le "
-//				+ parseDate(jsonOneElement.date) + "</option>";
-//	});
-//
-//	items = items + "</select>";
-//
-//	$("#divingEvents").html(items);
-//}
 
 function getPaymentTypeFromLocalStorage() {
 
@@ -758,23 +742,6 @@ function getPaymentTypeFromLocalStorage() {
 	items = items + "</select>";
 
 	$("#paymentType").html(items);
-}
-
-function getInfosOfUsers() {
-
-	var localStorageUsers = JSON.parse(window.localStorage
-			.getItem(getConstants().LOCAL_STORAGE_USERS));
-	var items = "<select id=\"selectUsers\" class=\"form-control\">";
-
-	$.each(localStorageUsers, function(i, oneElement) {
-		var jsonOneElement = JSON.parse(oneElement);
-		items = items + "<option value=\"" + jsonOneElement.id + "\">"
-				+ jsonOneElement.firstName + " " + jsonOneElement.lastName
-				+ "</option>";
-	});
-
-	items = items + "</select>";
-	$("#users").html(items);
 }
 
 function parseDate(dateObject) {
@@ -824,10 +791,12 @@ function isEquipmentAvailableForRent(equipmentId) {
 
 function rentAnEquipment(divingEventId, userId, equipmentId) {
 
+	logMessage(divingEventId);
+	logMessage(userId);
+	logMessage(equipmentId);
+	
 	// we have to know if this equipment is available for rent
 	if (isEquipmentAvailableForRent(equipmentId)) {
-		
-		///Chapter/:chapterId/Section/:sectionId
 		
 		window.location = "#/scan/" + equipmentId
 				+ "/" + divingEventId + "/" + userId;
@@ -836,34 +805,6 @@ function rentAnEquipment(divingEventId, userId, equipmentId) {
 		// message to the user
 		alert(messageErrorEquipmentNotAvailable(equipmentId));
 	}
-}
-
-function doScanByDivingEventIdAndUserId(divingEventId, userId) {
-	var debug = false;
-
-	if (debug === true) {
-		alert("cordova.plugins.barcodeScanner");
-	}
-	
-	cordova.plugins.barcodeScanner.scan(
-      function (result) {
-    	  if (debug === true) {
-    		  alert("We got a barcode\n" +
-    				  "Result: " + result.text + "\n" +
-    				  "Format: " + result.format + "\n" +
-    				  "Cancelled: " + result.cancelled);
-    	  }
-    	  
-    	  if (result.cancelled == false && result.format == "QR_CODE") {
-    		  rentAnEquipment(divingEventId, userId, result.text);
-    	  } else {
-    		  alert("Le scan n'a pas abouti");
-    	  }
-      }, 
-      function (error) {
-          alert("Scanning failed: " + error);
-      }
-   );
 }
 
 function logMessage(message) {
@@ -1085,6 +1026,29 @@ function getEquipmentById(equipmentId) {
 				break;
 			}
 
+			return frenchType + " n°" + equipmentId;
+		}, this.toHtmlString = function() {
+
+			var frenchType = this.type;
+
+			switch (this.type) {
+			case "Tank":
+				frenchType = tank;
+				break;
+			case "Regulator":
+				frenchType = regulator;
+				break;
+			case "Jacket":
+				frenchType = jacket;
+				break;
+			case "Suit":
+				frenchType = suit;
+				break;
+			default:
+				alert("Cas non géré")
+				break;
+			}
+
 			return frenchType + " n°<b>" + equipmentId + "</b>";
 		}, this.toCompleteString = function() {
 
@@ -1179,11 +1143,14 @@ function getDivingEventById(divingEventId) {
 	var result = null;
 
 	var DivingEvent = function(divingEventId, place, date, billingThreshold) {
-		this.theDivingEventId = divingEventId;
+		this.id = divingEventId;
 		this.place = place;
 		this.date = date;
 		this.billingThreshold = billingThreshold;
 		this.toString = function() {
+			return this.place + " (" + this.date + ")";
+		}
+		this.toHtmlString = function() {
 			return "<b>" + this.place + "</b> le <b>" + this.date + "</b>";
 		}
 	}
@@ -1314,6 +1281,35 @@ function getDivingEventById(divingEventId) {
 	return result;
 }
 
+function getAllDivingEvents(){
+	var localStorageDivingEvents = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
+	
+	var divingEvents = [];
+	
+	$.each(localStorageDivingEvents, function(i, oneElement) {
+		var jsonOneElement = JSON.parse(oneElement);
+		divingEvents.push(getDivingEventById(jsonOneElement.id));
+	});
+	
+	return divingEvents;
+}
+
+function getAllUsers(){
+	var localStorageUsers = JSON.parse(window.localStorage
+			.getItem(getConstants().LOCAL_STORAGE_USERS));
+	
+	var users = [];
+	
+	$.each(localStorageUsers, function(i, oneElement) {
+		var jsonOneElement = JSON.parse(oneElement);
+		
+		users.push(getUserById(jsonOneElement.id));
+	});
+	
+	return users;
+}
+
 function getUserById(userId) {
 
 	var result = null;
@@ -1364,37 +1360,24 @@ function formatTimestamp(d) {
 			+ dateTmp.getFullYear();
 }
 
-function startANewRentSession() {
-
-	// clear rentalRecords of the local storage
-	var rentalRecordArrays = new Array();
-	window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL,
-			JSON.stringify(rentalRecordArrays));
-
-	var paymentByUsersArrays = new Array();
-	window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER,
-			JSON.stringify(paymentByUsersArrays));
-
-//	window.location = "#/chooseEventAndUser";
-}
+//function startANewRentSession() {
+//
+//	// clear rentalRecords of the local storage
+//	var rentalRecordArrays = new Array();
+//	window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL,
+//			JSON.stringify(rentalRecordArrays));
+//
+//	var paymentByUsersArrays = new Array();
+//	window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER,
+//			JSON.stringify(paymentByUsersArrays));
+//
+////	window.location = "#/chooseEventAndUser";
+//}
 
 function turnIn(itemReference) {
 	var urlToForward = getConstants().URL_GET_EQUIPMENT
 			+ itemReference + "/" + getConstants().METHOD_TURN_IN;
 	alert("toto=" + urlToForward);
-}
-
-//function sendInfoForSummaryByDivingEvent() {
-//	
-//
-//}
-
-function sendInfoToDoScan() {
-	
-	var selectDivingEventsValue = $("#selectDivingEvents").val();
-	var selectUsersValue = $("#selectUsers").val();
-
-	doScanByDivingEventIdAndUserId(selectDivingEventsValue, selectUsersValue);
 }
 
 function sendInfoWithoutScan() {

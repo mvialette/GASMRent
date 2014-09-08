@@ -216,14 +216,22 @@ appControllers.controller('ListRentedItemsController', ['$scope','$http', functi
 
 appControllers.controller('ChooseEventAndUserController', ['$scope','$http', function($scope, $http) {
 	
+	// clear rentalRecords of the local storage
+	clearLineOfRental();
+	clearPaymentByUser();
+	
 	// We retreive informations about the diving events
-	getInfosOfDivingEventsForSelect();
+	$scope.divingEvents = getAllDivingEvents();
+	$scope.selectedDivingEvent = $scope.divingEvents[0];
 
 	// We retreive informations about the users
-	getInfosOfUsers();
+	$scope.users = getAllUsers();
+	$scope.selectedUser = $scope.users[0];
 	
 	// We retreive informations about equipments
-	getInfosOfEquipmentsForSelect();
+	$scope.equipments = getAllEquipments();
+	//$scope.selectedEquipment = $scope.equipments[0];
+	
 	
 	jQuery.i18n
 	.properties({
@@ -272,6 +280,35 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', fun
 				$("#about").html(about);
 			}
 		});
+	}
+	
+	$scope.sendInfoToDoScan = function(){	
+		
+		var debug = false;
+
+		if (debug === true) {
+			alert("cordova.plugins.barcodeScanner");
+		}
+		
+		cordova.plugins.barcodeScanner.scan(
+	      function (result) {
+	    	  if (debug === true) {
+	    		  alert("We got a barcode\n" +
+	    				  "Result: " + result.text + "\n" +
+	    				  "Format: " + result.format + "\n" +
+	    				  "Cancelled: " + result.cancelled);
+	    	  }
+	    	  
+	    	  if (result.cancelled == false && result.format == "QR_CODE") {
+	    		  rentAnEquipment($scope.selectedDivingEvent.id, $scope.selectedUser.id, result.text);
+	    	  } else {
+	    		  alert("Le scan n'a pas abouti");
+	    	  }
+	      }, 
+	      function (error) {
+	          alert("Scanning failed: " + error);
+	      }
+	   );
 	}
 }]);
 
