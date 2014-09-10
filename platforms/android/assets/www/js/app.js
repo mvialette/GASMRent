@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('GasmRentApp', ['ngRoute', 'GasmRentAppControllers']);
+var app = angular.module('GasmRentApp', ['ngResource', 'ngRoute', 'GasmRentAppControllers', 'GasmRentServices']);
 
 app.config(['$routeProvider', function($routeProvider) {
 

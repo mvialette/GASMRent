@@ -751,64 +751,52 @@ function parseDate(dateObject) {
 	// "yy-mm-dd", d);
 };
 
-function isEquipmentAvailableForRent(equipmentId) {
-	var result = true;
-	// alert("equipment cherche " + equipmentId);
-	var localStorageRentalRecords = JSON.parse(window.localStorage
-			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
-	// alert("localStorageRentalRecords" + localStorageRentalRecords);
+//function isEquipmentAvailableForRent(equipmentId) {
+//	var result = true;
+//	// alert("equipment cherche " + equipmentId);
+//	var localStorageRentalRecords = JSON.parse(window.localStorage
+//			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+//	// alert("localStorageRentalRecords" + localStorageRentalRecords);
+//
+//	// is it an knowing reference
+//	var anIdentifiedEquipment = getEquipmentById(equipmentId);
+//
+//	//alert("anIdentifiedEquipment=" + anIdentifiedEquipment);
+//
+//	if (anIdentifiedEquipment == null) {
+//		result = false;
+//	} else {
+//		// is the 
+//		//alert(anIdentifiedEquipment.isStatus());
+//		if(anIdentifiedEquipment.isStatus() === false || anIdentifiedEquipment.isStatus() === 'false'){
+//			result = false;
+//		}else{
+//			if (localStorageRentalRecords != null) {
+//				$.each(localStorageRentalRecords, function(i, aRentalRecord) {
+//
+//					var jsonRentalRecord = JSON.parse(aRentalRecord);
+//					// alert(jsonRentalRecord.equipmentId);
+//					if (jsonRentalRecord.equipmentId == equipmentId) {
+//						result = false;
+//						return false;
+//					}
+//				});
+//			}
+//		}
+//	}
+//
+//	// alert("end"+result);
+//	return result;
+//}
 
-	// is it an knowing reference
-	var anIdentifiedEquipment = getEquipmentById(equipmentId);
-
-	//alert("anIdentifiedEquipment=" + anIdentifiedEquipment);
-
-	if (anIdentifiedEquipment == null) {
-		result = false;
-	} else {
-		// is the 
-		//alert(anIdentifiedEquipment.isStatus());
-		if(anIdentifiedEquipment.isStatus() === false || anIdentifiedEquipment.isStatus() === 'false'){
-			result = false;
-		}else{
-			if (localStorageRentalRecords != null) {
-				$.each(localStorageRentalRecords, function(i, aRentalRecord) {
-
-					var jsonRentalRecord = JSON.parse(aRentalRecord);
-					// alert(jsonRentalRecord.equipmentId);
-					if (jsonRentalRecord.equipmentId == equipmentId) {
-						result = false;
-						return false;
-					}
-				});
-			}
-		}
-	}
-
-	// alert("end"+result);
-	return result;
-}
-
-function rentAnEquipment(divingEventId, userId, equipmentId) {
-
-	logMessage(divingEventId);
-	logMessage(userId);
-	logMessage(equipmentId);
-	
-	// we have to know if this equipment is available for rent
-	if (isEquipmentAvailableForRent(equipmentId)) {
-		
-		window.location = "#/scan/" + equipmentId
-				+ "/" + divingEventId + "/" + userId;
-	} else {
-		// Do not comment or delete this alert, it's use to send feedback
-		// message to the user
-		alert(messageErrorEquipmentNotAvailable(equipmentId));
-	}
-}
+//function rentAnEquipment(divingEventId, userId, equipmentId) {
+//
+//	
+//}
 
 function logMessage(message) {
-	var debug = false;
+	//var debug = false;
+	var debug = true;
 
 	if (debug === true) {
 		alert(message);
@@ -1378,15 +1366,6 @@ function turnIn(itemReference) {
 	var urlToForward = getConstants().URL_GET_EQUIPMENT
 			+ itemReference + "/" + getConstants().METHOD_TURN_IN;
 	alert("toto=" + urlToForward);
-}
-
-function sendInfoWithoutScan() {
-
-	var selectDivingEventsValue = $("#selectDivingEvents").val();
-	var selectUsersValue = $("#selectUsers").val();
-	var selectEquipmentValue = $("#selectEquipments").val();
-
-	rentAnEquipment(selectDivingEventsValue, selectUsersValue, selectEquipmentValue);
 }
 
 function sendInfoForSummaryByUser() {

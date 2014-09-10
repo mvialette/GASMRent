@@ -4,8 +4,6 @@ var appControllers = angular.module('GasmRentAppControllers', []);
 
 appControllers.controller('MainController', ['$scope','$http', function($scope, $http) {
 		
-		// Magie du contrôleur
-		
 		jQuery.i18n
 		.properties({
 			name : 'gasmrent',
@@ -25,14 +23,6 @@ appControllers.controller('MainController', ['$scope','$http', function($scope, 
 				$("#returnEvent").html(returnEvent);
 			}
 		});
-		
-		$scope.rentedEquipments = JSON.parse(window.localStorage
-				.getItem(getConstants().LOCAL_STORAGE_RENTED_EQUIPMENTS));
-
-		$scope.getRentedEquipmentsDisplay = function(item){
-	        var jsonOneElement = JSON.parse(item);
-			return jsonOneElement.reference + " ("+jsonOneElement.renterFullName + ")";
-	    }
 		
 		$scope.initHeader = function(pageTitle) {
 			jQuery.i18n.properties({
@@ -72,6 +62,7 @@ appControllers.controller('MainController', ['$scope','$http', function($scope, 
 		}
 
 		$scope.turnIn = function(item) {
+			
 			//var debug = true;
 			var debug = false;
 			
@@ -107,29 +98,19 @@ appControllers.controller('MainController', ['$scope','$http', function($scope, 
 		}
 	}]);
 
-appControllers.controller('ChooseEventController', ['$scope','$http', function($scope, $http) {
+appControllers.controller('ChooseEventController', ['$scope','$http', 'localStorageService', function($scope, $http, localStorageService) {
 	
-	var localStorageDivingEvents = JSON.parse(window.localStorage
-			.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
-
+	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
 	$scope.divingEvents = [];
 	
 	$.each(localStorageDivingEvents, function(i, oneElement) {
 		var jsonOneElement = JSON.parse(oneElement);
-		$scope.divingEvents.push(jsonOneElement);
-		
-//		items = items + "<option value=\"" + jsonOneElement.id + "\">"
-//				+ jsonOneElement.place + " le "
-//				+ parseDate(jsonOneElement.date) + "</option>";
+		$scope.divingEvents.push(getDivingEventById(jsonOneElement.id));
 	});
 	
 	$scope.selectedDivingEvent = $scope.divingEvents[0];
 	
-	//$scope.divingEvents = localStorageDivingEvents;
-	
 	$scope.sendInfoForSummaryByDivingEvent = function(selectedDivingEvent){
-		//alert(selectedDivingEvent);
-//		alert(selectedDivingEvent.id);
 		
 		// send rented equipements to the server
 		window.location = "#/summaryByDivingEvent/" + selectedDivingEvent.id;
@@ -214,7 +195,7 @@ appControllers.controller('ListRentedItemsController', ['$scope','$http', functi
 	}
 }]);
 
-appControllers.controller('ChooseEventAndUserController', ['$scope','$http', function($scope, $http) {
+appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'equipmentService', function($scope, $http, equipmentService) {
 	
 	// clear rentalRecords of the local storage
 	clearLineOfRental();
@@ -230,7 +211,7 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', fun
 	
 	// We retreive informations about equipments
 	$scope.equipments = getAllEquipments();
-	//$scope.selectedEquipment = $scope.equipments[0];
+	$scope.selectedEquipment = $scope.equipments[0];
 	
 	
 	jQuery.i18n
@@ -300,7 +281,7 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', fun
 	    	  }
 	    	  
 	    	  if (result.cancelled == false && result.format == "QR_CODE") {
-	    		  rentAnEquipment($scope.selectedDivingEvent.id, $scope.selectedUser.id, result.text);
+	    		  rentAnEquipment($scope.selectedDivingEvent.id, $scope.selectedUser.id, result.equipmentId);
 	    	  } else {
 	    		  alert("Le scan n'a pas abouti");
 	    	  }
@@ -310,6 +291,11 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', fun
 	      }
 	   );
 	}
+	
+	$scope.sendInfoWithoutScan = function(){
+		equipmentService.rent($scope.selectedDivingEvent.id, $scope.selectedUser.id, $scope.selectedEquipment.equipmentId);
+	}
+	
 }]);
 
 appControllers.controller('AboutController', ['$scope','$http', function($scope, $http) {
