@@ -125,7 +125,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 		}
 	}
 	
-	var getEquipmentById = function(equipmentId){
+	var getById = function(equipmentId){
 		
 		var result = null;
 
@@ -168,7 +168,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     	//alert('localStorageRentalRecords=' + localStorageRentalRecords);
     	
     	// is it an knowing reference
-    	var anIdentifiedEquipment = getEquipmentById(equipmentId);
+    	var anIdentifiedEquipment = getById(equipmentId);
 
     	if (anIdentifiedEquipment == null) {
     		result = false;
@@ -211,7 +211,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     	return equipments;
     }
 	return {
-		getEquipmentById:getEquipmentById,
+		getById:getById,
 		getAllEquipments: getAllEquipments,
 		rent: rent,
 		isEquipmentAvailableForRent: isEquipmentAvailableForRent
@@ -439,5 +439,55 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
 	return {
 		getById: getById,
 		getAllDivingEvents:getAllDivingEvents
+	}
+}]);
+
+gasmRentServices.factory('lineOfRentalService', ['localStorageService', function(localStorageService){
+	
+	var LineOfRental = function(divingEventId, userId, equipmentId) {
+		this.divingEventId = divingEventId;
+		this.userId = userId;
+		this.equipmentId = equipmentId;
+	}
+
+	$.extend(LineOfRental.prototype, {
+		getDivingEventId : function() {
+			return this.divingEventId;
+		},
+		getUserId : function() {
+			return this.userId;
+		},
+		getEquipmentId : function() {
+			return this.equipmentId;
+		},
+		toString : function() {
+			return 'divingEventId=' + this.divingEventId + '&userId='
+					+ this.userId + '&equipmentId=' + this.equipmentId;
+		}
+	});
+	
+	var save = function(divingEventId, userId, equipmentId){
+		var theNewLineOfRental = new LineOfRental(divingEventId, userId, equipmentId);
+
+		// persist data in local storage
+		var linesOfRentalFromTheLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+
+		var linesOfRentalArrays = new Array();
+	
+		if (linesOfRentalFromTheLocalStorage != null) {
+			$.each(linesOfRentalFromTheLocalStorage, function(idx2,
+					oneRentalRecord) {
+				linesOfRentalArrays.push(oneRentalRecord);
+			});
+		}
+
+		linesOfRentalArrays.push(JSON.stringify(theNewLineOfRental));
+		localStorageService.save(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, linesOfRentalArrays);
+		
+		return theNewLineOfRental;
+    };
+    
+	return {
+		save: save
 	}
 }]);

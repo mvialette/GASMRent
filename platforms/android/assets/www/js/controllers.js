@@ -457,13 +457,13 @@ appControllers.controller('ViewEquipmentDetailController', ['$scope','$routePara
 	}
 }]);
 
-appControllers.controller('ScanController', ['$scope','$routeParams', function($scope, $routeParams) {
+appControllers.controller('ScanController', ['$scope','$routeParams', 'divingEventService', 'userService', 'equipmentService', 'lineOfRentalService', function($scope, $routeParams, divingEventService, userService, equipmentService, lineOfRentalService) {
 	
-	alert('equipmentId=' + $routeParams.equipmentId);
-	alert('divingEventId=' + $routeParams.divingEventId);
-	alert('userId=' + $routeParams.userId);
+	$scope.theNewLineOfRental = lineOfRentalService.save($routeParams.divingEventId, $routeParams.userId, $routeParams.equipmentId)
 	
-	getInfosOfQRCodeScan($routeParams.equipmentId, $routeParams.divingEventId, $routeParams.userId);
+	$scope.divingEvent = divingEventService.getById($scope.theNewLineOfRental.divingEventId);
+	$scope.user =  userService.getById($scope.theNewLineOfRental.userId);
+	$scope.equipment = equipmentService.getById($scope.theNewLineOfRental.equipmentId);
 	
 	jQuery.i18n.properties({
 		name : 'gasmrent',
