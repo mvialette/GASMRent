@@ -195,14 +195,14 @@ appControllers.controller('ListRentedItemsController', ['$scope','$http', functi
 	}
 }]);
 
-appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'equipmentService', 'userService', 'localStorageService', function($scope, $http, equipmentService, userService, localStorageService) {
+appControllers.controller('ChooseEventAndUserController', ['$scope','$http', '$window', 'divingEventService', 'equipmentService', 'userService', 'localStorageService', function($scope, $http, $window, divingEventService, equipmentService, userService, localStorageService) {
 	
 	// clear rentalRecords of the local storage
 	localStorageService.clear(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
 	localStorageService.clear(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
 	
 	// We retreive informations about the diving events
-	$scope.divingEvents = getAllDivingEvents();
+	$scope.divingEvents = divingEventService.getAllDivingEvents();
 	$scope.selectedDivingEvent = $scope.divingEvents[0];
 
 	// We retreive informations about the users
@@ -210,7 +210,7 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'eq
 	$scope.selectedUser = $scope.users[0];
 	
 	// We retreive informations about equipments
-	$scope.equipments = getAllEquipments();
+	$scope.equipments = equipmentService.getAllEquipments();
 	$scope.selectedEquipment = $scope.equipments[0];
 	
 	
@@ -246,18 +246,19 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'eq
 			language : 'fr',
 			callback : function() {
 
+				//
 				$("#pageTitle").html(jQuery.i18n.prop(pageTitle));
 
-				jQuery.i18n.prop("viewItems");
+				//jQuery.i18n.prop("viewItems");
 				$("#viewItems").html(viewItems);
 
-				jQuery.i18n.prop("scanToViewItemDetail");
+				//jQuery.i18n.prop("scanToViewItemDetail");
 				$("#scanToViewItemDetail").html(scanToViewItemDetail);
 
-				jQuery.i18n.prop("synchronize");
+				//jQuery.i18n.prop("synchronize");
 				$("#synchronize").html(synchronize);
 
-				jQuery.i18n.prop("about");
+				//jQuery.i18n.prop("about");
 				$("#about").html(about);
 			}
 		});
@@ -266,6 +267,7 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'eq
 	$scope.sendInfoToDoScan = function(){	
 		
 		var debug = false;
+		//var debug = true;
 
 		if (debug === true) {
 			alert("cordova.plugins.barcodeScanner");
@@ -281,7 +283,7 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'eq
 	    	  }
 	    	  
 	    	  if (result.cancelled == false && result.format == "QR_CODE") {
-	    		  rentAnEquipment($scope.selectedDivingEvent.id, $scope.selectedUser.id, result.equipmentId);
+	    		  equipmentService.rent($scope.selectedDivingEvent.id, $scope.selectedUser.id, result.text);
 	    	  } else {
 	    		  alert("Le scan n'a pas abouti");
 	    	  }
@@ -296,6 +298,10 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'eq
 		equipmentService.rent($scope.selectedDivingEvent.id, $scope.selectedUser.id, $scope.selectedEquipment.equipmentId);
 	}
 	
+	$scope.sendInfoForSummaryByUser = function(){
+		// redirect
+		$window.location = "#/summaryByUser/" + $scope.selectedDivingEvent.id + "/" + $scope.selectedUser.id;
+	}
 }]);
 
 appControllers.controller('AboutController', ['$scope','$http', function($scope, $http) {
@@ -452,6 +458,10 @@ appControllers.controller('ViewEquipmentDetailController', ['$scope','$routePara
 }]);
 
 appControllers.controller('ScanController', ['$scope','$routeParams', function($scope, $routeParams) {
+	
+	alert('equipmentId=' + $routeParams.equipmentId);
+	alert('divingEventId=' + $routeParams.divingEventId);
+	alert('userId=' + $routeParams.userId);
 	
 	getInfosOfQRCodeScan($routeParams.equipmentId, $routeParams.divingEventId, $routeParams.userId);
 	

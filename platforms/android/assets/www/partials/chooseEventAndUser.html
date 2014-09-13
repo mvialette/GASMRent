@@ -10,7 +10,7 @@
 			</div>
 			
 			<div class="row">
-				<select class="form-control" ng-model="selectedDivingEvent" ng-options="divingEvent.toString() for divingEvent in divingEvents"></select>
+				<select class="form-control" ng-model="selectedDivingEvent" ng-options="divingEvent.toString() for divingEvent in divingEvents | orderBy:'date'"></select>
 			</div>
 
 			<div class="row">
@@ -48,7 +48,7 @@
 			
 			<div class="row largeRow">
 				<div class="col-12">
-					<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByUser()" id="summaryByUser"> </a>
+					<a class="btn btn-primary" ng-click="sendInfoForSummaryByUser()" id="summaryByUser"> </a>
 				</div>
 			</div>
 
