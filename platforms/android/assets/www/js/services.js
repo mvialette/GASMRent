@@ -11,14 +11,20 @@
 var gasmRentServices = angular.module('GasmRentServices', ['ngResource']);
 
 gasmRentServices.factory('localStorageService', ['$window', function($window){
+	
+	var clear = function(key){
+		var emptyArray = new Array();
+		$window.localStorage.setItem(key, JSON.stringify(emptyArray));
+    };
      var save = function(key, value){
     	 $window.localStorage.setItem(key, angular.toJson(value));
      };
      var read = function(key){
-    	 	var json = $window.localStorage.getItem(key);
-    	 	return angular.fromJson(json);
+	 	var json = $window.localStorage.getItem(key);
+	 	return angular.fromJson(json);
      };
 	return {
+		clear: clear,
 		save: save,
 		read: read
 	}
@@ -69,5 +75,60 @@ gasmRentServices.factory('equipmentService', ['$window', function($window){
     };
 	return {
 		rent: rent
+	}
+}]);
+
+gasmRentServices.factory('userService', ['localStorageService', function(localStorageService){
+	
+	var User = function(aUserId, firstName, lastName) {
+		this.id = aUserId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.toString = function() {
+			return this.firstName + " " + this.lastName;
+		};
+	};
+	
+	var getById = function(userId){
+    	
+    	var result = null;
+
+    	var localStorageUsers = localStorageService.read(getConstants().LOCAL_STORAGE_USERS);
+    	
+    	$.each(localStorageUsers, function(i, oneElement) {
+
+    		var jsonOneElement = JSON.parse(oneElement);
+
+    		if (userId == jsonOneElement.id) {
+    			result = new User(jsonOneElement.id, jsonOneElement.firstName,
+    					jsonOneElement.lastName);
+    			return false;
+    		}
+    	});
+
+    	return result;
+    };
+    
+    var getAllUsers = function(){
+    	
+    	var localStorageUsers = localStorageService.read(getConstants().LOCAL_STORAGE_USERS);
+    	
+    	var users = [];
+    	
+    	$.each(localStorageUsers, function(i, oneElement) {
+    		var jsonOneElement = JSON.parse(oneElement);
+    		
+    		var result = new User(jsonOneElement.id, jsonOneElement.firstName,
+					jsonOneElement.lastName);
+    		
+    		users.push(result);
+    	});
+    	
+    	return users;
+    }
+    
+	return {
+		getById: getById,
+		getAllUsers:getAllUsers
 	}
 }]);

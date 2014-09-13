@@ -9,7 +9,7 @@
 				<div class="col-12" id="divingEvent"></div>
 			</div>
 			
-			<div class="row largeRow">
+			<div class="row">
 				<select class="form-control" ng-model="selectedDivingEvent" ng-options="divingEvent.toString() for divingEvent in divingEvents"></select>
 			</div>
 
@@ -18,7 +18,7 @@
 			</div>
 
 			<div class="row">
-				<select class="form-control" ng-model="selectedUser" ng-options="user.toString() for user in users"></select>
+				<select class="form-control" ng-model="selectedUser" ng-options="user for user in users | orderBy:'firstName'"></select>
 			</div>
 			
 			<div class="row">

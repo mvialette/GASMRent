@@ -700,16 +700,6 @@ function getInfosOfEquipmentsToList() {
 	$("#equipments").html(items);
 }
 
-function clearLineOfRental() {
-	var lineOfRentalEmptyArray = new Array();
-	window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, JSON.stringify(lineOfRentalEmptyArray));
-}
-
-function clearPaymentByUser() {
-	var emptyPaymentByUsersArrays = new Array();
-	window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, JSON.stringify(emptyPaymentByUsersArrays));
-}
-
 function getAllEquipments() {
 
 	var localStorageEquipments = JSON.parse(window.localStorage
@@ -1283,51 +1273,6 @@ function getAllDivingEvents(){
 	return divingEvents;
 }
 
-function getAllUsers(){
-	var localStorageUsers = JSON.parse(window.localStorage
-			.getItem(getConstants().LOCAL_STORAGE_USERS));
-	
-	var users = [];
-	
-	$.each(localStorageUsers, function(i, oneElement) {
-		var jsonOneElement = JSON.parse(oneElement);
-		
-		users.push(getUserById(jsonOneElement.id));
-	});
-	
-	return users;
-}
-
-function getUserById(userId) {
-
-	var result = null;
-
-	var User = function(aUserId, firstName, lastName) {
-		this.id = aUserId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.toString = function() {
-			return this.firstName + " " + this.lastName;
-		};
-	}
-
-	var localStorageUsers = JSON.parse(window.localStorage
-			.getItem(getConstants().LOCAL_STORAGE_USERS));
-
-	$.each(localStorageUsers, function(i, oneElement) {
-
-		var jsonOneElement = JSON.parse(oneElement);
-
-		if (userId == jsonOneElement.id) {
-			result = new User(jsonOneElement.id, jsonOneElement.firstName,
-					jsonOneElement.lastName);
-			return false;
-		}
-	});
-
-	return result;
-}
-
 function formatTimestamp(d) {
 	// padding function
 	var s = function(p) {
@@ -1347,20 +1292,6 @@ function formatTimestamp(d) {
 	return s(dateTmp.getDate()) + '/' + s(dateTmp.getMonth() + 1) + '/'
 			+ dateTmp.getFullYear();
 }
-
-//function startANewRentSession() {
-//
-//	// clear rentalRecords of the local storage
-//	var rentalRecordArrays = new Array();
-//	window.localStorage.setItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL,
-//			JSON.stringify(rentalRecordArrays));
-//
-//	var paymentByUsersArrays = new Array();
-//	window.localStorage.setItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER,
-//			JSON.stringify(paymentByUsersArrays));
-//
-////	window.location = "#/chooseEventAndUser";
-//}
 
 function turnIn(itemReference) {
 	var urlToForward = getConstants().URL_GET_EQUIPMENT
@@ -1459,10 +1390,6 @@ function sendInfoForSummaryByUser(divingEventId, userId) {
 	window.location = "#/summaryByUser/"
 			+ divingEventId + "/"
 			+ userId;
-	
-//	window.location = "#/summaryByUser/"
-//		+ getURLParameter("divingEventId") + "/"
-//		+ getURLParameter("userId");
 }
 
 function savePaymentTypeForThisUser(byCoin){

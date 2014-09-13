@@ -195,18 +195,18 @@ appControllers.controller('ListRentedItemsController', ['$scope','$http', functi
 	}
 }]);
 
-appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'equipmentService', function($scope, $http, equipmentService) {
+appControllers.controller('ChooseEventAndUserController', ['$scope','$http', 'equipmentService', 'userService', 'localStorageService', function($scope, $http, equipmentService, userService, localStorageService) {
 	
 	// clear rentalRecords of the local storage
-	clearLineOfRental();
-	clearPaymentByUser();
+	localStorageService.clear(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+	localStorageService.clear(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
 	
 	// We retreive informations about the diving events
 	$scope.divingEvents = getAllDivingEvents();
 	$scope.selectedDivingEvent = $scope.divingEvents[0];
 
 	// We retreive informations about the users
-	$scope.users = getAllUsers();
+	$scope.users = userService.getAllUsers();
 	$scope.selectedUser = $scope.users[0];
 	
 	// We retreive informations about equipments
