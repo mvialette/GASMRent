@@ -147,6 +147,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 
 		return result;
 	};
+	
     var rent = function(divingEventId,userId,equipmentId){
     	//alert('divingEventId='+divingEventId+',userId=' + userId + ',equipmentId=' + equipmentId);
     	// we have to know if this equipment is available for rent
@@ -161,6 +162,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     		alert(messageErrorEquipmentNotAvailable(equipmentId));
     	}
     };
+    
     var isEquipmentAvailableForRent = function(equipmentId){
     	var result = true;
     	
@@ -192,6 +194,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     	}
     	return result;
     };
+    
     var getAllEquipments = function(){
     	
     	var localStorageEquipments = localStorageService.read(getConstants().LOCAL_STORAGE_EQUIPMENTS);
@@ -210,6 +213,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     	
     	return equipments;
     }
+    
 	return {
 		getById:getById,
 		getAllEquipments: getAllEquipments,
@@ -487,7 +491,354 @@ gasmRentServices.factory('lineOfRentalService', ['localStorageService', function
 		return theNewLineOfRental;
     };
     
+    var getAllRentalsByDivingIdAndUserId = function(divingEventId, userId){
+    	
+    	var linesOfRentalFromTheLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+    	
+    	alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
+    	
+    	var rentalRecordArrays = [];
+
+    	$.each(linesOfRentalFromTheLocalStorage, function(idx2,oneRentalRecord) {
+    		
+    		var currentElementJSON = JSON.parse(oneRentalRecord);
+    		
+    		if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
+    			
+    			var theNewLineOfRental = new LineOfRental(currentElementJSON.divingEventId, currentElementJSON.userId, currentElementJSON.equipmentId);
+    			
+    			rentalRecordArrays.push(theNewLineOfRental);
+    		}
+    	});
+    	
+    	return rentalRecordArrays;
+    }
+    
 	return {
-		save: save
+		save: save,
+		getAllRentalsByDivingIdAndUserId:getAllRentalsByDivingIdAndUserId
+	}
+}]);
+
+
+gasmRentServices.factory('divingEventService', ['localStorageService', function(localStorageService){
+	
+	var DivingEvent = function(divingEventId, place, date, billingThreshold) {
+		this.id = divingEventId;
+		this.place = place;
+		this.date = date;
+		this.billingThreshold = billingThreshold;
+		this.toString = function() {
+			return this.place + " (" + this.date + ")";
+		}
+		this.toHtmlString = function() {
+			return "<b>" + this.place + "</b> le <b>" + this.date + "</b>";
+		}
+	}
+
+	$
+			.extend(
+					DivingEvent.prototype,
+					{
+						getDivingEventId : function() {
+							return this.theDivingEventId;
+						},
+						getPlace : function() {
+							return this.place;
+						},
+						getDate : function() {
+							return this.date;
+						},
+						getBillingThreshold : function() {
+							return this.billingThreshold;
+						},
+						getUserPrice : function(userId) {
+
+							var result = 0;
+							var theCurrentDivingEventId = this.theDivingEventId;
+
+							var lineOfRentalsFromLocalStorageString = JSON
+									.parse(window.localStorage
+											.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+							var lineOfRentalsArrays = new Array();
+
+							var maxPriceForRegulator = 0;
+							var maxPriceForTank = 0;
+							var maxPriceForJacket = 0;
+							var maxPriceForSuit = 0;
+
+							if (lineOfRentalsFromLocalStorageString != null) {
+								$.each(lineOfRentalsFromLocalStorageString,
+										function(idx2, oneRentalRecord) {
+											lineOfRentalsArrays
+													.push(oneRentalRecord);
+										});
+
+								$
+										.each(
+												lineOfRentalsArrays,
+												function(i, oneElement) {
+
+													var currentElementJSON = JSON
+															.parse(oneElement);
+
+													if (currentElementJSON.divingEventId == theCurrentDivingEventId
+															&& currentElementJSON.userId == userId) {
+														var anEquipment = getEquipmentById(currentElementJSON.equipmentId);
+
+														switch (anEquipment
+																.getType()) {
+														case "Tank":
+															if (anEquipment
+																	.getPrice() > maxPriceForTank) {
+																maxPriceForTank = anEquipment
+																		.getPrice();
+															}
+															break;
+														case "Regulator":
+															if (anEquipment
+																	.getPrice() > maxPriceForRegulator) {
+																maxPriceForRegulator = anEquipment
+																		.getPrice();
+															}
+															break;
+														case "Jacket":
+															if (anEquipment
+																	.getPrice() > maxPriceForJacket) {
+																maxPriceForJacket = anEquipment
+																		.getPrice();
+															}
+															break;
+														case "Suit":
+															if (anEquipment
+																	.getPrice() > maxPriceForSuit) {
+																maxPriceForSuit = anEquipment
+																		.getPrice();
+															}
+															break;
+														default:
+															alert("Cas non géré")
+															break;
+														}
+													}
+												});
+							}
+
+							// TODO: I have to put a '+' before adding numbers,
+							// is there another way ?
+							result = +maxPriceForTank + +maxPriceForRegulator
+									+ +maxPriceForJacket + +maxPriceForSuit;
+
+							if ((Math.max(result, this.billingThreshold) == result)) {
+								if (this.billingThreshold == -1) {
+									// cela signifie qu'il n'y a pas de plafond
+									// positionné pour cette sortie, le résultat
+									// est donc bien la somme du matos loué.
+								} else {
+									result = this.billingThreshold;
+								}
+							}
+
+							return result;
+						}
+					});
+	
+	var getById = function(divingEventId){
+    	
+    	var result = null;
+
+    	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+    	
+    	$.each(localStorageDivingEvents, function(i, oneElement) {
+
+    		var jsonOneElement = JSON.parse(oneElement);
+
+    		if (divingEventId == jsonOneElement.id) {
+
+    			result = new DivingEvent(jsonOneElement.id, jsonOneElement.place,
+    					parseDate(jsonOneElement.date),
+    					jsonOneElement.billingThreshold);
+    			return false;
+    		}
+    	});
+
+    	return result;
+    };
+    
+    var getAllDivingEvents = function(){
+    	
+    	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+    	
+    	var divingEvents = [];
+    	
+    	$.each(localStorageDivingEvents, function(i, oneElement) {
+    		var jsonOneElement = JSON.parse(oneElement);
+    		
+    		var result = new DivingEvent(jsonOneElement.id, jsonOneElement.place,
+					parseDate(jsonOneElement.date),
+					jsonOneElement.billingThreshold);
+    		
+    		divingEvents.push(result);
+    	});
+    	
+    	return divingEvents;
+    }
+    
+	return {
+		getById: getById,
+		getAllDivingEvents:getAllDivingEvents
+	}
+}]);
+
+gasmRentServices.factory('barcodeScannerService', ['equipmentService', function(equipmentService){
+	
+	var scanAnEquipmentId = function(divingEventId, userId){
+		
+		var debug = false;
+		//var debug = true;
+
+		if (debug === true) {
+			alert("cordova.plugins.barcodeScanner");
+		}
+		
+		cordova.plugins.barcodeScanner.scan(
+	      function (result) {
+	    	  if (debug === true) {
+	    		  alert("We got a barcode\n" +
+	    				  "Result: " + result.text + "\n" +
+	    				  "Format: " + result.format + "\n" +
+	    				  "Cancelled: " + result.cancelled);
+	    	  }
+	    	  
+	    	  if (result.cancelled == false && result.format == "QR_CODE") {
+	    		  equipmentService.rent(divingEventId, userId, result.text);
+	    	  } else {
+	    		  alert("Le scan n'a pas abouti");
+	    	  }
+	      }, 
+	      function (error) {
+	          alert("Scanning failed: " + error);
+	      }
+	   );
+		
+	}
+    
+	return {
+		scanAnEquipmentId: scanAnEquipmentId
+	}
+}]);
+
+gasmRentServices.factory('billingRecordService', ['localStorageService', function(localStorageService){
+	
+	var BillingRecord = function(userId, divingEventId, paymentMode) {
+		this.userId = userId;
+		this.divingEventId = divingEventId;
+		this.paymentMode = paymentMode;
+		
+		this.getUserId = function() {
+			return this.userId;
+		}, 
+		
+		this.getDivingEventId = function() {
+			return this.divingEventId;
+		},
+		
+		this.getPaymentMode = function() {
+			return this.paymentMode;
+		},
+		
+		this.setPaymentMode = function(newPaymentMode) {
+			this.paymentMode = newPaymentMode;
+		}
+	}
+	
+	var save = function(divingEventId, userId, paymentMode){
+		
+		var paymentByUserAndDivingEventArray = new Array();
+		logMessage("paymentMode="+paymentMode);
+		
+		logMessage("divingEventId="+divingEventId);
+		
+		logMessage("userId="+userId);
+		
+		var localStorageVarName = getConstants().LOCAL_STORAGE_PAYMENT_BY_USER;
+		logMessage("localStorageVarName="+localStorageVarName);
+		
+		var localStorageValue = localStorageService.read(localStorageVarName);
+		logMessage("localStorageValue="+localStorageValue);
+		
+		//var paymentByUserAndDivingEventJSON = JSON.parse(localStorageValue);
+		//logMessage("paymentByUserAndDivingEventJSON="+paymentByUserAndDivingEventJSON);
+		
+		if(localStorageValue != null){
+			
+			logMessage("localStorageValue is not null");
+			
+			$.each(localStorageValue, function(i,oneRecord) {                    
+				logMessage("found one record in local storage");
+				paymentByUserAndDivingEventArray.push(oneRecord);
+			});
+		}
+		
+		logMessage("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArray);
+		
+		var recordFound = false;
+		logMessage("record initial=" + paymentByUserAndDivingEventArray);
+		
+		var paymentByUserAndDivingEventstringify = JSON.stringify(paymentByUserAndDivingEventArray);
+		logMessage("paymentByUserAndDivingEventstringify=" + paymentByUserAndDivingEventstringify);
+		
+		var paymentByUserAndDivingEventParse = JSON.parse(paymentByUserAndDivingEventstringify);
+		logMessage("paymentByUserAndDivingEventParse=" + paymentByUserAndDivingEventParse);
+		
+		paymentByUserAndDivingEventArray.forEach(
+			function updatePaymentMode(anItem) {
+				if(userIdByParam == anItem.userId && divingEventIdByParam == anItem.divingEventId){
+					logMessage("set payment mode");
+					anItem.paymentMode=paymentMode;
+					recordFound=true;
+					logMessage("return:"+paymentMode);
+				}
+			}		
+		);
+		
+		logMessage("recordFound="+recordFound);
+		if(recordFound == false){
+			var oneBillingRecord = new BillingRecord(userId,divingEventId,paymentMode);	
+			paymentByUserAndDivingEventArray.push(oneBillingRecord);
+		}
+		
+		var paymentByUserAndDivingEventArrayStringify = JSON.stringify(paymentByUserAndDivingEventArray);
+		logMessage("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArrayStringify); 
+		
+		localStorageService.save(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArrayStringify);
+    };
+    
+    var getAllRentalsByDivingIdAndUserId = function(divingEventId, userId){
+    	
+    	var linesOfRentalFromTheLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+    	
+    	alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
+    	
+    	var rentalRecordArrays = [];
+
+    	$.each(linesOfRentalFromTheLocalStorage, function(idx2,oneRentalRecord) {
+    		
+    		var currentElementJSON = JSON.parse(oneRentalRecord);
+    		
+    		if (currentElementJSON.divingEventId == divingEventId && currentElementJSON.userId == userId) {
+    			
+    			var theNewLineOfRental = new LineOfRental(currentElementJSON.divingEventId, currentElementJSON.userId, currentElementJSON.equipmentId);
+    			
+    			rentalRecordArrays.push(theNewLineOfRental);
+    		}
+    	});
+    	
+    	return rentalRecordArrays;
+    }
+    
+	return {
+		save: save,
+		getAllRentalsByDivingIdAndUserId:getAllRentalsByDivingIdAndUserId
 	}
 }]);

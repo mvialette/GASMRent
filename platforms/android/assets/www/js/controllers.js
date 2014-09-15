@@ -110,12 +110,6 @@ appControllers.controller('ChooseEventController', ['$scope','$http', 'localStor
 	
 	$scope.selectedDivingEvent = $scope.divingEvents[0];
 	
-	$scope.sendInfoForSummaryByDivingEvent = function(selectedDivingEvent){
-		
-		// send rented equipements to the server
-		window.location = "#/summaryByDivingEvent/" + selectedDivingEvent.id;
-    }
-	
 	jQuery.i18n
 			.properties({
 				name : 'gasmrent',
@@ -195,7 +189,7 @@ appControllers.controller('ListRentedItemsController', ['$scope','$http', functi
 	}
 }]);
 
-appControllers.controller('ChooseEventAndUserController', ['$scope','$http', '$window', 'divingEventService', 'equipmentService', 'userService', 'localStorageService', function($scope, $http, $window, divingEventService, equipmentService, userService, localStorageService) {
+appControllers.controller('ChooseEventAndUserController', ['$scope','$http', '$window', 'divingEventService', 'equipmentService', 'userService', 'localStorageService', 'barcodeScannerService', function($scope, $http, $window, divingEventService, equipmentService, userService, localStorageService, barcodeScannerService) {
 	
 	// clear rentalRecords of the local storage
 	localStorageService.clear(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
@@ -265,33 +259,7 @@ appControllers.controller('ChooseEventAndUserController', ['$scope','$http', '$w
 	}
 	
 	$scope.sendInfoToDoScan = function(){	
-		
-		var debug = false;
-		//var debug = true;
-
-		if (debug === true) {
-			alert("cordova.plugins.barcodeScanner");
-		}
-		
-		cordova.plugins.barcodeScanner.scan(
-	      function (result) {
-	    	  if (debug === true) {
-	    		  alert("We got a barcode\n" +
-	    				  "Result: " + result.text + "\n" +
-	    				  "Format: " + result.format + "\n" +
-	    				  "Cancelled: " + result.cancelled);
-	    	  }
-	    	  
-	    	  if (result.cancelled == false && result.format == "QR_CODE") {
-	    		  equipmentService.rent($scope.selectedDivingEvent.id, $scope.selectedUser.id, result.text);
-	    	  } else {
-	    		  alert("Le scan n'a pas abouti");
-	    	  }
-	      }, 
-	      function (error) {
-	          alert("Scanning failed: " + error);
-	      }
-	   );
+		barcodeScannerService.scanAnEquipmentId($scope.selectedDivingEvent.id, $scope.selectedUser.id);
 	}
 	
 	$scope.sendInfoWithoutScan = function(){
@@ -457,7 +425,7 @@ appControllers.controller('ViewEquipmentDetailController', ['$scope','$routePara
 	}
 }]);
 
-appControllers.controller('ScanController', ['$scope','$routeParams', 'divingEventService', 'userService', 'equipmentService', 'lineOfRentalService', function($scope, $routeParams, divingEventService, userService, equipmentService, lineOfRentalService) {
+appControllers.controller('ScanController', ['$scope','$routeParams', '$window', 'divingEventService', 'userService', 'equipmentService', 'lineOfRentalService', 'barcodeScannerService', function($scope, $routeParams, $window, divingEventService, userService, equipmentService, lineOfRentalService, barcodeScannerService) {
 	
 	$scope.theNewLineOfRental = lineOfRentalService.save($routeParams.divingEventId, $routeParams.userId, $routeParams.equipmentId)
 	
@@ -506,11 +474,18 @@ appControllers.controller('ScanController', ['$scope','$routeParams', 'divingEve
 			}
 		});
 	}
+	
+	$scope.scanAgain = function() {
+		barcodeScannerService.scanAnEquipmentId($scope.divingEvent.id, $scope.user.id);
+	}
 }]);
 
-appControllers.controller('SummaryByUserController', ['$scope','$routeParams', function($scope, $routeParams) {
+appControllers.controller('SummaryByUserController', ['$scope','$routeParams', '$window', 'lineOfRentalService', 'divingEventService', 'userService', 'billingRecordService', function($scope, $routeParams, $window, lineOfRentalService, divingEventService, userService, billingRecordService) {
 	
-	getEquipmentsForTheUser($routeParams.divingEventId, $routeParams.userId);
+	$scope.divingEvent =  divingEventService.getById($routeParams.divingEventId);
+	$scope.user =  userService.getById($routeParams.userId);
+	
+	$scope.lineOfRentals = lineOfRentalService.getAllRentalsByDivingIdAndUserId($routeParams.divingEventId, $routeParams.userId);
 	
 	jQuery.i18n.properties({
 		name : 'gasmrent',
@@ -528,6 +503,8 @@ appControllers.controller('SummaryByUserController', ['$scope','$routeParams', f
 			$("#hasNotPaid").html(hasNotPaid);
 			
 			$("#summaryByDivingEvent").html(summaryByDivingEvent);
+			
+			$("#summaryByUserDescription").html(summaryByUserDescription($scope.user.toString(), $scope.divingEvent.getPlace() , $scope.divingEvent.getDate(), $scope.divingEvent.getUserPrice($scope.user.id)));
 		}
 	});
 	
@@ -555,6 +532,15 @@ appControllers.controller('SummaryByUserController', ['$scope','$routeParams', f
 			}
 		});
 	}
+	
+	$scope.savePaymentTypeForThisUser = function(paymentMode) {
+		billingRecordService.save($scope.divingEvent.id,$scope.user.id, paymentMode);
+	}
+	
+	$scope.sendInfoForSummaryByDivingEvent = function(paymentMode) {
+		$window.location = "#/summaryByDivingEvent/" + $scope.divingEvent.id;
+	}
+	
 }]);
 
 appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', function($scope, $routeParams) {

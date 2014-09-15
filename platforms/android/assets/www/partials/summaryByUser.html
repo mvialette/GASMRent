@@ -5,32 +5,39 @@
 		</div>
 		
 		<div class="row largeRow">
-			<div class="col-12" id="listOfRentedEquipments"></div>
+			<!-- <div class="col-12" id="listOfRentedEquipments"></div> -->
+			
+			<ul>
+			    <li ng-repeat="lineOfRental in lineOfRentals">
+			      {{lineOfRental.equipmentId}}
+			    </li>
+		  	</ul>
+  
 		</div>				
 		
 		<div class="row largeRow">
 			<div class="col-xs-4">
-				<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
+				<a class="btn btn-primary" ng-click="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
 			</div>
 			
 			<div class="col-xs-4">
-				<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
+				<a class="btn btn-primary" ng-click="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
 			</div>
 			
 			<div class="col-xs-4">
-				<a class="btn btn-primary" href="#" onClick="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
+				<a class="btn btn-primary" ng-click="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
 			</div>
 		</div>
 		
 		<div class="row largeRow">
 			<div class="col-12">
-				<a class="btn btn-primary" href="./chooseEventAndUser.html" id="continueRentalForSomeoneElse"></a>
+				<a class="btn btn-primary" href="#/chooseEventAndUser" id="continueRentalForSomeoneElse"></a>
 			</div>
 		</div>
 	
 		<div class="row largeRow">
 			<div class="col-12">
-				<a class="btn btn-primary" href="#" onClick="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+				<a class="btn btn-primary" ng-click="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
 			</div>
 		</div>
 

@@ -15,32 +15,30 @@
 			<div class="col-12" id="zoneEquipment">L'équipement : <b>{{equipment.toString()}}</b></div>
 		</div>
 
-		<div class="row largeRow">
+		<!-- <div class="row largeRow">
 			<div class="col-12">
-				<!-- TODO Just to add an empty space, refacto this part by css  -->
+				TODO Just to add an empty space, refacto this part by css 
 			</div>
-		</div>
+		</div> -->
 
 		<div class="row largeRow">
 			<div class="col-12">
-				<a class="btn btn-primary" href="#" onClick="scanAgain()" id="continueScan"> </a>
+				<a class="btn btn-primary" ng-click="scanAgain()" id="continueScan"> </a>
 			</div>
 		</div>
 		
 		<div class="row largeRow">
 			<div class="col-12">
-				<a class="btn btn-primary" href="./chooseEventAndUser.html"><div id="continueWithoutScan"></div></a>
+				<a class="btn btn-primary" href="#/chooseEventAndUser" id="continueWithoutScan"></a>
 			</div>
 		</div>
 		
 		<div class="row largeRow">
 			<div class="col-12">
-				<a class="btn btn-primary" href="#"
-					onClick="sendInfoForSummaryByUser()" id="summaryByUser"></a>
+				<a class="btn btn-primary" href="#/summaryByUser/{{divingEvent.id}}/{{user.id}}" id="summaryByUser"></a>
 			</div>
 		</div>
 
-		<div ng-include="'./partials/backToHome.html'"
-			onload="initBackToHome()"></div>
+		<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
 	</div>
 </div>

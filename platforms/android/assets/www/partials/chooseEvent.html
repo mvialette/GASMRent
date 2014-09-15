@@ -13,13 +13,11 @@
 
 			<div class="row largeRow">
 				<div class="col-12">
-					<a class="btn btn-primary" ng-click="sendInfoForSummaryByDivingEvent(selectedDivingEvent)"
-						id="summaryByDivingEvent"> </a>
+					<a class="btn btn-primary" href="#/summaryByDivingEvent/{{selectedDivingEvent.id}}" id="summaryByDivingEvent"> </a>
 				</div>
 			</div>
 
-			<div ng-include="'./partials/backToHome.html'"
-			onload="initBackToHome()"></div>
+			<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
 		</div>
 	</div>
 </form>
