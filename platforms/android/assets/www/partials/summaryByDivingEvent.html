@@ -5,15 +5,18 @@
 	</div>
 
 	<div class="row largeRow">
-		<div class="col-12" id="listOfPendingRentalRecords"></div>
+		<ul class="list-group">
+		    <li class="list-group-item" ng-repeat="rentalRecord in rentalRecordArrays">
+		      {{rentalRecord}}
+		    </li>
+	  	</ul>
 	</div>
 
 	<div class="row largeRow">
 		<div class="col-12">
-			<a class="btn btn-primary" href="#" onclick="sendLinesOfRental()" id="sendForSynchronization"></a>
+			<a class="btn btn-primary" href="#" ng-click="sendLinesOfRental()" id="sendForSynchronization"></a>
 		</div>
 	</div>
 	
-	<div ng-include="'./partials/backToHome.html'"
-	onload="initBackToHome()"></div>
+	<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
 </div>

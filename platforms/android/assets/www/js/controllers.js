@@ -2,7 +2,7 @@
 
 var appControllers = angular.module('GasmRentAppControllers', []);
 
-appControllers.controller('MainController', ['$scope','$http', function($scope, $http) {
+appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerService', function($scope, $http, barcodeScannerService) {
 		
 		jQuery.i18n
 		.properties({
@@ -95,6 +95,10 @@ appControllers.controller('MainController', ['$scope','$http', function($scope, 
 					alert("handle failure");
 				}
 			});
+		}
+		
+		$scope.sendInfoToDoScan = function(){	
+			barcodeScannerService.scanAnEquipmentId(undefined, undefined);
 		}
 	}]);
 
@@ -311,9 +315,21 @@ appControllers.controller('AboutController', ['$scope','$http', function($scope,
 	}
 }]);
 
-appControllers.controller('SynchronizeController', ['$scope','$http', function($scope, $http) {
+appControllers.controller('SynchronizeController', ['$scope','$http', 'backendService', function($scope, $http, backendService) {
 	
-	importDatas();
+	$('#pageDescription').html("Synchronizing...");
+	
+	$scope.users = backendService.pullUsers();
+	
+	$scope.divingEvents = backendService.pullDivingEvents();
+	
+	$scope.equipments = backendService.pullEquipments();
+	
+	$scope.rentedEquipments = backendService.pullRentedEquipments();
+	
+	$scope.paymentType = backendService.pullPaymentType();
+	
+	//backendService.pushLinesOfRental();
 	
 	// Send informations of rented equipments to the server
 	//sendRentalRecords();
@@ -543,10 +559,51 @@ appControllers.controller('SummaryByUserController', ['$scope','$routeParams', '
 	
 }]);
 
-appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', function($scope, $routeParams) {
+appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', 'divingEventService', 'localStorageService', 'userService' , 'equipmentService', function($scope, $routeParams, divingEventService, localStorageService, userService , equipmentService) {
 	
-	getEquipmentsByDivingEventId($routeParams.divingEventId);
+	$scope.aDivingEvent = divingEventService.getById($routeParams.divingEventId);
+	
+	//alert('aDivingEvent=' + $scope.aDivingEvent);
+	
+	$scope.rentalRecordsStringFromLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
 
+	//alert('rentalRecordsStringFromLocalStorage=' + $scope.rentalRecordsStringFromLocalStorage);
+	
+	$scope.rentalRecordArrays = new Array();
+	
+	$.each($scope.rentalRecordsStringFromLocalStorage, function(idx2, oneRentalRecord) {
+
+		//alert('oneRentalRecord=' + oneRentalRecord);
+		
+		//alert('oneRentalRecord.divingEventId=' + oneRentalRecord.divingEventId);
+		
+		var jsonOneElement = JSON.parse(oneRentalRecord);
+		
+		//alert('jsonOneElementdivingEventId=' + jsonOneElement.divingEventId);
+		
+		//alert('aDivingEvent=' + $scope.aDivingEvent);
+		//alert('$scope.aDivingEvent=' + $scope.aDivingEvent.id);
+		//alert('test==' + (jsonOneElement.divingEventId == $scope.aDivingEvent.id));
+		
+		if (jsonOneElement.divingEventId == $scope.aDivingEvent.id) {
+			
+			var aUserObject = userService.getById(jsonOneElement.userId);
+			var anEquipmentObject = equipmentService.getById(jsonOneElement.equipmentId);
+
+			//alert('aUserObject=' + aUserObject);
+			//alert('anEquipmentObject=' + anEquipmentObject);
+			
+			var stringBuffer = aUserObject.toString() + " : " + anEquipmentObject.toString();
+			
+			//alert('stringBuffer=' + stringBuffer);
+			
+			$scope.rentalRecordArrays.push(stringBuffer);
+		}
+	});
+
+	//alert('rentalRecordArrays=' + $scope.rentalRecordArrays);
+	
+	
 	jQuery.i18n.properties({
 		name : 'gasmrent',
 		path : 'i18n/',
@@ -554,6 +611,8 @@ appControllers.controller('SummaryByDivingEventController', ['$scope','$routePar
 		language : 'fr',
 		callback : function() {
 			$("#sendForSynchronization").html(sendForSynchronization);
+			
+			$("#summaryByDivingEventDescription").html(summaryByDivingEventDescription($scope.aDivingEvent.getPlace(), $scope.aDivingEvent.getDate()));
 		}
 	});
 	
