@@ -1,98 +1,40 @@
 <!DOCTYPE HTML>
-<html>
-<head>
-	<title>G.A.S.M. Rent</title>
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
-	<!-- Javascripts --> 
-	<script type="text/javascript" charset="utf-8" src="./cordova.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
-	<script type="text/javascript" charset="utf-8" src="./js/gasm-rent.js"></script>
-	
-	<!-- CSS -->
-	<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="./css/font-awesome.min.css" rel="stylesheet">
-	<link href="./css/gasm.css" rel="stylesheet" media="screen">
-	
-	<!-- JS Function that can be called -->
-	<script type="text/javascript">
-		//load I18N bundles
-		jQuery(document).ready(function() {
-			initLanguages();
-		});
-	
-		function loadBundles(lang) {
-	
-			// alert(lang);
-	
-			jQuery.i18n
-					.properties({
-						name : 'gasmrent',
-						path : 'i18n/',
-						mode : 'both',
-						language : lang,
-						callback : function() {
-							
-							$("#applicationDescription").html(applicationDescription);
-	
-							$("#startRentSession").html(startRentSession);
-	
-							$("#resumeRentSession").html(resumeRentSession);
-							
-							$("#chooseAnEvent").html(chooseAnEvent);
-							
-							$("#returnEvent").html(returnEvent);
-						}
-					});
-		}
+<html ng-app="GasmRentApp">
+	<head>
+		<title>G.A.S.M. Rent</title>
 		
-	</script>
-</head>
-<body ng-app="GasmRentApp" >
-
-	<div ng-controller="MainController" class="container">
-		<div ng-include="'./partials/gasm-header.html'" onload="initHeader('applicationTitle')"></div>
-				
-		<div class="row text-center">
-			<div class="col-12 pageSection">
-
-				<div class="row largeRow">
-					<div class="col-12 text-center" id="applicationDescription"></div>
-				</div>
-
-				<div class="row largeRow">
-					<div class="col-12">
-						<a class="btn btn-lg btn-primary" onclick="startANewRentSession()" href="#" id="startRentSession"></a>
-					</div>
-				</div>	
-				<div class="row largeRow">				
-					<div class="col-12">
-						<a href="./chooseEventAndUser.html" class="btn btn-lg btn-primary" id="resumeRentSession"></a>	
-					</div>						
-				</div>	
-			
-				<div class="row largeRow">
-					<div class="col-12">
-						<a href="./chooseEvent.html" class="btn btn-lg btn-primary" id="chooseAnEvent"></a>
-					</div>
-				</div>
-				
-				<div class="row largeRow">
-					<div class="col-12">
-						<a href="./listRentedItems.html" class="btn btn-lg btn-primary" id="returnEvent"></a>
-					</div>
-				</div>
-				
-			</div>
-		</div>
-
-		<div ng-include="'./partials/gasm-footer.html'"></div>
-	</div>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<!-- Javascripts --> 
+		<script type="text/javascript" charset="utf-8" src="./cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular-route.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular-resource.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/angular-sanitize.js"></script>
+		
+		<script type="text/javascript" charset="utf-8" src="./js/jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/jquery.i18n.properties-min-1.0.9.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/respond.min.js"></script>
+		
+		<script type="text/javascript" charset="utf-8" src="./js/app.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/services.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/controllers.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/filters.js"></script>
+		<script type="text/javascript" charset="utf-8" src="./js/directives.js"></script>
+		
+		<!-- CSS -->
+		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="./css/font-awesome.min.css" rel="stylesheet">
+		<link href="./css/gasm.css" rel="stylesheet" media="screen">
+	</head>
+	<body>
 	
-</body>
+		<div ng-controller="MainController" class="container">
+			<div ng-include="'./partials/header.html'" onload="initHeader('applicationTitle')"></div>
+					
+			<!-- this is the placeholder for the views (partials) -->
+			<div ng-view></div>
+		</div>
+	</body>
 </html>

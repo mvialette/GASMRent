@@ -1,0 +1,20 @@
+<div class="row text-center">
+	<div class="col-12 pageSection">
+
+		<div class="row largeRow">
+			<div class="col-12" id="listRentedItemsDescription"></div>
+		</div>
+		
+		<div class="row">
+			<ul class="list-group">
+				<li ng-repeat="item in rentedEquipments"  class="list-group-item">
+	           		{{getRentedEquipmentsDisplay(item)}}
+		            <button type="button" class="btn btn-primary" ng-click="turnIn(item)">Rendre</button>
+			    </li>
+		    </ul>
+		</div>
+
+		<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
+		
+	</div>
+</div>

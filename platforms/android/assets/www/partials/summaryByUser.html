@@ -1,0 +1,46 @@
+<div class="row text-center">
+	<div class="col-12 pageSection">
+		<div class="row largeRow">
+			<div class="col-12" id="summaryByUserDescription"></div>
+		</div>
+		
+		<div class="row largeRow">
+			<!-- <div class="col-12" id="listOfRentedEquipments"></div> -->
+			
+			<ul>
+			    <li ng-repeat="lineOfRental in lineOfRentals">
+			      {{lineOfRental.equipmentId}}
+			    </li>
+		  	</ul>
+  
+		</div>				
+		
+		<div class="row largeRow">
+			<div class="col-xs-4">
+				<a class="btn btn-primary" ng-click="savePaymentTypeForThisUser(true)" id="hasPaidByCoin"></a>
+			</div>
+			
+			<div class="col-xs-4">
+				<a class="btn btn-primary" ng-click="savePaymentTypeForThisUser(false)" id="hasPaidByCheck"></a>
+			</div>
+			
+			<div class="col-xs-4">
+				<a class="btn btn-primary" ng-click="savePaymentTypeForThisUser(null)" id="hasNotPaid"></a>
+			</div>
+		</div>
+		
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" href="#/chooseEventAndUser" id="continueRentalForSomeoneElse"></a>
+			</div>
+		</div>
+	
+		<div class="row largeRow">
+			<div class="col-12">
+				<a class="btn btn-primary" ng-click="sendInfoForSummaryByDivingEvent()" id="summaryByDivingEvent"></a>
+			</div>
+		</div>
+
+		<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
+	</div>
+</div>

@@ -1,0 +1,22 @@
+<!-- <div class="row "> -->
+<div class="pageSection text-center">
+	<div class="row largeRow">
+		<div class="col-12" id="summaryByDivingEventDescription"></div>
+	</div>
+
+	<div class="row largeRow">
+		<ul class="list-group">
+		    <li class="list-group-item" ng-repeat="rentalRecord in rentalRecordArrays">
+		      {{rentalRecord}}
+		    </li>
+	  	</ul>
+	</div>
+
+	<div class="row largeRow">
+		<div class="col-12">
+			<a class="btn btn-primary" ng-click="sendLinesOfRental()" id="sendForSynchronization"></a>
+		</div>
+	</div>
+	
+	<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
+</div>
