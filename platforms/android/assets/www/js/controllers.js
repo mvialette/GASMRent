@@ -104,15 +104,15 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 		}
 	}]);
 
-appControllers.controller('ChooseEventController', ['$scope','$http', 'localStorageService', 'LOCAL_STORAGE_DIVING_EVENTS', 
-                                                    function($scope, $http, localStorageService, LOCAL_STORAGE_DIVING_EVENTS) {
+appControllers.controller('ChooseEventController', ['$scope','$http', 'localStorageService', 'divingEventService', 'LOCAL_STORAGE_DIVING_EVENTS', 
+                                                    function($scope, $http, localStorageService, divingEventService, LOCAL_STORAGE_DIVING_EVENTS) {
 	
 	var localStorageDivingEvents = localStorageService.read(LOCAL_STORAGE_DIVING_EVENTS);
 	$scope.divingEvents = [];
 	
 	$.each(localStorageDivingEvents, function(i, oneElement) {
 		var jsonOneElement = JSON.parse(oneElement);
-		$scope.divingEvents.push(getDivingEventById(jsonOneElement.id));
+		$scope.divingEvents.push(divingEventService.getById(jsonOneElement.id));
 	});
 	
 	$scope.selectedDivingEvent = $scope.divingEvents[0];
@@ -577,7 +577,10 @@ appControllers.controller('SummaryByUserController', ['$scope','$routeParams', '
 	
 }]);
 
-appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', 'divingEventService', 'localStorageService', 'userService' , 'equipmentService', 'LOCAL_STORAGE_LINE_OF_RENTAL', function($scope, $routeParams, divingEventService, localStorageService, userService , equipmentService, LOCAL_STORAGE_LINE_OF_RENTAL) {
+appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', 
+                                                             'divingEventService', 'localStorageService', 'userService' , 'equipmentService', 'backendService', 
+                                                             'LOCAL_STORAGE_LINE_OF_RENTAL', 
+                                                             function($scope, $routeParams, divingEventService, localStorageService, userService , equipmentService, backendService, LOCAL_STORAGE_LINE_OF_RENTAL) {
 	
 	$scope.aDivingEvent = divingEventService.getById($routeParams.divingEventId);
 	
@@ -633,6 +636,11 @@ appControllers.controller('SummaryByDivingEventController', ['$scope','$routePar
 			$("#summaryByDivingEventDescription").html(summaryByDivingEventDescription($scope.aDivingEvent.getPlace(), $scope.aDivingEvent.getDate()));
 		}
 	});
+	
+	$scope.sendLinesOfRental = function() {
+		backendService.pushLinesOfRental($scope.aDivingEvent.id);
+	}
+	
 	
 	$scope.initHeader = function(pageTitle) {
 		jQuery.i18n.properties({

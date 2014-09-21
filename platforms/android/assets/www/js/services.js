@@ -1340,8 +1340,8 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     
     var pushLinesOfRental = function(divingEventId){
 
-    	// var debug = true;
-    	var debug = false;
+    	var debug = true;
+    	//var debug = false;
 
     	var paymentByUserAndDivingEventArrayStringify = window.localStorage
     			.getItem(LOCAL_STORAGE_PAYMENT_BY_USER);
@@ -1430,39 +1430,38 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     										}
 
     										var paymentModeOfTheUser = null;
+    										
+    										alert("paymentByUserAndDivingEventArrayJSON="
+    							    				+ paymentByUserAndDivingEventArrayJSON);
 
-    										$
-    												.each(
-    														paymentByUserAndDivingEventArrayJSON,
-    														function(idx3,
-    																onePayment) {
+    										$.each(paymentByUserAndDivingEventArrayJSON, function(idx3, onePayment) {
 
-    															if (debug === true) {
-    																alert("onePayment.userId="
-    																		+ onePayment.userId
-    																		+ " currentElementJSON.userId="
-    																		+ currentElementJSON.userId);
-    																alert("onePayment.divingEventId="
-    																		+ onePayment.divingEventId
-    																		+ " currentElementJSON.divingEventId="
-    																		+ currentElementJSON.divingEventId);
-    															}
+												if (debug === true) {
+													alert("onePayment.userId="
+															+ onePayment.userId
+															+ " currentElementJSON.userId="
+															+ currentElementJSON.userId);
+													alert("onePayment.divingEventId="
+															+ onePayment.divingEventId
+															+ " currentElementJSON.divingEventId="
+															+ currentElementJSON.divingEventId);
+												}
 
-    															if (currentElementJSON.userId == onePayment.userId
-    																	&& currentElementJSON.divingEventId == onePayment.divingEventId) {
+												if (currentElementJSON.userId == onePayment.userId
+														&& currentElementJSON.divingEventId == onePayment.divingEventId) {
 
-    																if (debug === true) {
-    																	alert("we have found a payment entry : find");
-    																	alert("onePayment.paymentMode="
-    																			+ onePayment.paymentMode);
-    																}
-    																paymentModeOfTheUser = onePayment.paymentMode;
-    																return false;
-    															}
-    															if (debug === true) {
-    																alert("next");
-    															}
-    														});
+													if (debug === true) {
+														alert("we have found a payment entry : find");
+														alert("onePayment.paymentMode="
+																+ onePayment.paymentMode);
+													}
+													paymentModeOfTheUser = onePayment.paymentMode;
+													return false;
+												}
+												if (debug === true) {
+													alert("next");
+												}
+											});
 
     										if (debug === true) {
     											alert("paymentModeOfTheUser="
