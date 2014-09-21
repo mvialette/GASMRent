@@ -4,7 +4,13 @@
 			<div class="col-12" id="description"></div>
 		</div>
 		<div class="row largeRow">
-			<div class="col-12" id="equipments"></div>
+			<!-- <div class="col-12" id="equipments"></div> -->
+			
+			<ul class="list-group">
+			    <li class="list-group-item" ng-repeat="equipment in equipments">
+			    	<a href="#/viewEquipmentDetail/{{equipment.equipmentId}}">{{equipment.toString()}}</a>
+			    </li>
+		  	</ul>
 		</div>
 
 		<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>

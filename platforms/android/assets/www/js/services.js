@@ -1,12 +1,48 @@
 'use strict';
 
-//Demonstrate how to register services
-//In this case it is a simple value service.
-//angular.module('GasmRentApp.services', ['ngResource'])
-// .factory('DivingEventService', ['$resource',
-//     function($resource){
-//         return $resource('/api/jacket/:itemId', {itemId:'@id'});
-//		     } ]);
+/**
+ * Global methods
+ * 
+ */
+var parseDate = function(dateObject){
+	var theDate = new Date(parseInt(dateObject));
+	return theDate.getDate() + "/" + (theDate.getMonth() + 1) + "/"
+			+ theDate.getFullYear(); // jQuery.datepicker.parseDate(
+	// "yy-mm-dd", d);
+};
+
+var logMessage = function(message) {
+	//var debug = false;
+	var debug = true;
+	
+	if (debug === true) {
+		alert(message);
+	}
+}
+
+var formatTimestamp = function(d) {
+	// padding function
+	var s = function(p) {
+		return ('' + p).length < 2 ? '0' + p : '' + p;
+	};
+
+	var dateTmp = null;
+	// default parameter
+	if (typeof d === 'undefined') {
+		dateTmp = new Date();
+	} else if (typeof d === 'number') {
+		dateTmp = new Date(d);
+	} else if (typeof d === 'string') {
+		dateTmp = new Date(parseInt(d));
+	}
+
+	return s(dateTmp.getDate()) + '/' + s(dateTmp.getMonth() + 1) + '/'
+			+ dateTmp.getFullYear();
+}
+
+/**
+ * End of global methods
+ */
 
 var gasmRentServices = angular.module('GasmRentServices', ['ngResource']);
 
@@ -30,15 +66,18 @@ gasmRentServices.factory('localStorageService', ['$window', function($window){
 	}
 }]);
 
-gasmRentServices.factory('equipmentService', ['$window','localStorageService', function($window, localStorageService){
+gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 'LOCAL_STORAGE_EQUIPMENTS', 'LOCAL_STORAGE_LINE_OF_RENTAL', function($window, localStorageService, LOCAL_STORAGE_EQUIPMENTS, LOCAL_STORAGE_LINE_OF_RENTAL){
 	
-	var Equipment = function(equipmentId, type, price, rented, serialNumber, status) {
+	var Equipment = function(equipmentId, type, price, rented, serialNumber, status, jsonOneElement) {
 		this.equipmentId = equipmentId;
 		this.type = type;
 		this.price = price;
 		this.rented = rented;
 		this.serialNumber = serialNumber;
 		this.status = status;
+		
+		/* other fields */
+		this.jsonOneElement = jsonOneElement;
 
 		this.getPrice = function() {
 			return this.price;
@@ -95,6 +134,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 		}, this.toCompleteString = function() {
 
 			var frenchType = this.type;
+			
 			var otherFields = "";
 
 			switch (this.type) {
@@ -121,7 +161,51 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 				break;
 			}
 
-			return frenchType + " n°<b>" + equipmentId + "</b>" + otherFields;
+			for ( var oneAttribute in jsonOneElement) {
+					// alert(oneAttribute);
+					// alert(jsonOneElement[oneAttribute]);
+					var valeurAAfficher = null;
+
+					var jsonValue = jsonOneElement[oneAttribute];
+
+					if (jsonValue == "null") {
+						valeurAAfficher = "";
+					} else if (oneAttribute.indexOf("date") != -1
+							|| oneAttribute.indexOf("Date") != -1) {
+						// var maintenant = new Date(jsonOneElement[oneAttribute]);
+						// valeurAAfficher = maintenant.getDate() + '/' +
+						// (maintenant.getMonth() + 1) + '/' +
+						// maintenant.getFullYear();
+						valeurAAfficher = formatTimestamp(jsonValue);
+					} else if (jsonValue == "true" || jsonValue == "false"
+							|| jsonValue === true || jsonValue === false) {
+						
+						if (jsonValue == "true" || jsonValue === true) {
+							valeurAAfficher = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-check fa-stack-1x\"></i></span>"
+						} else if (jsonValue == "false" || jsonValue === false) {
+							valeurAAfficher = "<span class=\"fa-stack\"><i class=\"fa fa-square-o fa-stack-2x\"></i><i class=\"fa fa-times fa-stack-1x\"></i></span>";
+						}
+						
+						// alert(valeurAAfficher);
+					} else if ((oneAttribute.indexOf("Pressure") != -1)
+							|| (oneAttribute.indexOf("pressure") != -1)) {
+						valeurAAfficher = jsonValue + " bars";
+					} else if (oneAttribute.indexOf("weight") != -1) {
+						valeurAAfficher = jsonValue + " Kg";
+					} else if (oneAttribute.indexOf("price") != -1) {
+						valeurAAfficher = jsonValue + " €";
+					} else {
+						valeurAAfficher = jsonValue;
+					}
+
+					otherFields = otherFields + "<br>"
+							+ jQuery.i18n.prop(oneAttribute) + " = <b>"
+							+ valeurAAfficher + "</b>";
+				}
+
+				// alert(otherFields);
+
+				return frenchType + " n°<b>" + equipmentId + "</b>" + otherFields;
 		}
 	}
 	
@@ -129,7 +213,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 		
 		var result = null;
 
-		var localStorageEquipments = localStorageService.read(getConstants().LOCAL_STORAGE_EQUIPMENTS);
+		var localStorageEquipments = localStorageService.read(LOCAL_STORAGE_EQUIPMENTS);
 
 		$.each(localStorageEquipments, function(i, oneElement) {
 
@@ -137,9 +221,11 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 
 			if (equipmentId == jsonOneElement.reference) {
 				
+				alert('jsonOneElement=' + JSON.stringify(jsonOneElement));
+				
 				result = new Equipment(jsonOneElement.reference,
 						jsonOneElement.type, jsonOneElement.price,
-						jsonOneElement.rented, jsonOneElement.serialNumber, jsonOneElement.status);
+						jsonOneElement.rented, jsonOneElement.serialNumber, jsonOneElement.status, jsonOneElement);
 
 				return false;
 			}
@@ -166,7 +252,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     var isEquipmentAvailableForRent = function(equipmentId){
     	var result = true;
     	
-    	var localStorageRentalRecords = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+    	var localStorageRentalRecords = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
     	//alert('localStorageRentalRecords=' + localStorageRentalRecords);
     	
     	// is it an knowing reference
@@ -197,7 +283,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
     
     var getAllEquipments = function(){
     	
-    	var localStorageEquipments = localStorageService.read(getConstants().LOCAL_STORAGE_EQUIPMENTS);
+    	var localStorageEquipments = localStorageService.read(LOCAL_STORAGE_EQUIPMENTS);
     	
     	var equipments = [];
     	
@@ -222,7 +308,7 @@ gasmRentServices.factory('equipmentService', ['$window','localStorageService', f
 	}
 }]);
 
-gasmRentServices.factory('userService', ['localStorageService', function(localStorageService){
+gasmRentServices.factory('userService', ['localStorageService', 'LOCAL_STORAGE_USERS', function(localStorageService, LOCAL_STORAGE_USERS){
 	
 	var User = function(aUserId, firstName, lastName) {
 		this.id = aUserId;
@@ -237,7 +323,7 @@ gasmRentServices.factory('userService', ['localStorageService', function(localSt
     	
     	var result = null;
 
-    	var localStorageUsers = localStorageService.read(getConstants().LOCAL_STORAGE_USERS);
+    	var localStorageUsers = localStorageService.read(LOCAL_STORAGE_USERS);
     	
     	$.each(localStorageUsers, function(i, oneElement) {
 
@@ -255,7 +341,7 @@ gasmRentServices.factory('userService', ['localStorageService', function(localSt
     
     var getAllUsers = function(){
     	
-    	var localStorageUsers = localStorageService.read(getConstants().LOCAL_STORAGE_USERS);
+    	var localStorageUsers = localStorageService.read(LOCAL_STORAGE_USERS);
     	
     	var users = [];
     	
@@ -277,7 +363,7 @@ gasmRentServices.factory('userService', ['localStorageService', function(localSt
 	}
 }]);
 
-gasmRentServices.factory('divingEventService', ['localStorageService', function(localStorageService){
+gasmRentServices.factory('divingEventService', ['localStorageService', 'LOCAL_STORAGE_LINE_OF_RENTAL', 'LOCAL_STORAGE_DIVING_EVENTS', function(localStorageService, LOCAL_STORAGE_LINE_OF_RENTAL, LOCAL_STORAGE_DIVING_EVENTS){
 	
 	var DivingEvent = function(divingEventId, place, date, billingThreshold) {
 		this.id = divingEventId;
@@ -315,7 +401,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
 
 							var lineOfRentalsFromLocalStorageString = JSON
 									.parse(window.localStorage
-											.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+											.getItem(LOCAL_STORAGE_LINE_OF_RENTAL));
 							var lineOfRentalsArrays = new Array();
 
 							var maxPriceForRegulator = 0;
@@ -403,7 +489,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
     	
     	var result = null;
 
-    	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+    	var localStorageDivingEvents = localStorageService.read(LOCAL_STORAGE_DIVING_EVENTS);
     	
     	$.each(localStorageDivingEvents, function(i, oneElement) {
 
@@ -423,7 +509,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
     
     var getAllDivingEvents = function(){
     	
-    	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+    	var localStorageDivingEvents = localStorageService.read(LOCAL_STORAGE_DIVING_EVENTS);
     	
     	var divingEvents = [];
     	
@@ -446,7 +532,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
 	}
 }]);
 
-gasmRentServices.factory('lineOfRentalService', ['localStorageService', function(localStorageService){
+gasmRentServices.factory('lineOfRentalService', ['localStorageService', 'LOCAL_STORAGE_LINE_OF_RENTAL', function(localStorageService, LOCAL_STORAGE_LINE_OF_RENTAL){
 	
 	var LineOfRental = function(divingEventId, userId, equipmentId) {
 		this.divingEventId = divingEventId;
@@ -474,7 +560,7 @@ gasmRentServices.factory('lineOfRentalService', ['localStorageService', function
 		var theNewLineOfRental = new LineOfRental(divingEventId, userId, equipmentId);
 
 		// persist data in local storage
-		var linesOfRentalFromTheLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+		var linesOfRentalFromTheLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
 
 		var linesOfRentalArrays = new Array();
 	
@@ -486,14 +572,14 @@ gasmRentServices.factory('lineOfRentalService', ['localStorageService', function
 		}
 
 		linesOfRentalArrays.push(JSON.stringify(theNewLineOfRental));
-		localStorageService.save(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL, linesOfRentalArrays);
+		localStorageService.save(LOCAL_STORAGE_LINE_OF_RENTAL, linesOfRentalArrays);
 		
 		return theNewLineOfRental;
     };
     
     var getAllRentalsByDivingIdAndUserId = function(divingEventId, userId){
     	
-    	var linesOfRentalFromTheLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+    	var linesOfRentalFromTheLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
     	
     	//alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
     	
@@ -521,7 +607,7 @@ gasmRentServices.factory('lineOfRentalService', ['localStorageService', function
 }]);
 
 
-gasmRentServices.factory('divingEventService', ['localStorageService', function(localStorageService){
+gasmRentServices.factory('divingEventService', ['localStorageService', 'LOCAL_STORAGE_LINE_OF_RENTAL', 'LOCAL_STORAGE_DIVING_EVENTS', function(localStorageService, LOCAL_STORAGE_LINE_OF_RENTAL, LOCAL_STORAGE_DIVING_EVENTS){
 	
 	var DivingEvent = function(divingEventId, place, date, billingThreshold) {
 		this.id = divingEventId;
@@ -559,7 +645,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
 
 							var lineOfRentalsFromLocalStorageString = JSON
 									.parse(window.localStorage
-											.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+											.getItem(LOCAL_STORAGE_LINE_OF_RENTAL));
 							var lineOfRentalsArrays = new Array();
 
 							var maxPriceForRegulator = 0;
@@ -647,7 +733,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
     	
     	var result = null;
 
-    	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+    	var localStorageDivingEvents = localStorageService.read(LOCAL_STORAGE_DIVING_EVENTS);
     	
     	$.each(localStorageDivingEvents, function(i, oneElement) {
 
@@ -667,7 +753,7 @@ gasmRentServices.factory('divingEventService', ['localStorageService', function(
     
     var getAllDivingEvents = function(){
     	
-    	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+    	var localStorageDivingEvents = localStorageService.read(LOCAL_STORAGE_DIVING_EVENTS);
     	
     	var divingEvents = [];
     	
@@ -730,7 +816,7 @@ gasmRentServices.factory('barcodeScannerService', ['equipmentService', '$window'
 	}
 }]);
 
-gasmRentServices.factory('billingRecordService', ['localStorageService', function(localStorageService){
+gasmRentServices.factory('billingRecordService', ['localStorageService', 'LOCAL_STORAGE_PAYMENT_BY_USER', 'LOCAL_STORAGE_LINE_OF_RENTAL', function(localStorageService, LOCAL_STORAGE_PAYMENT_BY_USER, LOCAL_STORAGE_LINE_OF_RENTAL){
 	
 	var BillingRecord = function(userId, divingEventId, paymentMode) {
 		this.userId = userId;
@@ -763,7 +849,7 @@ gasmRentServices.factory('billingRecordService', ['localStorageService', functio
 		
 		logMessage("userId="+userId);
 		
-		var localStorageVarName = getConstants().LOCAL_STORAGE_PAYMENT_BY_USER;
+		var localStorageVarName = LOCAL_STORAGE_PAYMENT_BY_USER;
 		logMessage("localStorageVarName="+localStorageVarName);
 		
 		var localStorageValue = localStorageService.read(localStorageVarName);
@@ -813,12 +899,12 @@ gasmRentServices.factory('billingRecordService', ['localStorageService', functio
 		var paymentByUserAndDivingEventArrayStringify = JSON.stringify(paymentByUserAndDivingEventArray);
 		logMessage("paymentByUserAndDivingEventArray="+paymentByUserAndDivingEventArrayStringify); 
 		
-		localStorageService.save(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArrayStringify);
+		localStorageService.save(LOCAL_STORAGE_PAYMENT_BY_USER, paymentByUserAndDivingEventArrayStringify);
     };
     
     var getAllRentalsByDivingIdAndUserId = function(divingEventId, userId){
     	
-    	var linesOfRentalFromTheLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+    	var linesOfRentalFromTheLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
     	
     	alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
     	
@@ -845,13 +931,27 @@ gasmRentServices.factory('billingRecordService', ['localStorageService', functio
 	}
 }]);
 
-gasmRentServices.factory('backendService', ['localStorageService', function(localStorageService){
+gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USERS', 'LOCAL_STORAGE_USERS', 
+                                            'URL_GET_DIVING_EVENT', 'LOCAL_STORAGE_DIVING_EVENTS', 
+                                            'URL_GET_EQUIPMENT', 'LOCAL_STORAGE_EQUIPMENTS', 
+                                            'URL_GET_ALL_RENTED_EQUIPMENT', 'LOCAL_STORAGE_RENTED_EQUIPMENTS', 
+                                            'URL_GET_PAYMENT_TYPE', 'LOCAL_STORAGE_PAYMENT_TYPE', 
+                                            'LOCAL_STORAGE_PAYMENT_BY_USER', 'LOCAL_STORAGE_LINE_OF_RENTAL', 'URL_PUT_NEW_RENTAL_RECORD',
+                                            'PAYMENT_BY_COIN','PAYMENT_BY_CHECK','URL_PUT_TO_PAY_A_RENTAL_RECORDS',
+                                            function(localStorageService, 
+                                            		URL_GET_USERS, LOCAL_STORAGE_USERS, 
+                                            		URL_GET_DIVING_EVENT, LOCAL_STORAGE_DIVING_EVENTS, 
+                                            		URL_GET_EQUIPMENT, LOCAL_STORAGE_EQUIPMENTS, 
+                                            		URL_GET_ALL_RENTED_EQUIPMENT, LOCAL_STORAGE_RENTED_EQUIPMENTS,
+                                            		URL_GET_PAYMENT_TYPE, LOCAL_STORAGE_PAYMENT_TYPE, 
+                                            		LOCAL_STORAGE_PAYMENT_BY_USER, LOCAL_STORAGE_LINE_OF_RENTAL, URL_PUT_NEW_RENTAL_RECORD,
+                                            		PAYMENT_BY_COIN, PAYMENT_BY_CHECK, URL_PUT_TO_PAY_A_RENTAL_RECORDS){
 	
     var pullUsers = function(){
     	
     	var userArray = [];
     	
-    	var urlComplete = getConstants().URL_GET_USERS;
+    	var urlComplete = URL_GET_USERS;
 
     	jQuery.ajax({
     		type : "GET",
@@ -870,8 +970,8 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     				compteur++;
     			});
 
-    			localStorageService.save(getConstants().LOCAL_STORAGE_USERS, userArray);
-    			//localStorageService.save(getConstants().LOCAL_STORAGE_USERS, JSON.stringify(items));
+    			localStorageService.save(LOCAL_STORAGE_USERS, userArray);
+    			//localStorageService.save(LOCAL_STORAGE_USERS, JSON.stringify(items));
 
     			$('#users').html(userOnline(compteur));
 
@@ -880,7 +980,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     		error : function(jqXHR, status) {
 
     			var localStorageUsers = JSON.parse(window.localStorage
-    					.getItem(getConstants().LOCAL_STORAGE_USERS));
+    					.getItem(LOCAL_STORAGE_USERS));
 
     			var compteur = 0;
 
@@ -900,7 +1000,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     
     var pullDivingEvents = function(){
     	
-    	var urlComplete = getConstants().URL_GET_DIVING_EVENT;
+    	var urlComplete = URL_GET_DIVING_EVENT;
     	
     	//alert('urlComplete=' + urlComplete);
     	
@@ -939,7 +1039,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     									});
 
     					localStorageService.save(
-    							getConstants().LOCAL_STORAGE_DIVING_EVENTS, resultArray);
+    							LOCAL_STORAGE_DIVING_EVENTS, resultArray);
 
     					//alert('localStorageService.save');
     					
@@ -951,7 +1051,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
 
     					var localStorageDivingEvents = JSON
     							.parse(window.localStorage
-    									.getItem(getConstants().LOCAL_STORAGE_DIVING_EVENTS));
+    									.getItem(LOCAL_STORAGE_DIVING_EVENTS));
 
     					// alert(localStorageUsers);
     					var compteur = 0;
@@ -980,7 +1080,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     	// var debuging = true;
     	var debuging = false;
 
-    	var urlComplete = getConstants().URL_GET_EQUIPMENT;
+    	var urlComplete = URL_GET_EQUIPMENT;
 
     	if (debuging) {
     		alert(urlComplete);
@@ -1073,7 +1173,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     				alert("items=" + JSON.stringify(resultArray));
     			}
 
-    			localStorageService.save(getConstants().LOCAL_STORAGE_EQUIPMENTS, resultArray);
+    			localStorageService.save(LOCAL_STORAGE_EQUIPMENTS, resultArray);
 
     			$('#equipments').html(equipmentOnline(compteur));
     		},
@@ -1083,7 +1183,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     			// alert("offline mode" + status);
 
     			var localStorageEquipments = JSON.parse(window.localStorage
-    					.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
+    					.getItem(LOCAL_STORAGE_EQUIPMENTS));
 
     			// alert(localStorageUsers);
     			var compteur = 0;
@@ -1111,7 +1211,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     	// var debuging = true;
     	var debuging = false;
 
-    	var urlComplete = getConstants().URL_GET_ALL_RENTED_EQUIPMENT;
+    	var urlComplete = URL_GET_ALL_RENTED_EQUIPMENT;
 
     	if (debuging) {
     		alert(urlComplete);
@@ -1156,7 +1256,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     				alert("resultArray=" + JSON.stringify(resultArray));
     			}
 
-    			localStorageService.save(getConstants().LOCAL_STORAGE_RENTED_EQUIPMENTS, resultArray);
+    			localStorageService.save(LOCAL_STORAGE_RENTED_EQUIPMENTS, resultArray);
     			
     			$('#listOfRentedItems').html(rentedEquipmentsOffline(compteur));
     		},
@@ -1166,7 +1266,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     			// alert("offline mode" + status);
 
     			var localStorageEquipments = JSON.parse(window.localStorage
-    					.getItem(getConstants().LOCAL_STORAGE_EQUIPMENTS));
+    					.getItem(LOCAL_STORAGE_EQUIPMENTS));
 
     			// alert(localStorageUsers);
     			var compteur = 0;
@@ -1188,7 +1288,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     var pullPaymentType = function(){
     	
     	var resultArray = [];
-    	var urlComplete = getConstants().URL_GET_PAYMENT_TYPE;
+    	var urlComplete = URL_GET_PAYMENT_TYPE;
 
     	// alert(urlComplete);
 
@@ -1215,7 +1315,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
 
     			// alert(JSON.stringify(paymentTypes));
 
-    			localStorageService.save(getConstants().LOCAL_STORAGE_PAYMENT_TYPE, resultArray);
+    			localStorageService.save(LOCAL_STORAGE_PAYMENT_TYPE, resultArray);
     			
     			// alert("ok");
     			$('#paymentTypes').html(paymentTypesOnline(compteur));
@@ -1223,7 +1323,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     		error : function(jqXHR, status) {
 
     			var localStoragePaymentTypes = JSON.parse(window.localStorage
-    					.getItem(getConstants().LOCAL_STORAGE_PAYMENT_TYPE));
+    					.getItem(LOCAL_STORAGE_PAYMENT_TYPE));
 
     			var compteur = 0;
 
@@ -1244,7 +1344,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     	var debug = false;
 
     	var paymentByUserAndDivingEventArrayStringify = window.localStorage
-    			.getItem(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
+    			.getItem(LOCAL_STORAGE_PAYMENT_BY_USER);
 
     	if (debug === true) {
     		alert("paymentByUserAndDivingEventArrayStringify="
@@ -1260,7 +1360,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     	}
 
     	var rentalRecordsStringFromLocalStorage = JSON.parse(window.localStorage
-    			.getItem(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL));
+    			.getItem(LOCAL_STORAGE_LINE_OF_RENTAL));
 
     	var rentalRecordArrays = new Array();
 
@@ -1285,7 +1385,7 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     							alert(paramToSend);
     						}
 
-    						var urlComplete = getConstants().URL_PUT_NEW_RENTAL_RECORD
+    						var urlComplete = URL_PUT_NEW_RENTAL_RECORD
     								+ paramToSend;
 
     						if (debug === true) {
@@ -1372,13 +1472,13 @@ gasmRentServices.factory('backendService', ['localStorageService', function(loca
     										if (paymentModeOfTheUser != null) {
     											if (paymentModeOfTheUser == true) {
     												// COIN
-    												paymentModeOfTheUser = getConstants().PAYMENT_BY_COIN;
+    												paymentModeOfTheUser = PAYMENT_BY_COIN;
     											} else if (paymentModeOfTheUser == false) {
     												// CHECK
-    												paymentModeOfTheUser = getConstants().PAYMENT_BY_CHECK;
+    												paymentModeOfTheUser = PAYMENT_BY_CHECK;
     											}
 
-    											var urlCompleteToPay = getConstants().URL_PUT_TO_PAY_A_RENTAL_RECORDS
+    											var urlCompleteToPay = URL_PUT_TO_PAY_A_RENTAL_RECORDS
     													+ idOfTheRentalRecord
     													+ "?payment="
     													+ paymentModeOfTheUser;

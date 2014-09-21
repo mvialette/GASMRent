@@ -2,8 +2,11 @@
 
 var appControllers = angular.module('GasmRentAppControllers', []);
 
-appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerService', function($scope, $http, barcodeScannerService) {
+appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerService', 'URL_GET_EQUIPMENT', 'METHOD_TURN_IN', 'LOCAL_STORAGE_RENTED_EQUIPMENTS', 
+                                             function($scope, $http, barcodeScannerService, URL_GET_EQUIPMENT, METHOD_TURN_IN, LOCAL_STORAGE_RENTED_EQUIPMENTS) {
 		
+	//alert(URL_GET_USERS);
+	
 		jQuery.i18n
 		.properties({
 			name : 'gasmrent',
@@ -68,8 +71,8 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 			
 			var jsonOneElement = JSON.parse(item);
 			
-			var urlToForward = getConstants().URL_GET_EQUIPMENT
-					+ jsonOneElement.reference + "/" + getConstants().METHOD_TURN_IN;
+			var urlToForward = URL_GET_EQUIPMENT
+					+ jsonOneElement.reference + "/" + METHOD_TURN_IN;
 			
 			if(debug === true){
 				alert(urlToForward);
@@ -86,8 +89,7 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 				$scope.rentedEquipments.splice(index, 1);
 				
 				// mise à jour du local storage
-				window.localStorage.setItem(
-						getConstants().LOCAL_STORAGE_RENTED_EQUIPMENTS, JSON
+				window.localStorage.setItem(LOCAL_STORAGE_RENTED_EQUIPMENTS, JSON
 								.stringify($scope.rentedEquipments));
 				
 			}).error(function(data,status,headers,config) {
@@ -97,14 +99,15 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 			});
 		}
 		
-		$scope.sendInfoToDoScan = function(){	
+		$scope.sendInfoToDoScan = function(){
 			barcodeScannerService.scanAnEquipmentId(undefined, undefined);
 		}
 	}]);
 
-appControllers.controller('ChooseEventController', ['$scope','$http', 'localStorageService', function($scope, $http, localStorageService) {
+appControllers.controller('ChooseEventController', ['$scope','$http', 'localStorageService', 'LOCAL_STORAGE_DIVING_EVENTS', 
+                                                    function($scope, $http, localStorageService, LOCAL_STORAGE_DIVING_EVENTS) {
 	
-	var localStorageDivingEvents = localStorageService.read(getConstants().LOCAL_STORAGE_DIVING_EVENTS);
+	var localStorageDivingEvents = localStorageService.read(LOCAL_STORAGE_DIVING_EVENTS);
 	$scope.divingEvents = [];
 	
 	$.each(localStorageDivingEvents, function(i, oneElement) {
@@ -154,7 +157,7 @@ appControllers.controller('ChooseEventController', ['$scope','$http', 'localStor
 	}
 }]);
 
-appControllers.controller('ListRentedItemsController', ['$scope','$http', function($scope, $http) {
+appControllers.controller('ListRentedItemsController', ['$scope','$http', 'URL_GET_EQUIPMENT', 'METHOD_TURN_IN', function($scope, $http, URL_GET_EQUIPMENT, METHOD_TURN_IN) {
 	
 	jQuery.i18n
 	.properties({
@@ -191,13 +194,22 @@ appControllers.controller('ListRentedItemsController', ['$scope','$http', functi
 			}
 		});
 	}
+	
+	$scope.turnIn = function(itemReference) {
+		var urlToForward = URL_GET_EQUIPMENT
+				+ itemReference + "/" + METHOD_TURN_IN;
+		alert("toto=" + urlToForward);
+		alert("not yet implemented");
+	}
 }]);
 
-appControllers.controller('ChooseEventAndUserController', ['$scope','$http', '$window', 'divingEventService', 'equipmentService', 'userService', 'localStorageService', 'barcodeScannerService', function($scope, $http, $window, divingEventService, equipmentService, userService, localStorageService, barcodeScannerService) {
+appControllers.controller('ChooseEventAndUserController', ['$scope','$http', '$window', 'divingEventService', 'equipmentService', 'userService', 'localStorageService', 'barcodeScannerService', 
+                                                           'LOCAL_STORAGE_LINE_OF_RENTAL', 'LOCAL_STORAGE_PAYMENT_BY_USER', 
+                                                           function($scope, $http, $window, divingEventService, equipmentService, userService, localStorageService, barcodeScannerService, LOCAL_STORAGE_LINE_OF_RENTAL, LOCAL_STORAGE_PAYMENT_BY_USER) {
 	
 	// clear rentalRecords of the local storage
-	localStorageService.clear(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
-	localStorageService.clear(getConstants().LOCAL_STORAGE_PAYMENT_BY_USER);
+	localStorageService.clear(LOCAL_STORAGE_LINE_OF_RENTAL);
+	localStorageService.clear(LOCAL_STORAGE_PAYMENT_BY_USER);
 	
 	// We retreive informations about the diving events
 	$scope.divingEvents = divingEventService.getAllDivingEvents();
@@ -360,9 +372,10 @@ appControllers.controller('SynchronizeController', ['$scope','$http', 'backendSe
 	}
 }]);
 
-appControllers.controller('ViewEquipmentsController', ['$scope','$http', function($scope, $http) {
-	
-	getInfosOfEquipmentsToList();
+appControllers.controller('ViewEquipmentsController', ['$scope','$http', 'equipmentService', function($scope, $http, equipmentService) {
+
+	$scope.equipments = equipmentService.getAllEquipments();
+	//getInfosOfEquipmentsToList();
 	
     jQuery.i18n.properties({
   	 name:'gasmrent',
@@ -401,9 +414,14 @@ appControllers.controller('ViewEquipmentsController', ['$scope','$http', functio
 	}
 }]);
 
-appControllers.controller('ViewEquipmentDetailController', ['$scope','$routeParams', function($scope, $routeParams) {
+appControllers.controller('ViewEquipmentDetailController', ['$scope','$routeParams', 'equipmentService', function($scope, $routeParams, equipmentService) {
+
+	$scope.equipment = equipmentService.getById($routeParams.equipmentId);
 	
-	getEquipmentDetail($routeParams.equipmentId);
+	$scope.theHtmlString = $scope.equipment.toCompleteString(); 
+	
+	alert($scope.theHtmlString);
+	//getEquipmentDetail();
 	
     jQuery.i18n.properties({
   	 name:'gasmrent',
@@ -559,13 +577,13 @@ appControllers.controller('SummaryByUserController', ['$scope','$routeParams', '
 	
 }]);
 
-appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', 'divingEventService', 'localStorageService', 'userService' , 'equipmentService', function($scope, $routeParams, divingEventService, localStorageService, userService , equipmentService) {
+appControllers.controller('SummaryByDivingEventController', ['$scope','$routeParams', 'divingEventService', 'localStorageService', 'userService' , 'equipmentService', 'LOCAL_STORAGE_LINE_OF_RENTAL', function($scope, $routeParams, divingEventService, localStorageService, userService , equipmentService, LOCAL_STORAGE_LINE_OF_RENTAL) {
 	
 	$scope.aDivingEvent = divingEventService.getById($routeParams.divingEventId);
 	
 	//alert('aDivingEvent=' + $scope.aDivingEvent);
 	
-	$scope.rentalRecordsStringFromLocalStorage = localStorageService.read(getConstants().LOCAL_STORAGE_LINE_OF_RENTAL);
+	$scope.rentalRecordsStringFromLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
 
 	//alert('rentalRecordsStringFromLocalStorage=' + $scope.rentalRecordsStringFromLocalStorage);
 	
