@@ -27,14 +27,19 @@
 		<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
 		<link href="./css/font-awesome.min.css" rel="stylesheet">
 		<link href="./css/gasm.css" rel="stylesheet" media="screen">
+		<link href="./css/simple-sidebar.css" rel="stylesheet">
 	</head>
 	<body>
 	
-		<div ng-controller="MainController" class="container">
+		<div ng-controller="MainController" class="container" id="wrapper">
 			<div ng-include="'./partials/header.html'" onload="initHeader('applicationTitle')"></div>
 					
 			<!-- this is the placeholder for the views (partials) -->
-			<div ng-view></div>
+			<div id="page-content-wrapper">
+				<div class="container-fluid">
+					<div ng-view></div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

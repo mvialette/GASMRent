@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-inverse navbar-fixed-top"
+<!-- <nav class="navbar navbar-default navbar-inverse navbar-fixed-top"
 	role="navigation">
 	<div class="container-fluid" id="navfluid">
 		<div class="navbar-header">
@@ -21,7 +21,61 @@
 				<li><a href="#/about" id="about"></a></li>
 			</ul>
 		</div>
-		<!-- /.navbar-collapse -->
 	</div>
-	<!-- /.container-fluid -->
 </nav>
+-->
+
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+	<div class="container-fluid" id="navfluid">
+		<div class="navbar-header">
+			<div class="row">
+				<div class="col-1">
+					<button type="button" class="navbar-toggle toggle-sidebar">
+						<span class="sr-only">Toggle navigation</span> 
+						<span class="icon-bar"></span> 
+						<span class="icon-bar"></span> 
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="col-11">
+					<div class="navbar-brand application-title">
+						<img src="./img/mini_icone.png"> <span id="pageTitle"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+
+<!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+            	<!-- Uncomment to give a title to the menu
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Start Bootstrap
+                    </a>
+                </li>
+                -->
+                <li><a href="#/home"><i class="fa fa-home fa-fw"></i> Accueil</a></li>
+				<li><a href="#/viewEquipments" id="viewItems"></a></li>
+				<li><a ng-click="sendInfoToDoScan()" id="scanToViewItemDetail"></a></li>
+				<li><a href="#/synchronize" id="synchronize"></a></li>
+				<li><a href="#/about" class="toggle-sidebar" id="about"></a></li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+
+<!-- Menu Toggle Script -->
+<script>
+   $(".btn .btn-default .toggle-sidebar").click(function(e) {
+       e.preventDefault();
+       $("#wrapper").toggleClass("toggled");
+   });
+
+$(".toggle-sidebar").click(function(e) {
+       e.preventDefault();
+       $("#wrapper").toggleClass("toggled");
+   });
+   </script>

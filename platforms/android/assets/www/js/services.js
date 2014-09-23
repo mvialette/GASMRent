@@ -66,7 +66,7 @@ gasmRentServices.factory('localStorageService', ['$window', function($window){
 	}
 }]);
 
-gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 'LOCAL_STORAGE_EQUIPMENTS', 'LOCAL_STORAGE_LINE_OF_RENTAL', function($window, localStorageService, LOCAL_STORAGE_EQUIPMENTS, LOCAL_STORAGE_LINE_OF_RENTAL){
+gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 'lineOfRentalService', 'LOCAL_STORAGE_EQUIPMENTS', 'LOCAL_STORAGE_LINE_OF_RENTAL', function($window, localStorageService, lineOfRentalService, LOCAL_STORAGE_EQUIPMENTS, LOCAL_STORAGE_LINE_OF_RENTAL){
 	
 	var Equipment = function(equipmentId, type, price, rented, serialNumber, status, jsonOneElement) {
 		this.equipmentId = equipmentId;
@@ -221,7 +221,7 @@ gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 
 
 			if (equipmentId == jsonOneElement.reference) {
 				
-				alert('jsonOneElement=' + JSON.stringify(jsonOneElement));
+				//alert('jsonOneElement=' + JSON.stringify(jsonOneElement));
 				
 				result = new Equipment(jsonOneElement.reference,
 						jsonOneElement.type, jsonOneElement.price,
@@ -235,14 +235,23 @@ gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 
 	};
 	
     var rent = function(divingEventId,userId,equipmentId){
-    	//alert('divingEventId='+divingEventId+',userId=' + userId + ',equipmentId=' + equipmentId);
+    	
+    	alert('divingEventId='+divingEventId+',userId=' + userId + ',equipmentId=' + equipmentId);
+    	
     	// we have to know if this equipment is available for rent
     	if (isEquipmentAvailableForRent(equipmentId)) {
-    		//alert('ok');
-    		var adresse =  "#/scan/" + equipmentId + "/" + divingEventId + "/" + userId;
-    		$window.location = adresse;
+    		alert('ok');
+    		
+    		var theNewLineOfRental = lineOfRentalService.save(divingEventId, userId, equipmentId);
+    		
+    		alert('theNewLineOfRental='+theNewLineOfRental);
+    		
+    		if(theNewLineOfRental != null){
+    			var adresse =  "#/scan/" + theNewLineOfRental.equipmentId + "/" + theNewLineOfRental.divingEventId + "/" + theNewLineOfRental.userId;
+        		$window.location = adresse;
+    		}
     	} else {
-    		//alert('ko');
+    		alert('ko');
     		// Do not comment or delete this alert, it's use to send feedback
     		// message to the user
     		alert(messageErrorEquipmentNotAvailable(equipmentId));
@@ -562,17 +571,39 @@ gasmRentServices.factory('lineOfRentalService', ['localStorageService', 'LOCAL_S
 		// persist data in local storage
 		var linesOfRentalFromTheLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
 
-		var linesOfRentalArrays = new Array();
+		alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
+		
+		var canBeAdded = true;
 	
 		if (linesOfRentalFromTheLocalStorage != null) {
-			$.each(linesOfRentalFromTheLocalStorage, function(idx2,
-					oneRentalRecord) {
-				linesOfRentalArrays.push(oneRentalRecord);
+			$.each(linesOfRentalFromTheLocalStorage, function(idx2, oneRentalRecord) {
+				
+				alert('oneRentalRecord=' + oneRentalRecord);
+				
+				alert('oneRentalRecordStringify=' + JSON.stringify(oneRentalRecord));
+				
+				if(oneRentalRecord.divingEventId == divingEventId && oneRentalRecord.userId == userId && oneRentalRecord.equipmentId == equipmentId){
+					canBeAdded = false;
+					return false;
+				}
+				//linesOfRentalArrays.push(oneRentalRecord);
 			});
 		}
+		
+		alert('canBeAdded=' + canBeAdded);
+		
+		if(canBeAdded === true){
+			alert('theNewLineOfRental=' + theNewLineOfRental);
+			
+			linesOfRentalFromTheLocalStorage.push(theNewLineOfRental);
+			alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
+			
+			localStorageService.save(LOCAL_STORAGE_LINE_OF_RENTAL, linesOfRentalFromTheLocalStorage);
+		}
+		
+		var linesOfRentalFromTheLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
 
-		linesOfRentalArrays.push(JSON.stringify(theNewLineOfRental));
-		localStorageService.save(LOCAL_STORAGE_LINE_OF_RENTAL, linesOfRentalArrays);
+		alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
 		
 		return theNewLineOfRental;
     };
@@ -581,7 +612,7 @@ gasmRentServices.factory('lineOfRentalService', ['localStorageService', 'LOCAL_S
     	
     	var linesOfRentalFromTheLocalStorage = localStorageService.read(LOCAL_STORAGE_LINE_OF_RENTAL);
     	
-    	//alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
+    	alert('linesOfRentalFromTheLocalStorage=' + linesOfRentalFromTheLocalStorage);
     	
     	var rentalRecordArrays = [];
 
