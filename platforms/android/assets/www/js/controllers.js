@@ -6,8 +6,11 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
                                              function($scope, $http, barcodeScannerService, URL_GET_EQUIPMENT, METHOD_TURN_IN, LOCAL_STORAGE_RENTED_EQUIPMENTS) {
 		
 	//alert(URL_GET_USERS);
+	//initHeader();
 	
-		jQuery.i18n
+	$scope.pageTitle = "<img src=\"./img/mini_icone.png\"> <span>GASM Rent</span>";
+	
+	jQuery.i18n
 		.properties({
 			name : 'gasmrent',
 			path : 'i18n/',
@@ -24,10 +27,23 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 				$("#chooseAnEvent").html(chooseAnEvent);
 				
 				$("#returnEvent").html(returnEvent);
+				
+				$("#home").html(home);
+				
+				$("#viewItems").html(viewItems);
+
+				$("#scanToViewItemDetail").html(scanToViewItemDetail);
+
+				$("#synchronize").html(synchronize);
+
+				$("#about").html(about);
 			}
 		});
 		
 		$scope.initHeader = function(pageTitle) {
+		
+		alert(pageTitle);
+		
 			jQuery.i18n.properties({
 				name : 'gasmrent',
 				path : 'i18n/',
@@ -35,8 +51,12 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 				language : 'fr',
 				callback : function() {
 
+				
+				alert(jQuery.i18n.prop(pageTitle));
+				
 					$("#pageTitle").html(jQuery.i18n.prop(pageTitle));
 
+					/*
 					jQuery.i18n.prop("viewItems");
 					$("#viewItems").html(viewItems);
 
@@ -47,7 +67,7 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 					$("#synchronize").html(synchronize);
 
 					jQuery.i18n.prop("about");
-					$("#about").html(about);
+					$("#about").html(about);*/
 				}
 			});
 		}
@@ -461,11 +481,11 @@ appControllers.controller('ViewEquipmentDetailController', ['$scope','$routePara
 
 appControllers.controller('ScanController', ['$scope','$routeParams', '$window', 'divingEventService', 'userService', 'equipmentService', 'lineOfRentalService', 'barcodeScannerService', function($scope, $routeParams, $window, divingEventService, userService, equipmentService, lineOfRentalService, barcodeScannerService) {
 	
-	$scope.theNewLineOfRental = lineOfRentalService.save($routeParams.divingEventId, $routeParams.userId, $routeParams.equipmentId)
+	//$scope.theNewLineOfRental = lineOfRentalService.save($routeParams.divingEventId, $routeParams.userId, $routeParams.equipmentId)
 	
-	$scope.divingEvent = divingEventService.getById($scope.theNewLineOfRental.divingEventId);
-	$scope.user =  userService.getById($scope.theNewLineOfRental.userId);
-	$scope.equipment = equipmentService.getById($scope.theNewLineOfRental.equipmentId);
+	$scope.divingEvent = divingEventService.getById($routeParams.divingEventId);
+	$scope.user =  userService.getById($routeParams.userId);
+	$scope.equipment = equipmentService.getById($routeParams.equipmentId);
 	
 	jQuery.i18n.properties({
 		name : 'gasmrent',

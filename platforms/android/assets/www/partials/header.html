@@ -30,7 +30,7 @@
 		<div class="navbar-header">
 			<div class="row">
 				<div class="col-1">
-					<button type="button" class="navbar-toggle toggle-sidebar">
+					<button type="button" class="navbar-toggle toggle-sidebar-by-button">
 						<span class="sr-only">Toggle navigation</span> 
 						<span class="icon-bar"></span> 
 						<span class="icon-bar"></span> 
@@ -57,11 +57,11 @@
                     </a>
                 </li>
                 -->
-                <li><a href="#/home"><i class="fa fa-home fa-fw"></i> Accueil</a></li>
-				<li><a href="#/viewEquipments" id="viewItems"></a></li>
-				<li><a ng-click="sendInfoToDoScan()" id="scanToViewItemDetail"></a></li>
-				<li><a href="#/synchronize" id="synchronize"></a></li>
-				<li><a href="#/about" class="toggle-sidebar" id="about"></a></li>
+                <li><a href="#/home" class="toggle-sidebar-by-link" ><i class="fa fa-home fa-fw"></i> Accueil</a></li>
+				<li><a href="#/viewEquipments" class="toggle-sidebar-by-link" id="viewItems"></a></li>
+				<li><a ng-click="sendInfoToDoScan()" class="toggle-sidebar-by-link" id="scanToViewItemDetail"></a></li>
+				<li><a href="#/synchronize" class="toggle-sidebar-by-link" id="synchronize"></a></li>
+				<li><a href="#/about" class="toggle-sidebar-by-link" id="about"></a></li>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -69,13 +69,14 @@
 
 <!-- Menu Toggle Script -->
 <script>
-   $(".btn .btn-default .toggle-sidebar").click(function(e) {
-       e.preventDefault();
+
+   $(".navbar-toggle .toggle-sidebar-by-button").click(function(e) {
+       //e.preventDefault();
        $("#wrapper").toggleClass("toggled");
    });
 
-$(".toggle-sidebar").click(function(e) {
-       e.preventDefault();
+	$(".toggle-sidebar-by-link").click(function(e) {
+       //e.preventDefault();
        $("#wrapper").toggleClass("toggled");
    });
-   </script>
+</script>
