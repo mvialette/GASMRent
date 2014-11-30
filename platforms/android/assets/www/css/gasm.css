@@ -52,20 +52,16 @@ media ="screen"
 	float: left;	
 } */
 
-.container {
-	/*
-	width: 90%;
-	height: 90%;
-	// margin-left: 5%;
-	//margin-right: 5%;
-	*/
+.container-fluid {
+	padding-left: 0px;
+	padding-right: 0px;
 	margin-left: 5%;
 	margin-right: 5%;
 }
 
 body {
 	background-color: #c2c2c2;
-	padding-top: 50px;
+	/* padding-top: 50px; */
 }
 
 /*
