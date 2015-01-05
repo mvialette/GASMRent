@@ -41,14 +41,11 @@
 	
 		<div class="container-fluid">
 				
-				<!--
-				<div ng-include="'./partials/header.html'" onload="initHeader('applicationTitle')"></div>
-				-->
-				
 			<div class="row row-offcanvas row-offcanvas-left">
 				<div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
 					<ul class="nav nav-sidebar">
 						<li><a href="#/home" class="list-group-item" id="home"></a></li>
+						<li><a href="#/login" class="list-group-item" id="login"></a></li>
 						<li><a href="#/viewEquipments" class="list-group-item" id="viewItems"></a></li>
 						<li><a ng-click="sendInfoToDoScan()" class="list-group-item" id="scanToViewItemDetail"></a></li>
 						<li><a href="#/synchronize" class="list-group-item" id="synchronize"></a></li>
@@ -65,9 +62,10 @@
 			  	</div>
 			</div>
 		
-		<!-- Menu Toggle Script -->
-		<script>
-		   $(document).ready(function() {
+		
+		<script type="text/javascript">
+			<!-- Menu Toggle Script -->
+		   	$(document).ready(function() {
 				$('[data-toggle=offcanvas]').click(function() {
 						$('.row-offcanvas').toggleClass('active');
 					}
@@ -78,6 +76,7 @@
 					}
 				);
 			});
+
 		</script>
 	</body>
 </html>

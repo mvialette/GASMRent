@@ -30,6 +30,8 @@ appControllers.controller('MainController', ['$scope','$http', 'barcodeScannerSe
 				
 				$("#home").html(home);
 				
+				$("#login").html(login);
+				
 				$("#viewItems").html(viewItems);
 
 				$("#scanToViewItemDetail").html(scanToViewItemDetail);
@@ -160,6 +162,9 @@ appControllers.controller('ChooseEventController', ['$scope','$http', 'localStor
 			callback : function() {
 
 				$("#pageTitle").html(jQuery.i18n.prop(pageTitle));
+				
+				jQuery.i18n.prop("login");
+				$("#login").html(login);
 
 				jQuery.i18n.prop("viewItems");
 				$("#viewItems").html(viewItems);
@@ -344,6 +349,44 @@ appControllers.controller('AboutController', ['$scope','$http', function($scope,
 				$("#about").html(about);
 			}
 		});
+	}
+}]);
+
+appControllers.controller('LoginController', ['$scope','$http', '$window', 'URL_PUT_LOGIN', 'localStorageService','LOCAL_SECURITY_KEY', 
+                                              function($scope, $http, $window, URL_PUT_LOGIN, localStorageService, LOCAL_SECURITY_KEY) {
+	
+	$scope.initBackToHome = function() {
+		jQuery.i18n.properties({
+			name : 'gasmrent',
+			path : 'i18n/',
+			mode : 'both',
+			language : 'fr',
+			callback : function() {
+				$("#backToHome").html(jQuery.i18n.prop("backToHome"));
+				
+				$("#connect").html(jQuery.i18n.prop("connect"));
+			}
+		});
+	}
+	
+	$scope.sendAuthentication = function() {
+		
+        var urlComplete =  URL_PUT_LOGIN + '?login=' +$scope.login + '&password=' +$scope.password;
+        //alert(urlComplete);
+        
+        $.ajax(urlComplete).success(function(data) {
+            	//alert('succes');
+            	//alert(data);
+                if(data !== undefined && data !== '') {
+                	
+                	localStorageService.clear(LOCAL_SECURITY_KEY);
+                	
+                	localStorageService.save(LOCAL_SECURITY_KEY, data);
+                	
+                	$window.location = "#/home/";
+                }
+           });
+        //return false;
 	}
 }]);
 

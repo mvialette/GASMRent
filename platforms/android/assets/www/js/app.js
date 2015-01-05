@@ -10,7 +10,10 @@ app.constant('URL_GET_PAYMENT_TYPE', 'https://gasmrent-webapp.appspot.com/api/pa
 app.constant('URL_GET_RENTAL_RECORDS', 'https://gasmrent-wbapp.appspot.com/api/rentalRecord/');
 app.constant('URL_PUT_NEW_RENTAL_RECORD', 'https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent');
 app.constant('URL_PUT_TO_PAY_A_RENTAL_RECORDS', 'https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/');
+app.constant('URL_PUT_LOGIN', 'https://gasmrent-webapp.appspot.com/api/securityManager/getSecurityKey');
+
 app.constant('METHOD_TURN_IN', 'turnIn');
+
 app.constant('LOCAL_STORAGE_USERS', 'offlineUsers');
 app.constant('LOCAL_STORAGE_DIVING_EVENTS', 'offlineDivingEvents');
 app.constant('LOCAL_STORAGE_EQUIPMENTS', 'offlineEquipments');
@@ -18,6 +21,8 @@ app.constant('LOCAL_STORAGE_RENTED_EQUIPMENTS', 'offlineRentedEquipments');
 app.constant('LOCAL_STORAGE_LINE_OF_RENTAL', 'lineOfRental');
 app.constant('LOCAL_STORAGE_PAYMENT_TYPE', 'offlinePaymentType');
 app.constant('LOCAL_STORAGE_PAYMENT_BY_USER', 'offlinePaymentByUser');
+app.constant('LOCAL_SECURITY_KEY', 'securityKey');
+
 app.constant('PAYMENT_BY_COIN', 'Liquide');
 app.constant('PAYMENT_BY_CHECK', 'Ch%C3%A8que');
 
@@ -44,7 +49,12 @@ app.config(['$routeProvider', function($routeProvider) {
 				controller : 'AboutController',
 				templateUrl : 'partials/about.html'
 			}
-		).when('/synchronize', {
+		).when('/login', {
+				controller : 'LoginController',
+				templateUrl : 'partials/login.html'
+			}
+		)
+		.when('/synchronize', {
 				controller : 'SynchronizeController',
 				templateUrl : 'partials/synchronize.html'
 			}

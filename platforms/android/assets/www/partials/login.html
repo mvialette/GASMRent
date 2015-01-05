@@ -1,0 +1,34 @@
+<div class="row text-center viewContent">
+	<div class="col-12 pageSection">
+	
+		 <div class="create-from">
+	        <form role="form">
+	            <div class="row largeRow">
+	            	<div class="col-3">
+	            		<label for="login">Login</label>
+	            	</div>
+	                <div class="col-9">
+	                	<input class="form-control" type="text" id="login" ng-model="login">
+	                </div>
+                </div>
+	            <div class="row largeRow">
+	            	<div class="col-3">
+	                	<label for="password">Password</label>
+	                </div>
+	                <div class="col-9">
+	                	<input class="form-control" type="password" id="password"  ng-model="password">
+	                </div>
+	            </div>
+	            
+	            <div class="row largeRow">
+					<div class="col-12">
+						<a class="btn btn-primary" ng-click="sendAuthentication()" id="connect"> </a>
+					</div>
+				</div>
+	        </form>
+        </div>
+		
+		<div ng-include="'./partials/backToHome.html'" onload="initBackToHome()"></div>
+		
+	</div>
+</div>
