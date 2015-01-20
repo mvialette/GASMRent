@@ -483,7 +483,7 @@ appControllers.controller('ViewEquipmentDetailController', ['$scope','$routePara
 	
 	$scope.theHtmlString = $scope.equipment.toCompleteString(); 
 	
-	alert($scope.theHtmlString);
+	//alert($scope.theHtmlString);
 	//getEquipmentDetail();
 	
     jQuery.i18n.properties({

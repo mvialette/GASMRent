@@ -12,8 +12,8 @@ var parseDate = function(dateObject){
 };
 
 var logMessage = function(message) {
-	//var debug = false;
-	var debug = true;
+	var debug = false;
+	//var debug = true;
 	
 	if (debug === true) {
 		alert(message);
@@ -108,6 +108,9 @@ gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 
 			}
 
 			return frenchType + " n°" + equipmentId;
+			
+			//return " n°" + equipmentId;
+			
 		}, this.toHtmlString = function() {
 
 			var frenchType = this.type;
@@ -292,16 +295,31 @@ gasmRentServices.factory('equipmentService', ['$window', 'localStorageService', 
     
     var getAllEquipments = function(){
     	
+    	//alert(LOCAL_STORAGE_EQUIPMENTS);
+    	
     	var localStorageEquipments = localStorageService.read(LOCAL_STORAGE_EQUIPMENTS);
+    	
+    	//alert(localStorageEquipments);
     	
     	var equipments = [];
     	
     	$.each(localStorageEquipments, function(i, oneElement) {
-    		var jsonOneElement = JSON.parse(oneElement);
     		
-    		var result = new Equipment(jsonOneElement.reference,
-					jsonOneElement.type, jsonOneElement.price,
-					jsonOneElement.rented, jsonOneElement.serialNumber, jsonOneElement.status);
+    		//alert('aaa');
+    		//alert(oneElement);
+    		
+    		var modifyString = oneElement.replace('undefined', '\"null\"');
+    		//alert(toto);
+    		
+    		var jsonOneElementTmpMax = JSON.parse(modifyString);
+    		
+    		//alert(jsonOneElementTmpMax.reference);
+    		
+    		//alert(jsonOneElement);
+    		
+    		var result = new Equipment(jsonOneElementTmpMax.reference,
+    				jsonOneElementTmpMax.type, jsonOneElementTmpMax.price,
+    				jsonOneElementTmpMax.rented, jsonOneElementTmpMax.serialNumber, jsonOneElementTmpMax.status);
     		
     		equipments.push(result);
     	});
@@ -968,7 +986,7 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
                                             'URL_GET_ALL_RENTED_EQUIPMENT', 'LOCAL_STORAGE_RENTED_EQUIPMENTS', 
                                             'URL_GET_PAYMENT_TYPE', 'LOCAL_STORAGE_PAYMENT_TYPE', 
                                             'LOCAL_STORAGE_PAYMENT_BY_USER', 'LOCAL_STORAGE_LINE_OF_RENTAL', 'URL_PUT_NEW_RENTAL_RECORD',
-                                            'PAYMENT_BY_COIN','PAYMENT_BY_CHECK','URL_PUT_TO_PAY_A_RENTAL_RECORDS',
+                                            'PAYMENT_BY_COIN','PAYMENT_BY_CHECK','URL_PUT_TO_PAY_A_RENTAL_RECORDS','LOCAL_SECURITY_KEY', 
                                             function(localStorageService, 
                                             		URL_GET_USERS, LOCAL_STORAGE_USERS, 
                                             		URL_GET_DIVING_EVENT, LOCAL_STORAGE_DIVING_EVENTS, 
@@ -976,14 +994,18 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
                                             		URL_GET_ALL_RENTED_EQUIPMENT, LOCAL_STORAGE_RENTED_EQUIPMENTS,
                                             		URL_GET_PAYMENT_TYPE, LOCAL_STORAGE_PAYMENT_TYPE, 
                                             		LOCAL_STORAGE_PAYMENT_BY_USER, LOCAL_STORAGE_LINE_OF_RENTAL, URL_PUT_NEW_RENTAL_RECORD,
-                                            		PAYMENT_BY_COIN, PAYMENT_BY_CHECK, URL_PUT_TO_PAY_A_RENTAL_RECORDS){
+                                            		PAYMENT_BY_COIN, PAYMENT_BY_CHECK, URL_PUT_TO_PAY_A_RENTAL_RECORDS, LOCAL_SECURITY_KEY){
 	
     var pullUsers = function(){
     	
     	var userArray = [];
     	
-    	var urlComplete = URL_GET_USERS;
+    	var localStorageSecureKey = localStorageService.read(LOCAL_SECURITY_KEY);
+    	
+    	var urlComplete = URL_GET_USERS + localStorageSecureKey;
 
+    	//alert(urlComplete);
+    	
     	jQuery.ajax({
     		type : "GET",
     		url : urlComplete,
@@ -991,6 +1013,8 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     		dataType : "json",
     		success : function(data, status, jqXHR) {
 
+    			//alert("success");
+    			
     			//var items = [];
     			var compteur = 0;
 
@@ -1010,6 +1034,8 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     		},
     		error : function(jqXHR, status) {
 
+    			alert("error");
+    			
     			var localStorageUsers = JSON.parse(window.localStorage
     					.getItem(LOCAL_STORAGE_USERS));
 
@@ -1031,7 +1057,9 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     
     var pullDivingEvents = function(){
     	
-    	var urlComplete = URL_GET_DIVING_EVENT;
+    	var localStorageSecureKey = localStorageService.read(LOCAL_SECURITY_KEY);
+    	
+    	var urlComplete = URL_GET_DIVING_EVENT + localStorageSecureKey;
     	
     	//alert('urlComplete=' + urlComplete);
     	
@@ -1108,10 +1136,12 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     	
     	var resultArray = [];
 
-    	// var debuging = true;
+    	//var debuging = true;
     	var debuging = false;
 
-    	var urlComplete = URL_GET_EQUIPMENT;
+    	var localStorageSecureKey = localStorageService.read(LOCAL_SECURITY_KEY);
+    	
+    	var urlComplete = URL_GET_EQUIPMENT + localStorageSecureKey;
 
     	if (debuging) {
     		alert(urlComplete);
@@ -1137,6 +1167,17 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     					alert("item=" + JSON.stringify(item));
     					alert("item.reference=" + item.reference);
     				}
+    				
+    				/**
+					 * Pourquoi cette valeur est elle non définie ?
+					 * 
+					 */
+					var rentedValue = false;
+					if(item.rented  == undefined){
+						rentedValue = false;
+					}else{
+						rentedValue = item.rented;
+					}
 
     				if (item.type == "Tank") {
 
@@ -1158,7 +1199,7 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     						alert("status:" + item.status);
     						alert("type:" + item.type);
     						alert("price:" + item.price);
-    						alert("rented:" + item.rented);
+    						alert("rented:" + rentedValue);
     					}
     					/**
     					 * { "reference":"215", "brand":"Roth", "historyList":[],
@@ -1171,7 +1212,7 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     					 * "type":"Tank", "price":4.5, "rented":false,
     					 * "renterFullName":null, "created":true }
     					 */
-
+    					
     					resultArray.push("{\"reference\":\"" + item.reference
     							+ "\",\"brand\":\"" + item.brand
     							+ "\",\"serialNumber\":\"" + item.serialNumber
@@ -1186,7 +1227,7 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     							+ item.lastDateOfTIV + "\",\"status\":\""
     							+ item.status + "\",\"type\":\"" + item.type
     							+ "\",\"price\":\"" + item.price + "\",\"rented\":"
-    							+ item.rented + "}");
+    							+ rentedValue + "}");
     				} else {
     					if (debuging) {
     						alert("ko");
@@ -1194,7 +1235,7 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
 
     					resultArray.push("{\"reference\":\"" + item.reference
     							+ "\",\"type\":\"" + item.type + "\",\"price\":"
-    							+ item.price + ",\"rented\":" + item.rented + "}");
+    							+ item.price + ",\"rented\":" + rentedValue + "}");
     				}
 
     				compteur++;
@@ -1239,10 +1280,12 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     	
     	var resultArray = [];
 
-    	// var debuging = true;
-    	var debuging = false;
-
-    	var urlComplete = URL_GET_ALL_RENTED_EQUIPMENT;
+    	var debuging = true;
+    	//var debuging = false;
+    	
+    	var localStorageSecureKey = localStorageService.read(LOCAL_SECURITY_KEY);
+    	
+    	var urlComplete = URL_GET_ALL_RENTED_EQUIPMENT + localStorageSecureKey;
 
     	if (debuging) {
     		alert(urlComplete);
@@ -1319,7 +1362,10 @@ gasmRentServices.factory('backendService', ['localStorageService', 'URL_GET_USER
     var pullPaymentType = function(){
     	
     	var resultArray = [];
-    	var urlComplete = URL_GET_PAYMENT_TYPE;
+    	
+    	var localStorageSecureKey = localStorageService.read(LOCAL_SECURITY_KEY);
+    	
+    	var urlComplete = URL_GET_PAYMENT_TYPE + localStorageSecureKey;
 
     	// alert(urlComplete);
 

@@ -2,14 +2,14 @@
 
 var app = angular.module('GasmRentApp', ['ngResource', 'ngRoute', 'ngSanitize', 'GasmRentAppControllers', 'GasmRentServices']);
 
-app.constant('URL_GET_USERS', 'https://gasmrent-webapp.appspot.com/api/adherent/');
-app.constant('URL_GET_DIVING_EVENT', 'https://gasmrent-webapp.appspot.com/api/divingEvent/');
-app.constant('URL_GET_EQUIPMENT', 'https://gasmrent-webapp.appspot.com/api/equipment/');
-app.constant('URL_GET_ALL_RENTED_EQUIPMENT', 'http://gasmrent-webapp.appspot.com/api/equipment/findAllRented');
-app.constant('URL_GET_PAYMENT_TYPE', 'https://gasmrent-webapp.appspot.com/api/payment');
-app.constant('URL_GET_RENTAL_RECORDS', 'https://gasmrent-wbapp.appspot.com/api/rentalRecord/');
-app.constant('URL_PUT_NEW_RENTAL_RECORD', 'https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent');
-app.constant('URL_PUT_TO_PAY_A_RENTAL_RECORDS', 'https://gasmrent-webapp.appspot.com/api/rentalRecord/paid/');
+app.constant('URL_GET_USERS', 'https://gasmrent-webapp.appspot.com/api/adherent?securityKey=');
+app.constant('URL_GET_DIVING_EVENT', 'https://gasmrent-webapp.appspot.com/api/divingEvent?securityKey=');
+app.constant('URL_GET_EQUIPMENT', 'https://gasmrent-webapp.appspot.com/api/equipment?securityKey=');
+app.constant('URL_GET_ALL_RENTED_EQUIPMENT', 'http://gasmrent-webapp.appspot.com/api/equipment/findAllRented?securityKey=');
+app.constant('URL_GET_PAYMENT_TYPE', 'https://gasmrent-webapp.appspot.com/api/payment?securityKey=');
+app.constant('URL_GET_RENTAL_RECORDS', 'https://gasmrent-wbapp.appspot.com/api/rentalRecord?securityKey=');
+app.constant('URL_PUT_NEW_RENTAL_RECORD', 'https://gasmrent-webapp.appspot.com/api/rentalRecord/addToDivingEvent?securityKey=');
+app.constant('URL_PUT_TO_PAY_A_RENTAL_RECORDS', 'https://gasmrent-webapp.appspot.com/api/rentalRecord/paid?securityKey=');
 app.constant('URL_PUT_LOGIN', 'https://gasmrent-webapp.appspot.com/api/securityManager/getSecurityKey');
 
 app.constant('METHOD_TURN_IN', 'turnIn');
